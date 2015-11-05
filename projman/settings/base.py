@@ -111,7 +111,7 @@ LOCALE_PATHS = (
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR.child("static")
+STATIC_ROOT = BASE_DIR.ancestor(1).child("static")
 STATICFILES_DIRS = (
     BASE_DIR.child("static"),
 )
