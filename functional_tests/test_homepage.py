@@ -12,11 +12,13 @@ class HomePageTest(FunctionalTestCase):
         self.assertIn('ProjMan', self.browser.title)
 
         # There is a header with the site's name in it
-        header = self.browser.find_element_by_id('header')
+        header = self.browser.find_element_by_tag_name('header')
         self.assertIn('ProjMan', header.text)
         # There is also a sign in button on the header
-        self.assertIn('Sign in', header.text)
+        buttons = header.find_elements_by_tag_name('button')
+        self.assertTrue(any(['sign in' in b.text.lower() for b in buttons]))
 
         # In the main body of the site there is also a sign in button
         content = self.browser.find_element_by_id('content')
-        self.assertIn('Sign in', content.text)
+        buttons = content.find_elements_by_tag_name('button')
+        self.assertTrue(any(['sign in' in b.text.lower() for b in buttons]))
