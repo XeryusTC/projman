@@ -1,0 +1,31 @@
+# Dutch translation of the ProjMan website
+# Copyright (C) 2015 Xeryus Stokkel
+# This file is distributed under the same license as the ProjMan package.
+# Xeryus Stokkel <xeryus@xeryus.nl>, 2015.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-05 22:35+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: projman/settings/base.py:102
+msgid "English"
+msgstr "Engels"
+
+#: projman/settings/base.py:103
+msgid "Dutch"
+msgstr "Nederlands"
+
+#: templates/landing/index.html:7 templates/landing/index.html.py:13
+msgid "Sign in"
+msgstr "Inloggen"
