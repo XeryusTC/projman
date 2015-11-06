@@ -15,3 +15,9 @@ class TestBaseFuctionalTest(unittest.TestCase):
         ft = FunctionalTestCase()
         with self.assertRaises(AssertionError):
             ft.assertElementPresent(e, 'test')
+
+    def test_assertelementpresent_returns_element_found(self):
+        e = [mock.Mock(text='test'), mock.Mock(text='some string')]
+        ft = FunctionalTestCase()
+        ret = ft.assertElementPresent(e, 'test')
+        self.assertEquals(e[0], ret)
