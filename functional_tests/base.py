@@ -14,3 +14,10 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         for handle in self.browser.window_handles:
             self.browser.switch_to_window(handle)
             self.browser.close()
+
+    def assertElementPresent(self, elements, text):
+        for e in elements:
+            if text.lower() == e.text.lower():
+                return e
+        else:
+            self.fail("'{}' not in elements.text".format(text))

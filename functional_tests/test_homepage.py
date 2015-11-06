@@ -16,9 +16,9 @@ class HomePageTest(FunctionalTestCase):
         self.assertIn('ProjMan', header.text)
         # There is also a sign in button on the header
         buttons = header.find_elements_by_tag_name('button')
-        self.assertTrue(any(['sign in' in b.text.lower() for b in buttons]))
+        b = self.assertElementPresent(buttons, 'sign in')
 
         # In the main body of the site there is also a sign in button
         content = self.browser.find_element_by_id('content')
         buttons = content.find_elements_by_tag_name('button')
-        self.assertTrue(any(['sign in' in b.text.lower() for b in buttons]))
+        self.assertElementPresent(buttons, 'sign in')
