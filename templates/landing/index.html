@@ -2,26 +2,14 @@
 {% load i18n %}
 {% load static %}
 
-{% block head_extra %}
-<link rel="stylesheet" href="{% static 'css/landing.css' %}" type="text/css">
-{% endblock %}
-
-{% block script %}
-<script src="{% static 'js/landing.js' %}"></script>
-{% endblock %}
-
 {% block appbar %}
 <td align="right">
-	<button class="login mui-btn">{% trans "Sign in" %}</button>
+	<button class="mui-btn">{% trans "Sign in" %}</button>
 </td>
 {% endblock appbar %}
 
 {% block content %}
 	<div class="mui--text-center">
-		<button class="login mui-btn mui-btn--primary">{% trans "Sign in" %}</button>
+		<button class="mui-btn mui-btn--primary">{% trans "Sign in" %}</button>
 	</div>
 {% endblock content %}
-
-{% block popups %}
-<div id="login-popup" class="mui-panel"></div>
-{% endblock popups %}
