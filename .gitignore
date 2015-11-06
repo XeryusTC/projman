@@ -5,3 +5,7 @@ __pycache__
 # Django files
 db.sqlite3
 *.mo
+
+# Coverage
+.coverage
+htmlcov
