@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from selenium.webdriver.common.keys import Keys
+
 from .base import FunctionalTestCase
 
 class HomePageTest(FunctionalTestCase):
-    def test_landingpage_test(self):
+    def test_can_login_from_landingpage(self):
         """Test if we arrive on the landing page"""
         # Alice goes to the website
         self.browser.get(self.live_server_url)
@@ -22,3 +24,11 @@ class HomePageTest(FunctionalTestCase):
         content = self.browser.find_element_by_id('content')
         buttons = content.find_elements_by_tag_name('button')
         self.assertElementPresent(buttons, 'sign in')
+
+        # Clicking the sign in button opens a login popup
+        buttons = self.browser.find_elements_by_tag_name('button')
+        for b in buttons:
+            b.click()
+            popup = self.browser.find_element_by_id('actual-login-popup')
+            self.assertTrue(popup.is_displayed())
+            b.send_keys(Keys.ESCAPE)

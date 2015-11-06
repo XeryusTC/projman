@@ -9,7 +9,7 @@
 
 	<link href="//cdn.muicss.com/mui-0.2.1/css/mui.min.css" rel="stylesheet"
 		type="text/css" />
-	<script src="//cdn.muicss.com/mui-0.2.1/js/mui.min.js"></script>
+	{% block head_extra %}{% endblock %}
 </head>
 <body>
 
@@ -27,6 +27,12 @@
 <div id="content">
 	{% block content %}{% endblock content %}
 </div>
+
+{% block popups %}{% endblock %}
+
+<script src="//cdn.muicss.com/mui-0.2.1/js/mui.min.js"></script>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+{% block script %}{% endblock %}
 
 </body>
 </html>

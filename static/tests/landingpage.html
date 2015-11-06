@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Landing page Javascript tests</title>
+	<link rel="stylesheet"
+		href="https://code.jquery.com/qunit/qunit-1.20.0.css">
+	<link rel="stylesheet" href="../css/landing.css">
+</head>
+<body>
+
+<div id="qunit"></div>
+<div id="qunit-fixture">
+	<button class="login">Sign in</button>
+	<div id="login-popup"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://cdn.muicss.com/mui-0.2.1/js/mui.min.js"></script>
+<script src="https://code.jquery.com/qunit/qunit-1.20.0.js"></script>
+<script src="../js/landing.js"></script>
+
+<script>
+test("Clicking sign in button opens sign in popup", function() {
+	b = $('.login').trigger('click');
+	equal($('#actual-login-popup').is(':visible'), true);
+});
+
+test("Login popup is hidden by default", function() {
+	equal($('#login-popup').is(':visible'), false);
+});
+</script>
+
+</body>
+</html>

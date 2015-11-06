@@ -16,3 +16,7 @@ class StylesheetTest(FunctionalTestCase):
         scripts = self.browser.find_elements_by_tag_name('script')
         self.assertTrue(any(['mui.min.js' in s.get_attribute('src')
             for s in scripts]))
+
+        # She also sees that jQuery is loaded
+        self.assertTrue(any(['jquery-2.1.4.min.js' in s.get_attribute('src')
+            for s in scripts]))
