@@ -4,12 +4,17 @@
 
 {% block appbar %}
 <td align="right">
-	<button class="mui-btn">{% trans "Sign in" %}</button>
+	<a href="{% url 'account_login' %}" role="button" class="mui-btn">
+		{% trans "Sign in" %}
+	</a>
 </td>
 {% endblock appbar %}
 
 {% block content %}
 	<div class="mui--text-center">
-		<button class="mui-btn mui-btn--primary">{% trans "Sign in" %}</button>
+		<a href="{% url 'account_login' %}" role="button"
+			class="mui-btn mui-btn--primary">
+			{% trans "Sign in" %}
+		</a>
 	</div>
 {% endblock content %}
