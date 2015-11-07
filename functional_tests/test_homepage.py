@@ -55,7 +55,7 @@ class HomePageTest(FunctionalTestCase):
         b.click()
 
         # She clicks on the Persona login link
-        persona = self.browser.find_element_by_link_text('Persona')
+        persona = self.browser.find_element_by_link_text('PERSONA')
         persona.click()
 
         self.switch_to_new_window('Mozilla Persona')

@@ -12,6 +12,11 @@ class StylesheetTest(FunctionalTestCase):
         self.assertTrue(any(['mui.min.css' in link.get_attribute('href')
             for link in links]))
 
+        # A generic style css is loaded
+        links = self.browser.find_elements_by_tag_name('link')
+        self.assertTrue(any(['css/style.css' in link.get_attribute('href')
+            for link in links]))
+
         # She also sees that the MUI javascript is loaded
         scripts = self.browser.find_elements_by_tag_name('script')
         self.assertTrue(any(['mui.min.js' in s.get_attribute('src')
