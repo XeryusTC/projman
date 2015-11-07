@@ -37,6 +37,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'landing',
+
+    # allauth related
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.persona',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -72,6 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'projman.wsgi.application'
 
+SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -115,3 +123,18 @@ STATIC_ROOT = BASE_DIR.ancestor(1).child("static")
 STATICFILES_DIRS = (
     BASE_DIR.child("static"),
 )
+
+# Allauth related
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+LOGIN_URL = 'account_login'
+LOGOUT_URL = 'account_logout'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'persona': {
+        'AUDIENCE': 'localhost'
+    }
+}

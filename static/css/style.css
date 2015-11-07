@@ -1,0 +1,10 @@
+.socialaccount.persona {
+	background: url('../img/persona-logo-wordmark.png') no-repeat center center;
+	background-size: 80% auto;
+	padding-left: 40px;
+	color: transparent;
+}
+
+.socialaccount.persona:hover {
+	color: transparent;
+}

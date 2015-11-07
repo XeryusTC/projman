@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +11,8 @@
 
 	<link href="//cdn.muicss.com/mui-0.2.1/css/mui.min.css" rel="stylesheet"
 		type="text/css" />
+	<link href="{% static 'css/style.css' %}" rel="stylesheet"
+		type="text/css">
 	{% block head_extra %}{% endblock %}
 </head>
 <body>
@@ -27,8 +31,6 @@
 <div id="content">
 	{% block content %}{% endblock content %}
 </div>
-
-{% block popups %}{% endblock %}
 
 <script src="//cdn.muicss.com/mui-0.2.1/js/mui.min.js"></script>
 <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
