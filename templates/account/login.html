@@ -8,7 +8,7 @@
 
 <div class="mui-container">
 	<div class="mui-row">
-		<div class="mui-col-xs-12 mui--text-headline">
+		<div class="mui-col-xs-12 mui-col-md-offset-3 mui--text-headline">
 			{% trans "Sign In" %}
 		</div>
 	</div>
@@ -16,7 +16,7 @@
 	{% if socialaccount_providers %}
 		{% include "socialaccount/snippets/login_extra.html" %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-6">
+			<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3">
 				{% blocktrans with site.name as site_name %}Please sign in with
 				one of your existing third party accounts. Or,
 				<a href="{{ signup_url }}">sign up</a> for a {{ site_name }}
@@ -25,18 +25,20 @@
 		</div>
 
 		<div class="mui-row">
-			<ul class="socialaccount_providers">
-				{% include "socialaccount/snippets/provider_list.html" with process="login" %}
-			</ul>
+			<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3">
+				<ul class="socialaccount_providers mui--list-inline">
+					{% include "socialaccount/snippets/provider_list.html" with process="login" %}
+				</ul>
+			</div>
 		</div>
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-subhead">
+			<div class="mui-col-xs-12 mui-col-md-offset-3 mui--text-subhead">
 				{% trans 'or' %}
 			</div>
 		</div>
 	{% else %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-6">
+			<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-md-3">
 				{% blocktrans %}If you have not created an account yet, then
 				please <a href="{{ signup_url }}">sign up</a> first.
 				{% endblocktrans %}
@@ -54,7 +56,8 @@
 
 		{% for error in form.non_field_errors %}
 			<div class="mui-row">
-				<div class="mui-col-xs-12 mui-col-md-6 mui--text-danger">
+				<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3
+					mui--text-danger">
 					{{ error }}
 				</div>
 			</div>
@@ -68,14 +71,14 @@
 			</div>
 		{% endif %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-4">
+			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
 				<div class="mui-textfield mui-textfield--float-label">
 					{{ form.login }}
 					{{ form.login.label_tag }}
 				</div>
 			</div>
 			{% if form.login.errors %}
-				<div class="mui--hidden-xs mui--hidden-sm mui-col-md-4
+				<div class="mui--hidden-xs mui--hidden-sm mui-col-md-2
 					mui--text-danger mui-list--inline">
 					{{ form.login.errors }}
 				</div>
@@ -90,50 +93,62 @@
 			</div>
 		{% endif %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-4">
+			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
 				<div class="mui-textfield mui-textfield--float-label">
 					{{ form.password }}
 					{{ form.password.label_tag }}
 				</div>
 			</div>
 			{% if form.password.errors %}
-				<div class="mui--hidden-xs mui--hidden-sm mui-col-md-4
+				<div class="mui--hidden-xs mui--hidden-sm mui-col-md-2
 					mui--text-danger mui-list--inline">
 					{{ form.password.errors }}
 				</div>
 			{% endif %}
 		</div>
 
-		<div class="mui-row">
-			<div class="mui-col-xs-4 mui-col-md-3">
-				<div class="mui-checkbox">
-					{{ form.remember.label_tag }}
-					{{ form.remember }}
-				</div>
-			</div>
-			{% if form.remember.errors %}
+		{% if form.remember.errors %}
+			<div class="mui-row">
 				{% comment %}Do these even exist?{% endcomment %}
-				<div class="mui-col-xs-6 mui--text-danger mui-list--inline">
+				<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3
+					mui--text-danger mui-list--inline">
 					{{ form.remember.errors }}
 				</div>
-			{% endif %}
-		</div>
-
-		<div class="mui-row">
-			<div class="mui-col-xs-8 mui-col-md-3">
-				<a class="mui-btn mui-btn--raised"
-					href="{% url 'account_reset_password' %}">
-					{% trans "Forgot Password?" %}
-				</a>
 			</div>
-			<div class="mui-col-xs-4 mui-col-md-2">
+		{% endif %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui-col-md-2 mui-col-md-offset-3">
+				<div class="mui-checkbox">
+					<label for="{{ for.remember.id_for_label }}">
+						{{ form.remember }}
+						{{ form.remember.label }}
+					</label>
+				</div>
+			</div>
+			<div class="mui-col-xs-12 mui-col-md-2 mui--text-right">
 				<button class="mui-btn mui-btn--primary mui-btn--raised" type="submit">
 					{% trans "Sign in" %}
 				</button>
 			</div>
 		</div>
-	</form>
 
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
+				<a class="mui-btn mui-btn--raised"
+					href="{% url 'account_reset_password' %}">
+					{% trans "Forgot Password?" %}
+				</a>
+			</div>
+		</div>
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
+				<a class="mui-btn mui-btn--raised"
+					href="{% url 'account_signup' %}">
+					{% trans 'Register' %}
+				</a>
+			</div>
+		</div>
+	</form>
 </div>
 
 {% endblock %}
