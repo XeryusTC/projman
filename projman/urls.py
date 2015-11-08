@@ -23,9 +23,9 @@ from landing.views import LandingView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', LandingView.as_view()),
 ]
 
 urlpatterns += i18n_patterns(
     url(r'^accounts/', include(allauth.urls)),
+    url(r'^$', LandingView.as_view(), name='landingpage'),
 )

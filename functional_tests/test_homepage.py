@@ -18,9 +18,11 @@ class HomePageTest(FunctionalTestCase):
         # The title says the name of the site
         self.assertIn('ProjMan', self.browser.title)
 
-        # There is a header with the site's name in it
+        # There is a header with the site's name in it, the name links
+        # to the homepage
         header = self.browser.find_element_by_tag_name('header')
-        self.assertIn('ProjMan', header.text)
+        logo = header.find_element_by_link_text('ProjMan')
+        self.assertTrue(logo.get_attribute('href').endswith('/en/'))
         # There is also a sign in button on the header
         buttons = header.find_elements_by_tag_name('a')
         b = self.assertElementPresent(buttons, 'sign in')
