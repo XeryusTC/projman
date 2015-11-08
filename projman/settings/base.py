@@ -130,6 +130,8 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+ACCOUNT_EMAIL_REQUIRED = True
+
 LOGIN_URL = 'account_login'
 LOGOUT_URL = 'account_logout'
 
