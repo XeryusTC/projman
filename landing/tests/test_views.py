@@ -6,10 +6,10 @@ from landing.views import LandingView
 
 class LandingPageTests(TestCase):
     def test_root_url_resolves_to_landing_page_view(self):
-        found = resolve('/')
+        found = resolve('/en/')
         self.assertEqual(found.func.__name__, LandingView.as_view().__name__)
 
     def test_landing_page_uses_correct_templates(self):
-        response = self.client.get('/')
+        response = self.client.get('/en/')
         self.assertTemplateUsed(response, 'base.html')
         self.assertTemplateUsed(response, 'landing/index.html')
