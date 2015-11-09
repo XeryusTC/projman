@@ -8,3 +8,7 @@
 .socialaccount.persona:hover {
 	color: transparent;
 }
+
+a.appbar-correct {
+	color: white;
+}
