@@ -3,152 +3,136 @@
 {% load i18n %}
 {% load account socialaccount %}
 
-{% block content %}
+{% block head_title %}
+	{% trans "Sign In" %}
+{% endblock %}
+
+{% block title %}
+	{% trans "Sign In" %}
+{% endblock %}
+
+{% block page_content %}
 {% get_providers as socialaccount_providers %}
 
-<div class="mui-container">
+{% if socialaccount_providers %}
+	{% include "socialaccount/snippets/login_extra.html" %}
 	<div class="mui-row">
-		<div class="mui-col-xs-12 mui-col-md-offset-3 mui--text-headline">
-			{% trans "Sign In" %}
+		<div class="mui-col-xs-12">
+			{% blocktrans with site.name as site_name %}Please sign in with
+			one of your existing third party accounts. Or,
+			<a href="{{ signup_url }}">sign up</a> for a {{ site_name }}
+			account and sign in below:{% endblocktrans %}
 		</div>
 	</div>
 
-	{% if socialaccount_providers %}
-		{% include "socialaccount/snippets/login_extra.html" %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3">
-				{% blocktrans with site.name as site_name %}Please sign in with
-				one of your existing third party accounts. Or,
-				<a href="{{ signup_url }}">sign up</a> for a {{ site_name }}
-				account and sign in below:{% endblocktrans %}
-			</div>
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			<ul class="socialaccount_providers mui--list-inline">
+				{% include "socialaccount/snippets/provider_list.html" with process="login" %}
+			</ul>
 		</div>
+	</div>
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui--text-subhead">
+			{% trans 'or' %}
+		</div>
+	</div>
+{% else %}
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			{% blocktrans %}If you have not created an account yet, then
+			please <a href="{{ signup_url }}">sign up</a> first.
+			{% endblocktrans %}
+		</div>
+	</div>
+{% endif %}
 
+<form class="login" method="POST" action="{% url 'account_login' %}">
+	{% csrf_token %}
+	{% if redirect_field_value %}
+		<input type="hidden" name="{{ redirect_field_name }}"
+		  	value="{{ redirect_field_value }}" />
+	{% endif %}
+
+	{% for error in form.non_field_errors %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3">
-				<ul class="socialaccount_providers mui--list-inline">
-					{% include "socialaccount/snippets/provider_list.html" with process="login" %}
-				</ul>
+			<div class="mui-col-xs-12 mui--text-danger">
+				{{ error }}
 			</div>
 		</div>
+	{% endfor %}
+
+	{% if form.login.errors %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-offset-3 mui--text-subhead">
-				{% trans 'or' %}
-			</div>
-		</div>
-	{% else %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-md-3">
-				{% blocktrans %}If you have not created an account yet, then
-				please <a href="{{ signup_url }}">sign up</a> first.
-				{% endblocktrans %}
+			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
+				{{ form.login.errors }}
 			</div>
 		</div>
 	{% endif %}
-
-	<form class="login" method="POST" action="{% url 'account_login' %}">
-		{% csrf_token %}
-		{% if redirect_field_value %}
-			<input type="hidden" name="{{ redirect_field_name }}"
-			  	value="{{ redirect_field_value }}" />
-		{% endif %}
-		
-
-		{% for error in form.non_field_errors %}
-			<div class="mui-row">
-				<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3
-					mui--text-danger">
-					{{ error }}
-				</div>
-			</div>
-		{% endfor %}
-
-		{% if form.login.errors %}
-			<div class="mui-row mui--hiden-md mui--hidden-lg">
-				<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
-					{{ form.login.errors }}
-				</div>
-			</div>
-		{% endif %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
-				<div class="mui-textfield mui-textfield--float-label">
-					{{ form.login }}
-					{{ form.login.label_tag }}
-				</div>
-			</div>
-			{% if form.login.errors %}
-				<div class="mui--hidden-xs mui--hidden-sm mui-col-md-2
-					mui--text-danger mui-list--inline">
-					{{ form.login.errors }}
-				</div>
-			{% endif %}
-		</div>
-		
-		{% if form.password.errors %}
-			<div class="mui-row mui--hiden-md mui--hidden-lg">
-				<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
-					{{ form.password.errors }}
-				</div>
-			</div>
-		{% endif %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
-				<div class="mui-textfield mui-textfield--float-label">
-					{{ form.password }}
-					{{ form.password.label_tag }}
-				</div>
-			</div>
-			{% if form.password.errors %}
-				<div class="mui--hidden-xs mui--hidden-sm mui-col-md-2
-					mui--text-danger mui-list--inline">
-					{{ form.password.errors }}
-				</div>
-			{% endif %}
-		</div>
-
-		{% if form.remember.errors %}
-			<div class="mui-row">
-				{% comment %}Do these even exist?{% endcomment %}
-				<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3
-					mui--text-danger mui-list--inline">
-					{{ form.remember.errors }}
-				</div>
-			</div>
-		{% endif %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-2 mui-col-md-offset-3">
-				<div class="mui-checkbox">
-					<label for="{{ for.remember.id_for_label }}">
-						{{ form.remember }}
-						{{ form.remember.label }}
-					</label>
-				</div>
-			</div>
-			<div class="mui-col-xs-12 mui-col-md-2 mui--text-right">
-				<button class="mui-btn mui-btn--primary mui-btn--raised" type="submit">
-					{% trans "Sign in" %}
-				</button>
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			<div class="mui-textfield mui-textfield--float-label">
+				{{ form.login }}
+				{{ form.login.label_tag }}
 			</div>
 		</div>
+	</div>
 
+	{% if form.password.errors %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
-				<a class="mui-btn mui-btn--raised"
-					href="{% url 'account_reset_password' %}">
-					{% trans "Forgot Password?" %}
-				</a>
+			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
+				{{ form.password.errors }}
 			</div>
 		</div>
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-4 mui-col-md-offset-3">
-				<a class="mui-btn mui-btn--raised"
-					href="{% url 'account_signup' %}">
-					{% trans 'Register' %}
-				</a>
+	{% endif %}
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			<div class="mui-textfield mui-textfield--float-label">
+				{{ form.password }}
+				{{ form.password.label_tag }}
 			</div>
 		</div>
-	</form>
+	</div>
+
+	{% if form.remember.errors %}
+		<div class="mui-row">
+			{% comment %}Do these even exist?{% endcomment %}
+			<div class="mui-col-xs-12 mui-col-md-6 mui-col-md-offset-3
+				mui--text-danger mui-list--inline">
+				{{ form.remember.errors }}
+			</div>
+		</div>
+	{% endif %}
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui-col-md-6">
+			<div class="mui-checkbox">
+				<label for="{{ for.remember.id_for_label }}">
+					{{ form.remember }}
+					{{ form.remember.label }}
+				</label>
+			</div>
+		</div>
+		<div class="mui-col-xs-12 mui-col-md-6 mui--text-right">
+			<button class="mui-btn mui-btn--primary mui-btn--raised" type="submit">
+				{% trans "Sign in" %}
+			</button>
+		</div>
+	</div>
+</form>
+
+<div class="mui-row">
+	<div class="mui-col-xs-12 mui-col-md-6">
+		<a class="mui-btn mui-btn--raised"
+			href="{% url 'account_reset_password' %}">
+			{% trans "Forgot Password?" %}
+		</a>
+	</div>
+	<div class="mui-col-xs-12 mui-col-md-6 mui--text-right">
+		<a class="mui-btn mui-btn--raised"
+			href="{% url 'account_signup' %}">
+			{% trans 'Register' %}
+		</a>
+	</div>
 </div>
 
 {% endblock %}

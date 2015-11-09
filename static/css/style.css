@@ -12,3 +12,7 @@
 a.appbar-correct {
 	color: white;
 }
+
+.errorlist {
+	list-style: outside none none;
+}

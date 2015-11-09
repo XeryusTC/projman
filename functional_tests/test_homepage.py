@@ -70,7 +70,7 @@ class HomePageTest(FunctionalTestCase):
         mail.send_keys(Keys.RETURN)
 
         # She sees that she is logged in
-        self.switch_to_new_window('ProjMan')
+        self.switch_to_new_window('Sign In')
         self.wait_for(lambda: self.assertIn('accounts/profile/',
             self.browser.current_url), timeout=30)
 

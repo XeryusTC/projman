@@ -1,0 +1,7 @@
+{% load i18n %}
+{% load account %}
+
+{% user_display user as user_display %}
+<span class="mui--text-accent">{% trans "Note" %}:</span>
+{% blocktrans %}you are already logged in as {{ user_display }}.
+{% endblocktrans %}
