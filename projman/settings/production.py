@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .base import *
+from .util import get_env_setting
 
 DEBUG = False
 DOMAIN = get_env_setting('PROJMAN_DOMAIN')
