@@ -30,3 +30,21 @@ class PasswordResetPage(PageObject):
 class ConfirmEmailPage(PageObject):
     body    = PageElement(tag_name='body')
     confirm = PageElement(tag_name='button')
+
+
+class LogoutPage(PageObject):
+    signout = PageElement(xpath="//form//button")
+
+
+class PasswordResetDonePage(PageObject):
+    body = PageElement(tag_name='body')
+
+
+class ResetPasswordKeyPage(PageObject):
+    password1 = PageElement(name='password1')
+    password2 = PageElement(name='password2')
+    submit    = PageElement(name='action')
+
+
+class ResetPasswordKeyDonePage(PageObject):
+    signin = PageElement(link_text="sign in")

@@ -116,8 +116,62 @@ class HomePageTest(FunctionalTestCase):
         # confirm button
         confirmpage = accounts.ConfirmEmailPage(self.browser)
         self.assertIn('alice@test.com', confirmpage.body.text)
-        self.assertIn('Confirm', confirmpage.confirm.text)
+        self.assertIn('confirm', confirmpage.confirm.text.lower())
         confirmpage.confirm.click()
 
         # She new ends up at the profile page
+        self.assertIn('accounts/profile', self.browser.current_url)
+
+    def test_reset_password_workflow(self):
+        """Test whether a user can reset their password."""
+        # Create an account for Alice
+        User.objects.create_user('alice', 'alice@test.com', 'alice')
+
+        # Alice goes to the login page
+        self.browser.get(self.live_server_url)
+        page = landingpage.LandingPage(self.browser)
+        page.body_signin.click()
+
+        # Alice has forgotten her password so on the login page she
+        # clicks the reset password button
+        loginpage = accounts.LoginPage(self.browser)
+        loginpage.forgot.click()
+
+        # On the login page she finds a password field which she fills in
+        # and then she clicks the reset password button
+        resetpage = accounts.PasswordResetPage(self.browser)
+        resetpage.email.send_keys('alice@test.com')
+        resetpage.reset.click()
+
+        # Alice is redirected to a page which says she has been send an email
+        resetdonepage = accounts.PasswordResetDonePage(self.browser)
+        self.assertIn('We have sent you an e-mail', resetdonepage.body.text)
+
+        # Alice has received an email
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.to, ['alice@test.com'])
+
+        # She finds a link in the email and clicks it
+        urls = re.findall('http[s]?://\S+', email.body)
+        self.browser.get(urls[0])
+
+        # On the page she fills out the reset password form
+        resetpage = accounts.ResetPasswordKeyPage(self.browser)
+        resetpage.password1.send_keys('newpass')
+        resetpage.password2.send_keys('newpass')
+        resetpage.submit.click()
+
+        # She ends up on a page saying that her password has been reset
+        # and she decides to click a link to sign in
+        resetdonepage = accounts.ResetPasswordKeyDonePage(self.browser)
+        resetdonepage.signin.click()
+
+        # She lands up on the login page where she can login
+        loginpage = accounts.LoginPage(self.browser)
+        loginpage.username.send_keys('alice')
+        loginpage.password.send_keys('newpass')
+        loginpage.signin.click()
+
+        # She is now logged in
         self.assertIn('accounts/profile', self.browser.current_url)
