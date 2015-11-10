@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import resolve
 from django.test import TestCase, RequestFactory
 import unittest
@@ -13,3 +15,7 @@ class LandingPageTests(TestCase):
         response = self.client.get('/en/')
         self.assertTemplateUsed(response, 'base.html')
         self.assertTemplateUsed(response, 'landing/index.html')
+
+    def test_site_context_variable_set(self):
+        response = self.client.get('/en/')
+        self.assertIsInstance(response.context['site'], Site)

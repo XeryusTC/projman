@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
+from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from selenium.webdriver.common.keys import Keys
 import re
@@ -10,6 +11,21 @@ from .pages import accounts, landingpage, thirdparty
 User = get_user_model()
 
 class HomePageTest(FunctionalTestCase):
+    def test_landingpage_shows_sitename_as_branding(self):
+        """Branding should be dynamic and set to the sitename"""
+        # Get the name of the site
+        current_site = get_current_site(None)
+
+        # Alice goes to the website
+        self.browser.get(self.live_server_url)
+        page = landingpage.LandingPage(self.browser)
+
+        # The title says the name of the site
+        self.assertIn(current_site.name, self.browser.title)
+
+        # The branding on the header also has the name of the site
+        self.assertEqual(current_site.name, page.branding.text)
+
     def test_can_login_from_landingpage(self):
         """Login from landing page using buildin method should be possible"""
         # Create a user account for Alice
@@ -19,12 +35,9 @@ class HomePageTest(FunctionalTestCase):
         self.browser.get(self.live_server_url)
         page = landingpage.LandingPage(self.browser)
 
-        # The title says the name of the site
-        self.assertIn('ProjMan', self.browser.title)
-
         # There is a header with the site's name in it, the name links
-        # to the homepage
-        self.assertEqual('ProjMan', page.branding.text)
+        # to the homepage (testing the value is done in
+        # test_landingpage_shows_sitename_as_branding() now)
         self.assertTrue(page.branding.get_attribute('href').endswith('/en/'))
         # There is also a sign in button on the header
         self.assertEqual('sign in', page.header_signin.text.lower())
