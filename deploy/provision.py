@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from fabric.api import local, put, sudo
+from fabric.contrib.files import exists
 
 from . import settings
+from .util import _get_enable_var
 
 def _setup_database(env):
     # Test if database user exists, if not then create it
@@ -19,7 +21,7 @@ def _setup_database(env):
     if not db_exists:
         sudo('psql -c "CREATE DATABASE {db}"'.format(db=env.db_name),
             user='postgres')
-        sudo('psql -c "GRANT ALL PRIVELEDGES ON DATABASE {db} TO {user}"'
+        sudo('psql -c "GRANT ALL PRIVILEGES ON DATABASE {db} TO {user}"'
             .format(db=env.db_name, user=env.db_user), user='postgres')
 
 def _create_dir_structure(env):
@@ -27,6 +29,11 @@ def _create_dir_structure(env):
         sudo('mkdir -p {dir}/{sub}'.format(dir=env.dest_dir, sub=subdir))
         sudo('chown -R {user}:www-data {dir}'.format(user=env.user,
             dir=env.dest_dir))
+    # Folders for log files
+    if not exists('/var/log/gunicorn', use_sudo=True):
+        sudo('mkdir -p /var/log/gunicorn')
+        sudo('chmod 744 -R /var/log/gunicorn')
+        sudo('chown -R www-data:www-data /var/log/gunicorn')
 
 def _build_system_files(env):
     # set up systemd to run gunicorn, build the EnvFile first

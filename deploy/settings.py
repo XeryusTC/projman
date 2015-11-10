@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from fabric.api import get, local, prompt, settings, sudo
+from fabric.api import get, local, prompt, put, settings, sudo
 from fabric.context_managers import hide
 from fabric.contrib.console import confirm
 from fabric.contrib.files import exists
@@ -50,7 +50,7 @@ def _deploy_settings_file(env):
 
     # Create the settings file locally
     sed = "sed -i'' s/{org}/'{new}'/g /tmp/{host}/envvars"
-    local('cp deploy/envvars /tmp/envvars')
+    local('cp deploy/envvars /tmp/{host}/envvars'.format(host=env.host))
     local(sed.format(host=env.host, org="SITENAME", new=env.host))
     local(sed.format(host=env.host, org="db_name",  new=env.db_name))
     local(sed.format(host=env.host, org="db_user",  new=env.db_user))
@@ -60,8 +60,9 @@ def _deploy_settings_file(env):
 
     if enable:
         sudo('mkdir -p /etc/www')
-        put('/tmp/envvars', 'etc/www/gunicorn-{host}'.format(host=env.host),
-            use_sudo=True, mode=0640)
+        put('/tmp/{host}/envvars'.format(host=env.host),
+            '/etc/www/gunicorn-{host}'.format(host=env.host), use_sudo=True,
+            mode=0640)
         sudo('chown {user}:www-data /etc/www/gunicorn-{host}'.format(
             host=env.host, user=env.user))
         with settings(warn_only=True):
