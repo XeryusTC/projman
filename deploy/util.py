@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from fabric.context_managers import prefix
 from getpass import getpass
 
 def _enable_env_vars(env):

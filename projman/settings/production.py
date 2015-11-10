@@ -28,3 +28,5 @@ TEMPLATES = [
 ]
 
 SITE_ID = 1
+
+INSTALLED_APPS += ('gunicorn',)

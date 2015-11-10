@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from fabric.api import sudo
+from fabric.api import local, put, sudo
 
 from . import settings
 
@@ -17,9 +17,9 @@ def _setup_database(env):
             db=env.db_name)
     db_exists = sudo(command, user='postgres') == '1'
     if not db_exists:
-        sudo('psql -c "CREATE DATABASE {db}"'.format(env.db_name),
+        sudo('psql -c "CREATE DATABASE {db}"'.format(db=env.db_name),
             user='postgres')
-        sudo('psql -c "GRANT ALL PRIVELEGES ON DATABASE {db} TO {user}"'
+        sudo('psql -c "GRANT ALL PRIVELEDGES ON DATABASE {db} TO {user}"'
             .format(db=env.db_name, user=env.db_user), user='postgres')
 
 def _create_dir_structure(env):

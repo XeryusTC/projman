@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from fabric.api import env, local, prompt, sudo
-from fabric.context_managers import prefix
-from fabric.contrib.files import exists
+from fabric.api import env, run, sudo
+from fabric.contrib.console import confirm
 
 import deploy
 
@@ -18,26 +17,26 @@ def requirements():
 def provision():
     """Create the config files to run the site on the server."""
     _setup_dir_variables()
-    _settings_prompt()
-    env.enable = confirm('Enable site (this activates genrated config)?')
+    deploy.settings._settings_prompt(env)
+    env.enable = confirm('Enable site (this activates generated config)?')
     env.setup_ssl = confirm('Enable SSL?', default=False)
-    _create_folder_structure(env)
-    _setup_database(env)
-    _deploy_settings_file()
+    deploy.provision._create_dir_structure(env)
+    deploy.provision._setup_database(env)
+    deploy.settings._deploy_settings_file(env)
 
-    deploy()
+    update()
 
-    _build_system_files()
+    deploy.provision._build_system_files(env)
     if env.enable:
-        _deploy_system_files()
+        deploy.provision._deploy_system_files(env)
 
-def deploy():
+def update():
     """Update the source and and associated files."""
     _setup_dir_variables()
-    _get_latest_source(env)
-    _update_virtualenv(env)
-    _update_static_files(env)
-    _update_database(env)
+    deploy.deploy._get_latest_source(env, REPO_URL)
+    deploy.deploy._update_virtualenv(env)
+    deploy.deploy._update_static_files(env)
+    deploy.deploy._update_database(env)
 
 def restart():
     """Restart the gunicorn service."""
