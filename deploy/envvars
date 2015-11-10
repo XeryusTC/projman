@@ -1,0 +1,6 @@
+PROJMAN_DB_NAME="db_name"
+PROJMAN_DB_USER="db_user"
+PROJMAN_DB_PASSWORD="db_password"
+PROJMAN_DOMAIN="SITENAME"
+PROJMAN_SECRET_KEY="secret"
+DJANGO_SETTINGS_MODULE="projman.settings.production"

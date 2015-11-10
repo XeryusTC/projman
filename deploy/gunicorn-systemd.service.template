@@ -1,0 +1,19 @@
+[Unit]
+Description=Gunicorn server for SITENAME
+After=network.target
+
+[Service]
+PIDFile=/run/gunicorn/SITENAME.pid
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/sites/SITENAME/source
+ExecStart=/var/www/sites/SITENAME/virtualenv/bin/gunicorn \
+	--access-log /var/www/sites/SITENAME/access.log \
+	--error-log /var/www/sites/SITENAME/error.log \
+	--bind unix:/tmp/SITENAME.socket projman.wsgi:application
+ExecReload=/bin/kill -S HUP $MAINPID
+ExecStop=/bin/kill -S TERM $MAINPID
+EnvironmentFile=-/etc/www/gunicorn-SITENAME
+
+[Install]
+WantedBy=multi-user.target
