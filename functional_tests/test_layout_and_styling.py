@@ -30,8 +30,7 @@ class StylesheetTest(FunctionalTestCase):
 
 class AccountPagesLayout(FunctionalTestCase):
     """Smoke tests for the layout of pages under /account/"""
-    def setUp(self):
-        super(AccountPagesLayout, self).setUp()
+    def set_size(self):
         self.width = 1200
         self.browser.set_window_size(self.width, 800)
 
@@ -44,6 +43,7 @@ class AccountPagesLayout(FunctionalTestCase):
         """Test the page under /accounts/login/"""
         # Alice goes to the login page directly
         self.browser.get(self.live_server_url + '/en/accounts/login/')
+        self.set_size()
         page = accounts.LoginPage(self.browser)
 
         # She sees that the username and password field are nicely centered
@@ -61,6 +61,7 @@ class AccountPagesLayout(FunctionalTestCase):
         """Test the page under /accounts/signup/"""
         # Alice goes to the register page directly
         self.browser.get(self.live_server_url + '/en/accounts/signup/')
+        self.set_size()
         page = accounts.RegisterPage(self.browser)
 
         # She sees that all the fields are nicely centered
@@ -75,6 +76,7 @@ class AccountPagesLayout(FunctionalTestCase):
         """Test the page under /accounts/password/reset/"""
         # Alice goes to the reset password page
         self.browser.get(self.live_server_url+'/en/accounts/password/reset/')
+        self.set_size()
         page = accounts.PasswordResetPage(self.browser)
 
         # She sees that the email field is centered
@@ -94,6 +96,7 @@ class AccountPagesLayout(FunctionalTestCase):
         loginpage.signin.click()
 
         self.browser.get(self.live_server_url + '/en/accounts/logout')
+        self.set_size()
 
         # The sign out button is left aligned
         logoutpage = accounts.LogoutPage(self.browser)
