@@ -1,7 +1,9 @@
 [run]
 omit =
 	*site-packages*
+	functional_tests/remote.py
 
 [report]
 exclude_lines =
 	pragma: no cover
+	if self.against_staging:
