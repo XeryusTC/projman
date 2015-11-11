@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'landing',
+    'functional_tests',
 
     # allauth related
     'django.contrib.sites',

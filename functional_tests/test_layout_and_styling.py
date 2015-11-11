@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
 
+from . import remote
 from .base import FunctionalTestCase
 from .pages import accounts, landingpage
 
@@ -9,7 +10,7 @@ User = get_user_model()
 class StylesheetTest(FunctionalTestCase):
     def test_framework_is_loaded(self):
         # Alice visits the website
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page = landingpage.LandingPage(self.browser)
 
         # She sees that MUI css is loaded
@@ -42,7 +43,7 @@ class AccountPagesLayout(FunctionalTestCase):
     def test_accounts_login_page(self):
         """Test the page under /accounts/login/"""
         # Alice goes to the login page directly
-        self.browser.get(self.live_server_url + '/en/accounts/login/')
+        self.browser.get(self.server_url + '/en/accounts/login/')
         self.set_size()
         page = accounts.LoginPage(self.browser)
 
@@ -60,7 +61,7 @@ class AccountPagesLayout(FunctionalTestCase):
     def test_accounts_signup_page(self):
         """Test the page under /accounts/signup/"""
         # Alice goes to the register page directly
-        self.browser.get(self.live_server_url + '/en/accounts/signup/')
+        self.browser.get(self.server_url + '/en/accounts/signup/')
         self.set_size()
         page = accounts.RegisterPage(self.browser)
 
@@ -75,7 +76,7 @@ class AccountPagesLayout(FunctionalTestCase):
     def test_accounts_password_reset_page(self):
         """Test the page under /accounts/password/reset/"""
         # Alice goes to the reset password page
-        self.browser.get(self.live_server_url+'/en/accounts/password/reset/')
+        self.browser.get(self.server_url+'/en/accounts/password/reset/')
         self.set_size()
         page = accounts.PasswordResetPage(self.browser)
 
@@ -88,14 +89,18 @@ class AccountPagesLayout(FunctionalTestCase):
     def test_accounts_logout_page(self):
         """Test the page under /accounts/logout/"""
         # Alice is a logged in user who goes to log out
-        User.objects.create_user('alice', 'alice@test.com', 'alice')
-        self.browser.get(self.live_server_url + '/en/accounts/login/')
+        if self.against_staging:
+            remote.create_user(self.server_host, 'alice', 'alice@test.com',
+                 'alice')
+        else:
+            User.objects.create_user('alice', 'alice@test.com', 'alice')
+        self.browser.get(self.server_url + '/en/accounts/login/')
         loginpage = accounts.LoginPage(self.browser)
         loginpage.username.send_keys('alice')
         loginpage.password.send_keys('alice')
         loginpage.signin.click()
 
-        self.browser.get(self.live_server_url + '/en/accounts/logout')
+        self.browser.get(self.server_url + '/en/accounts/logout')
         self.set_size()
 
         # The sign out button is left aligned

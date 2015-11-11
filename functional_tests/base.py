@@ -4,11 +4,34 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 import time
+import sys
+
+from . import remote
 
 DEFAULT_WAIT = 5
 
 class FunctionalTestCase(StaticLiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg: # pragma: no cover
+                cls.server_host = arg.split('=')[1]
+                cls.server_url = 'http://' + cls.server_host
+                cls.against_staging = True
+                return # Skip setting up a local test server
+        # Local FT, start a local server
+        super(FunctionalTestCase, cls).setUpClass()
+        cls.server_url = cls.live_server_url
+        cls.against_staging = False
+
+    @classmethod
+    def tearDownClass(cls):
+        if not cls.against_staging:
+            super(FunctionalTestCase, cls).tearDownClass()
+
     def setUp(self):
+        if self.against_staging:
+            remote.reset_database(self.server_host)
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 

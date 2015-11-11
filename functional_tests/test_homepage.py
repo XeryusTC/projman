@@ -17,7 +17,7 @@ class HomePageTest(FunctionalTestCase):
         current_site = get_current_site(None)
 
         # Alice goes to the website
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page = landingpage.LandingPage(self.browser)
 
         # The title says the name of the site
@@ -32,7 +32,7 @@ class HomePageTest(FunctionalTestCase):
         User.objects.create_user('alice', 'alice@test.com', 'alice')
 
         # Alice goes to the website
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page = landingpage.LandingPage(self.browser)
 
         # There is a header with the site's name in it, the name links
@@ -61,7 +61,7 @@ class HomePageTest(FunctionalTestCase):
     def test_can_login_using_persona_from_landingpage(self):
         """Test if we can login using persona"""
         # Alice goes to the website
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page = landingpage.LandingPage(self.browser)
 
         # She clicks on a Sign in button
@@ -86,7 +86,7 @@ class HomePageTest(FunctionalTestCase):
     def test_register_with_django_auth_workflow(self):
         """Test if a user can register using the auth model from django"""
         # Alice goes to the website
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page = landingpage.LandingPage(self.browser)
 
         # She clicks on a Sign in button
@@ -141,7 +141,7 @@ class HomePageTest(FunctionalTestCase):
         User.objects.create_user('alice', 'alice@test.com', 'alice')
 
         # Alice goes to the login page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page = landingpage.LandingPage(self.browser)
         page.body_signin.click()
 
