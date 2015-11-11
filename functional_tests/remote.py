@@ -13,3 +13,8 @@ def create_user(host, user, email, password):
     subprocess.check_call(['fab', 'create_user:user={},password={},email={}' \
         .format(user, password, email), '--host={}'.format(host)],
         cwd=THIS_FOLDER)
+
+def get_sitename(host):
+    return subprocess.check_output(['fab', 'get_sitename',
+        '--host={}'.format(host), '--hide=everything,status'],
+        cwd=THIS_FOLDER).decode().strip()

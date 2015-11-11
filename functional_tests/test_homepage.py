@@ -15,17 +15,20 @@ class HomePageTest(FunctionalTestCase):
     def test_landingpage_shows_sitename_as_branding(self):
         """Branding should be dynamic and set to the sitename"""
         # Get the name of the site
-        current_site = get_current_site(None)
+        if self.against_staging:
+            site_name = remote.get_sitename(self.server_host)
+        else:
+            site_name = get_current_site(None).name
 
         # Alice goes to the website
         self.browser.get(self.server_url)
         page = landingpage.LandingPage(self.browser)
 
         # The title says the name of the site
-        self.assertIn(current_site.name, self.browser.title)
+        self.assertIn(site_name, self.browser.title)
 
         # The branding on the header also has the name of the site
-        self.assertEqual(current_site.name, page.branding.text)
+        self.assertEqual(site_name, page.branding.text)
 
     def test_can_login_from_landingpage(self):
         """Login from landing page using buildin method should be possible"""

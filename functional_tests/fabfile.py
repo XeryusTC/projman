@@ -18,3 +18,7 @@ def create_user(user, password, email):
     run('{manage} create_user {username} {password} {email}'.format(
         username=user, password=password, email=email,
         manage=_get_manage_py(env.host)))
+
+def get_sitename():
+    name = run('{manage} get_sitename'.format(manage=_get_manage_py(env.host)))
+    return name
