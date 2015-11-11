@@ -10,6 +10,6 @@ def reset_database(host):
         cwd=THIS_FOLDER)
 
 def create_user(host, user, email, password):
-    subprocess.check_call(['fab', 'create_user:user={},pass={},email={}' \
+    subprocess.check_call(['fab', 'create_user:user={},password={},email={}' \
         .format(user, password, email), '--host={}'.format(host)],
         cwd=THIS_FOLDER)

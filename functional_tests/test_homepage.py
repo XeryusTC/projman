@@ -5,6 +5,7 @@ from django.core import mail
 from selenium.webdriver.common.keys import Keys
 import re
 
+from . import remote
 from .base import FunctionalTestCase
 from .pages import accounts, landingpage, thirdparty
 
@@ -29,7 +30,11 @@ class HomePageTest(FunctionalTestCase):
     def test_can_login_from_landingpage(self):
         """Login from landing page using buildin method should be possible"""
         # Create a user account for Alice
-        User.objects.create_user('alice', 'alice@test.com', 'alice')
+        if self.against_staging:
+            remote.create_user(self.server_host, 'alice', 'alice@test.com',
+                'alice')
+        else:
+            User.objects.create_user('alice', 'alice@test.com', 'alice')
 
         # Alice goes to the website
         self.browser.get(self.server_url)
