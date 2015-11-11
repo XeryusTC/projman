@@ -54,6 +54,14 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = get_env_setting('PROJMAN_EMAIL_HOST')
+EMAIL_PORT = get_env_setting('PROJMAN_EMAIL_PORT')
+EMAIL_HOST_PASSWORD = get_env_setting('PROJMAN_EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = get_env_setting('PROJMAN_EMAIL_HOST_USER')
+EMAIL_USE_TLS = True
+
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
 # Currently disabled since we don't have staging specific settings yet
