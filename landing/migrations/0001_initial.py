@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.db import migrations, models
 
 def setup_site(apps, schema_editor):
@@ -9,7 +10,11 @@ def setup_site(apps, schema_editor):
     Site.objects.all().delete()
 
     # Register SITE_ID = 1
-    Site.objects.create(domain='example.com', name='ProjMan')
+    try:
+        domain = settings.DOMAIN
+    except:
+        domain = 'example.com'
+    Site.objects.create(domain=domain, name='ProjMan')
 
 class Migration(migrations.Migration):
 

@@ -11,6 +11,17 @@ ALLOWED_HOSTS = [
 
 SECRET_KEY = get_env_setting('PROJMAN_SECRET_KEY')
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': get_env_setting('PROJMAN_DB_NAME'),
+        'USER': get_env_setting('PROJMAN_DB_USER'),
+        'PASSWORD': get_env_setting('PROJMAN_DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '',
+    },
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -24,6 +35,12 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'landing.context_processors.site',
             ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ],
         },
     },
 ]
@@ -31,3 +48,15 @@ TEMPLATES = [
 SITE_ID = 1
 
 INSTALLED_APPS += ('gunicorn',)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'persona': {
+        'AUDIENCE': DOMAIN
+    }
+}
+
+# Security settings
+X_FRAME_OPTIONS = 'DENY'
+# Currently disabled since we don't have staging specific settings yet
+#SESSION_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
