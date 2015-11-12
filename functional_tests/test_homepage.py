@@ -180,7 +180,11 @@ class HomePageTest(FunctionalTestCase):
     def test_reset_password_workflow(self):
         """Test whether a user can reset their password."""
         # Create an account for Alice
-        User.objects.create_user('alice', 'alice@test.com', 'alice')
+        if self.against_staging:
+            remote.create_user(self.server_host, 'alice',
+                settings.TEST_EMAIL_ACCOUNT, 'alice')
+        else:
+            User.objects.create_user('alice', 'alice@test.com', 'alice')
 
         # Alice goes to the login page
         self.browser.get(self.server_url)
@@ -195,7 +199,10 @@ class HomePageTest(FunctionalTestCase):
         # On the login page she finds a password field which she fills in
         # and then she clicks the reset password button
         resetpage = accounts.PasswordResetPage(self.browser)
-        resetpage.email.send_keys('alice@test.com')
+        if self.against_staging:
+            resetpage.email.send_keys(settings.TEST_EMAIL_ACCOUNT)
+        else:
+            resetpage.email.send_keys('alice@test.com')
         resetpage.reset.click()
 
         # Alice is redirected to a page which says she has been send an email
@@ -203,12 +210,17 @@ class HomePageTest(FunctionalTestCase):
         self.assertIn('We have sent you an e-mail', resetdonepage.body.text)
 
         # Alice has received an email
-        self.assertEqual(len(mail.outbox), 1)
-        email = mail.outbox[0]
-        self.assertEqual(email.to, ['alice@test.com'])
+        if self.against_staging:
+            email_body = self.get_email_from_web(settings.TEST_EMAIL_HOST,
+                settings.TEST_EMAIL_ACCOUNT, settings.TEST_EMAIL_PASSWORD)
+        else:
+            self.assertEqual(len(mail.outbox), 1)
+            email = mail.outbox[0]
+            self.assertEqual(email.to, ['alice@test.com'])
+            email_body = email.body
 
         # She finds a link in the email and clicks it
-        urls = re.findall('http[s]?://\S+', email.body)
+        urls = re.findall('http[s]?://\S+', email_body)
         self.browser.get(urls[0])
 
         # On the page she fills out the reset password form
