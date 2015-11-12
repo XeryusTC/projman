@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
+import email
+from imapclient import IMAPClient
 from selenium.webdriver.common.keys import Keys
 import re
 
@@ -12,6 +15,25 @@ from .pages import accounts, landingpage, thirdparty
 User = get_user_model()
 
 class HomePageTest(FunctionalTestCase):
+    def get_email_from_web(self, host, account, password, ssl=True):
+        conn = IMAPClient(host, use_uid=True, ssl=ssl)
+        conn.login(account, password)
+        self.assertTrue(conn.folder_exists('Inbox'))
+        select_info = conn.select_folder('Inbox')
+
+        messages = self.wait_for(lambda: self.has_unseen_emails(conn),
+            timeout=15)
+        response = conn.fetch(messages, ['RFC822'])
+        for msgid, data in response.items():
+            m = email.message_from_bytes(data[b'RFC822'])
+            email_body = m.get_payload()
+        return email_body
+
+    def has_unseen_emails(self, mail):
+        messages = mail.search(['UNSEEN'])
+        self.assertGreater(len(messages), 0)
+        return messages
+
     def test_landingpage_shows_sitename_as_branding(self):
         """Branding should be dynamic and set to the sitename"""
         # Get the name of the site
@@ -119,24 +141,36 @@ class HomePageTest(FunctionalTestCase):
         # Alice fills out the form again, this time including her email
         registerpage.password1.send_keys('alice-password')
         registerpage.password2.send_keys('alice-password')
-        registerpage.email.send_keys('alice@test.com')
+        if self.against_staging:
+            registerpage.email.send_keys(settings.TEST_EMAIL_ACCOUNT)
+        else:
+            registerpage.email.send_keys('alice@test.com')
         registerpage.signup.click()
 
         # Alice is now logged in, but she goes to confirm her email anyway
         self.assertIn('accounts/profile', self.browser.current_url)
+
         # Alice finds an email in her inbox
-        self.assertEqual(len(mail.outbox), 1)
-        email = mail.outbox[0]
-        self.assertEqual(email.to, ['alice@test.com'])
+        if self.against_staging:
+            email_body = self.get_email_from_web(settings.TEST_EMAIL_HOST,
+                settings.TEST_EMAIL_ACCOUNT, settings.TEST_EMAIL_PASSWORD)
+        else:
+            self.assertEqual(len(mail.outbox), 1)
+            email = mail.outbox[0]
+            self.assertEqual(email.to, ['alice@test.com'])
+            email_body = email.body
 
         # She finds a link in the email and clicks it
-        urls = re.findall('http[s]?://\S+', email.body)
+        urls = re.findall('http[s]?://\S+', email_body)
         self.browser.get(urls[0])
 
         # She lands on a page that lists here email address and has a
         # confirm button
         confirmpage = accounts.ConfirmEmailPage(self.browser)
-        self.assertIn('alice@test.com', confirmpage.body.text)
+        if self.against_staging:
+            self.assertIn(settings.TEST_EMAIL_ACCOUNT, confirmpage.body.text)
+        else:
+            self.assertIn('alice@test.com', confirmpage.body.text)
         self.assertIn('confirm', confirmpage.confirm.text.lower())
         confirmpage.confirm.click()
 
