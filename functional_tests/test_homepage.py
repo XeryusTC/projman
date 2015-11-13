@@ -258,3 +258,19 @@ class HomePageTest(FunctionalTestCase):
 
         # She ends up on the landing page
         self.assertTrue(self.browser.current_url.endswith('/en/'))
+
+    def test_logged_in_user_goes_to_main_page_when_requesting_landing(self):
+        """When a user is already logged in and they visit the main URL
+        they should be redirected to the LOGIN_REDIRECT_URL"""
+        # Alice is a logged in user
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+
+        # Alice visits the site again at a later date, but her session is
+        # still stored so she is automatically logged in and redirected to
+        # the main page
+        self.browser.get(self.server_url)
+
+        # She ended up at the main page (check directly instead of using a
+        # helper like function is_logged_in because its internals might
+        # change and make this test fail
+        self.assertTrue(self.browser.current_url.endswith('/en/project/'))
