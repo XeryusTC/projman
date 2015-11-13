@@ -87,7 +87,7 @@ class HomePageTest(FunctionalTestCase):
         loginpage.password.send_keys(Keys.RETURN)
 
         # She ends up on a success page
-        self.assertIn('accounts/profile/', self.browser.current_url)
+        self.is_logged_in()
 
     def test_can_login_using_persona_from_landingpage(self):
         """Test if we can login using persona"""
@@ -111,8 +111,7 @@ class HomePageTest(FunctionalTestCase):
 
         # She sees that she is logged in
         self.switch_to_new_window('Sign In')
-        self.wait_for(lambda: self.assertIn('accounts/profile/',
-            self.browser.current_url), timeout=30)
+        self.wait_for(lambda: self.is_logged_in(), timeout=30)
 
     def test_register_with_django_auth_workflow(self):
         """Test if a user can register using the auth model from django"""
@@ -175,8 +174,8 @@ class HomePageTest(FunctionalTestCase):
         self.assertIn('confirm', confirmpage.confirm.text.lower())
         confirmpage.confirm.click()
 
-        # She new ends up at the profile page
-        self.assertIn('accounts/profile', self.browser.current_url)
+        # She is now properly logged in
+        self.is_logged_in()
 
     def test_reset_password_workflow(self):
         """Test whether a user can reset their password."""
@@ -242,4 +241,4 @@ class HomePageTest(FunctionalTestCase):
         loginpage.signin.click()
 
         # She is now logged in
-        self.assertIn('accounts/profile', self.browser.current_url)
+        self.is_logged_in()

@@ -65,3 +65,6 @@ class FunctionalTestCase(StaticLiveServerTestCase):
                 time.sleep(0.1)
         # One more try, which will raise any errors if outstanding
         return func()
+
+    def is_logged_in(self):
+        self.assertIn('accounts/profile/', self.browser.current_url)
