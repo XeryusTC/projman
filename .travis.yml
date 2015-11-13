@@ -14,7 +14,7 @@ env:
         - DJANGO_SETTINGS_MODULE="projman.settings.ci"
 sudo: false
 install:
-    - pip install -r requirements/test.txt
+    - pip install -r requirements/testing.txt
     - pip install coveralls
 before_script:
     # set up postgresql
