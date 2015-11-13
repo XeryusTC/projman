@@ -5,6 +5,10 @@ python:
     - "3.5"
     - "3.5-dev"
     - "nightly"
+matrix:
+    allow_failures:
+        - python: "3.5-dev"
+        - python: "nightly"
 services:
     - postgresql
 addons:
@@ -18,7 +22,7 @@ install:
     - pip install coveralls
 before_script:
     # set up postgresql
-    - psql -c "CREATE_DATABASE projman_ci" -U postgres
+    - psql -c "CREATE DATABASE projman_ci" -U postgres
     # start svfb
     - "export DISPLAY=:99.0"
     - "sh -e /etc/init.d/xvfb start"
