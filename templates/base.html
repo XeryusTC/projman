@@ -1,22 +1,7 @@
+{% extends 'html.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{% block head_title %}{{ site.name }}{% endblock %}</title>
-
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-
-	<link href="//cdn.muicss.com/mui-0.2.1/css/mui.min.css" rel="stylesheet"
-		type="text/css" />
-	<link href="{% static 'css/style.css' %}" rel="stylesheet"
-		type="text/css">
-	{% block head_extra %}{% endblock %}
-</head>
-<body>
-
+{% block body %}
 <header class="mui-appbar mui--z1">
 	<div class="mui-container">
 		<table width="100%">
@@ -34,10 +19,4 @@
 <div id="content">
 	{% block content %}{% endblock content %}
 </div>
-
-<script src="//cdn.muicss.com/mui-0.2.1/js/mui.min.js"></script>
-<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-{% block script %}{% endblock %}
-
-</body>
-</html>
+{% endblock %}
