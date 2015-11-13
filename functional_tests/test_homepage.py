@@ -15,7 +15,8 @@ from .pages import accounts, landingpage, thirdparty
 User = get_user_model()
 
 class HomePageTest(FunctionalTestCase):
-    def get_email_from_web(self, host, account, password, ssl=True):
+    def get_email_from_web(self, host, account, password,
+            ssl=True): # pragma: no cover
         conn = IMAPClient(host, use_uid=True, ssl=ssl)
         conn.login(account, password)
         self.assertTrue(conn.folder_exists('Inbox'))
@@ -29,7 +30,7 @@ class HomePageTest(FunctionalTestCase):
             email_body = m.get_payload()
         return email_body
 
-    def has_unseen_emails(self, mail):
+    def has_unseen_emails(self, mail): # pragma: no cover
         messages = mail.search(['UNSEEN'])
         self.assertGreater(len(messages), 0)
         return messages
