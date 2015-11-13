@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'landing',
     'functional_tests',
+    'project',
 
     # allauth related
     'django.contrib.sites',
