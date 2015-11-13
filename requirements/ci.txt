@@ -1,0 +1,2 @@
+-r testing.txt
+psycopg2==2.6.1
