@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-
+from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 import time
 import sys
 
-from . import remote
+from . import remote, pages
 
 DEFAULT_WAIT = 5
+User = get_user_model()
 
 class FunctionalTestCase(StaticLiveServerTestCase):
     @classmethod
@@ -66,5 +67,20 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         # One more try, which will raise any errors if outstanding
         return func()
 
+    def create_and_login_user(self, username, email, password):
+        # Create the user first
+        if self.against_staging:
+            remote.create_user(self.server_host, username, email, password)
+        else:
+            User.objects.create_user(username, email, password)
+        # Log in via the normal workflow
+        self.browser.get(self.server_url)
+        landingpage = pages.landingpage.LandingPage(self.browser)
+        landingpage.body_signin.click()
+        loginpage = pages.accounts.LoginPage(self.browser)
+        loginpage.username.send_keys(username)
+        loginpage.password.send_keys(password)
+        loginpage.signin.click()
+
     def is_logged_in(self):
-        self.assertIn('accounts/profile/', self.browser.current_url)
+        self.assertTrue(self.browser.current_url.endswith('/project/'))

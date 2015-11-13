@@ -148,7 +148,7 @@ class HomePageTest(FunctionalTestCase):
         registerpage.signup.click()
 
         # Alice is now logged in, but she goes to confirm her email anyway
-        self.assertIn('accounts/profile', self.browser.current_url)
+        self.is_logged_in()
 
         # Alice finds an email in her inbox
         if self.against_staging:
@@ -244,6 +244,7 @@ class HomePageTest(FunctionalTestCase):
         self.is_logged_in()
 
     def test_can_log_out_after_log_in(self):
+        import time
         # Alice is a returning user
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
 
@@ -251,5 +252,9 @@ class HomePageTest(FunctionalTestCase):
         page = project.BaseProjectPage(self.browser)
         page.logout.click()
 
+        # She ends up on the confirmation page
+        confirmpage = accounts.LogoutConfirmPage(self.browser)
+        confirmpage.confirm.click()
+
         # She ends up on the landing page
-        self.assertTrue(self.browser.current_url.ends_with('/en/'))
+        self.assertTrue(self.browser.current_url.endswith('/en/'))

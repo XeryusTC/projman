@@ -48,3 +48,6 @@ class ResetPasswordKeyPage(PageObject):
 
 class ResetPasswordKeyDonePage(PageObject):
     signin = PageElement(link_text="sign in")
+
+class LogoutConfirmPage(PageObject):
+    confirm = PageElement(xpath="//form//button")
