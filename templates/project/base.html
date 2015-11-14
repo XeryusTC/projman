@@ -8,6 +8,9 @@
 
 {% block body %}
 <div id="sidebar" class="mui--no-user-select">
+	<div id="sidebar-brand" class="mui--appbar-line-height mui--text-title">
+		{{ site.name }}</a>
+	</div>
 	{% block sidebar %}&nbsp;{% endblock %}
 </div>
 
@@ -18,6 +21,8 @@
 				<div class="mui-col-xs-2 mui-col-sm-1">
 					<a class="sidebar-toggle mui--hidden-xs js-hide-sidebar
 						appbar-correct">&#9776;</a>
+					<a class="sidebar-toggle mui--visible-xs-inline-block
+						js-show-sidebar appbar-correct">&#9776;</a>
 				</div>
 				<div class="mui-col-xs-4 mui--visible-xs-inline-block">
 					<a class="mui--text-title appbar-correct"

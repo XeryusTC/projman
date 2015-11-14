@@ -35,15 +35,21 @@ class SidebarTests(FunctionalTestCase):
 
         # The sidebar should not be active
         page = pages.project.BaseProjectPage(self.browser)
-        self.assertFalse(page.sidebar.is_displayed())
-        self.assertNotIn('show-sidebar',
-            page.sidebar.css.get_attribute('class'))
+        self.wait_for(lambda: self.assertEqual(page.sidebar.location['x'],
+            -200))
+        self.assertNotIn('active', page.sidebar.get_attribute('class'))
+
+        oldpos = page.sidebar_show.location
 
         # When clicking the show button the hidebar appears
         page.sidebar_show.click()
-        self.assertIn('show-sidebar', page.body.get_attribute('class'))
+        self.wait_for(lambda: self.assertEqual(page.sidebar.location['x'], 0))
+        # The rest of the page stayed the same and is behind an overlay
+        self.assertEqual(oldpos, page.sidebar_show.location)
+        self.assertTrue(page.overlay.is_displayed())
 
-        # When click the show button again the hidebar disappears again
-        page.sidebar-show.click()
-        self.assertNotIn('show-sidebar',
-            page.body.get_attribute('class'))
+        # When clicking the overlay the sidebar disappears again
+        page.overlay.click()
+        self.wait_for(lambda: self.assertEqual(page.sidebar.location['x'],
+            -200))
+        self.assertIsNone(page.overlay)

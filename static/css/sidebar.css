@@ -58,7 +58,7 @@
 	}
 }
 
-#sidedrawer.active {
+#sidebar.active {
 	left: 0;
 	transition: left 0.2s;
 }
