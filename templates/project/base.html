@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block body %}
-<div id="sidebar" class="mui--no-user-select">
+<div id="sidebar" class="mui--z1">
 	<div id="sidebar-brand" class="mui--appbar-line-height mui--text-title">
-		{{ site.name }}</a>
+		<a href="{% url 'project:main' %}">{{ site.name }}</a>
 	</div>
-	{% block sidebar %}&nbsp;{% endblock %}
+	{% block sidebar %}{% endblock %}
 </div>
 
 <header id="header">

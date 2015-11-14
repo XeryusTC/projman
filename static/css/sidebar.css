@@ -75,3 +75,7 @@
 	color: white;
 	text-decoration: none;
 }
+
+#sidebar-brand {
+	padding-left: 20px;
+}
