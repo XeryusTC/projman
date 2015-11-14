@@ -1,1 +1,14 @@
 {% extends 'project/base.html' %}
+
+{% block content %}
+<form>
+{{ form.as_p }}
+</form>
+<div>
+	<ul class="mui-list--unstyled">
+		{% for item in inlist_items %}
+			<li>{{ item.text }}</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}
