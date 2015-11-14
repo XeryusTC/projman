@@ -11,7 +11,11 @@
 	<div id="sidebar-brand" class="mui--appbar-line-height mui--text-title">
 		<a href="{% url 'project:main' %}">{{ site.name }}</a>
 	</div>
+	<div class="mui-divider"></div>
+	<ul>
+		<li><a href="#">In list</a></li>
 	{% block sidebar %}{% endblock %}
+	</ul>
 </div>
 
 <header id="header">

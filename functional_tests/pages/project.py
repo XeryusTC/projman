@@ -8,3 +8,5 @@ class BaseProjectPage(PageObject):
     sidebar = PageElement(id_="sidebar")
     sidebar_hide = PageElement(class_name='js-hide-sidebar')
     sidebar_show = PageElement(class_name='js-show-sidebar')
+
+    inlist_link = PageElement(link_text='In list', context=True)
