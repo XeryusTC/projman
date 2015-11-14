@@ -1,11 +1,17 @@
 {% extends 'html.html' %}
+{% load static %}
+
+{% block head_extra %}
+	<link href="{% static 'css/sidebar.css' %}" rel="stylesheet"
+		type="text/css">
+{% endblock %}
 
 {% block body %}
 <div id="sidebar" class="mui--no-user-select">
-	{% block sidebar %}{% endblock %}
+	{% block sidebar %}&nbsp;{% endblock %}
 </div>
 
-<header>
+<header id="header">
 	<div class="mui-appbar mui--appbar-line-height">
 		<div class="mui-container-fluid">
 			<div class="mui-row">
@@ -27,6 +33,11 @@
 
 <div id="content">
 {% block content %}{% endblock %}
+
 </div>
 
 {% endblock body %}
+
+{% block script %}
+<script src="{% static 'js/sidebar.js' %}"></script>
+{% endblock %}
