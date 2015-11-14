@@ -13,6 +13,7 @@ class LandingPageTests(TestCase):
 
     def test_landing_page_uses_correct_templates(self):
         response = self.client.get('/en/')
+        self.assertTemplateUsed(response, 'html.html')
         self.assertTemplateUsed(response, 'base.html')
         self.assertTemplateUsed(response, 'landing/index.html')
 

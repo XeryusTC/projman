@@ -13,6 +13,6 @@ class TestMainPage(TestCase):
 
     def test_mainpage_uses_correct_templates(self):
         response = self.client.get('/en/project/')
-        self.assertTemplateUsed(response, 'base.html')
+        self.assertTemplateUsed(response, 'html.html')
         self.assertTemplateUsed(response, 'project/base.html')
         self.assertTemplateUsed(response, 'project/mainpage.html')
