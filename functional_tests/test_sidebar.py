@@ -20,12 +20,12 @@ class SidebarTests(FunctionalTestCase):
 
         # When clicking the hide button the sidebar disappears
         page.sidebar_hide.click()
-        self.assertIn('hide-sidebar', page.sidebar.css.get_attribute('class'))
+        self.assertIn('hide-sidebar', page.body.get_attribute('class'))
 
         # When clicking the hide button again the sidebar reappears
         page.sidebar_hide.click()
         self.assertNotIn('hide-sidebar',
-            page.sidebar.css.get_attribute('class'))
+            page.body.get_attribute('class'))
 
     def test_sidebar_can_be_toggled_in_small_window_mode(self):
         # Alice is a logged in user
@@ -41,9 +41,9 @@ class SidebarTests(FunctionalTestCase):
 
         # When clicking the show button the hidebar appears
         page.sidebar_show.click()
-        self.assertIn('show-sidebar', page.sidebar.css.get_attribute('class'))
+        self.assertIn('show-sidebar', page.body.get_attribute('class'))
 
         # When click the show button again the hidebar disappears again
         page.sidebar-show.click()
         self.assertNotIn('show-sidebar',
-            page.sidebar.css.get_attribute('class'))
+            page.body.get_attribute('class'))
