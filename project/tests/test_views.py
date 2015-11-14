@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 
 from project import factories, views
 from project.forms import InlistForm
+from project.models import InlistItem
 
 User = get_user_model()
 
@@ -75,7 +76,7 @@ class InlistpageTest(TestCase):
     def test_invalid_input_saves_nothing_to_db(self):
         self.client.login(username='alice', password='alice')
         response = self.client.post(self.url, data={'text': ''})
-        self.assertEqual(Item.objects.count(), 0)
+        self.assertEqual(InlistItem.objects.count(), 0)
 
     def test_form_invalid_input_shows_error_on_page(self):
         self.fail('Implement test')
