@@ -64,7 +64,7 @@ class InlistpageTest(TestCase):
         self.assertEqual(InlistItem.objects.count(), 1)
         item = InlistItem.objects.first()
         self.assertEqual(item.text, 'ecila')
-        self.assertEqual(item.user, alice)
+        self.assertEqual(item.user, self.alice)
 
     def test_POST_redirects_to_inlist_page(self):
         response = self.client.post('/en/project/inlist/',

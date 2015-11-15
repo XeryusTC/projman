@@ -21,3 +21,7 @@ class InlistView(FormView):
         context['inlist_items'] = InlistItem.objects.filter(
             user=self.request.user)
         return context
+
+    def form_valid(self, form):
+        form.save(self.request.user).save()
+        return super(InlistView, self).form_valid(form)
