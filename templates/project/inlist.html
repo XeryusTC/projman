@@ -1,8 +1,13 @@
 {% extends 'project/base.html' %}
+{% load i18n %}
 
 {% block content %}
-<form>
-{{ form.as_p }}
+<form method="POST" action="{% url 'project:inlist' %}">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button class="mui-btn mui-btn--primary" type="submit">
+		{% trans "Add" %}
+	</button>
 </form>
 <div>
 	<ul class="mui-list--unstyled">

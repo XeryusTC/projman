@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 from . import pages
@@ -39,9 +40,11 @@ class InlistTests(FunctionalTestCase):
         # and he does not see Alice's list
         self.browser.quit()
         self.browser = webdriver.Firefox()
+        page = pages.project.BaseProjectPage(self.browser)
+        inlist_page = pages.inlist.InlistPage(self.browser)
 
         self.create_and_login_user('bob', 'bob@test.com', 'bob')
-        page.inlist_link.click()
+        page.inlist_link(page.sidebar).click()
         self.assertNotIn('Test the website',
             [item.text for item in inlist_page.thelist])
         self.assertNotIn('Plan trip to Saturn',
