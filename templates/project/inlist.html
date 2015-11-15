@@ -2,18 +2,46 @@
 {% load i18n %}
 
 {% block content %}
-<form method="POST" action="{% url 'project:inlist' %}">
+<form class="mui-form--inline" method="POST"
+	action="{% url 'project:inlist' %}">
 	{% csrf_token %}
-	{{ form.as_p }}
+
+	{% for error in form.non_field_errors %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui--text-danger">
+				{{ error }}
+			</div>
+		</div>
+	{% endfor %}
+
+	{% if form.text.errors %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
+				{{ form.text.error }}
+			</div>
+		</div>
+	{% endif %}
+	<div class="mui-row">
+		<div class="mui-col-xs-8 mui-col-md-4">
+			<div class="mui-textfield">
+				{{ form.text }}
+			</div>
+		</div>
+		<div class="mui-col-xs-4 mui-col-md-2">
 	<button class="mui-btn mui-btn--primary" type="submit">
 		{% trans "Add" %}
 	</button>
+		</div>
+	</div>
+
 </form>
-<div>
-	<ul class="mui-list--unstyled">
-		{% for item in inlist_items %}
-			<li>{{ item.text }}</li>
-		{% endfor %}
-	</ul>
+<div class="mui-row">
+	<div class="mui-col-xs-12">
+		<ul class="mui-list--unstyled">
+			{% for item in inlist_items %}
+				<li>{{ item.text }}</li>
+			{% endfor %}
+		</ul>
+	</div>
 </div>
 {% endblock %}

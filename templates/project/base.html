@@ -13,7 +13,10 @@
 	</div>
 	<div class="mui-divider"></div>
 	<ul>
-		<li><a href="{% url 'project:inlist' %}">In list</a></li>
+		<li>
+			<a class="sidebar-mainlink"
+				href="{% url 'project:inlist' %}">In list</a>
+		</li>
 	{% block sidebar %}{% endblock %}
 	</ul>
 </div>
