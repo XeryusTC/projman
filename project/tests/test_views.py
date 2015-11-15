@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from project import factories, views
-from project.forms import InlistForm
+from project.forms import InlistForm, EMPTY_TEXT_ERROR
 from project.models import InlistItem
 
 User = get_user_model()
@@ -86,4 +86,7 @@ class InlistpageTest(TestCase):
         self.assertIn(item2, response.context['inlist_items'])
 
     def test_form_invalid_input_shows_error_on_page(self):
-        self.fail('Implement test')
+        response = self.client.post(self.url, data={'text': ''})
+
+        self.assertFalse(InlistItem.objects.count(), 0)
+        self.assertContains(response, EMPTY_TEXT_ERROR)

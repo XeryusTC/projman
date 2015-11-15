@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 import unittest
 
-from project.forms import InlistForm
+from project.forms import InlistForm, EMPTY_TEXT_ERROR
 from project.models import InlistItem
 
 User = get_user_model()
@@ -16,6 +16,7 @@ class InlistFormTest(unittest.TestCase):
     def test_form_validation_for_blank_items(self):
         form = InlistForm(data={'text': ''})
         self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['text'], [EMPTY_TEXT_ERROR])
 
 
 class InlistFormSlowTest(TestCase):

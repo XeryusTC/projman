@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from project.models import InlistItem
 
+EMPTY_TEXT_ERROR = _('You cannot add empty items')
+
 class InlistForm(forms.Form):
     text = forms.CharField(widget=forms.TextInput(
         {'placeholder': _('What needs to be done?')}))

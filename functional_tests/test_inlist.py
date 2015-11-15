@@ -62,3 +62,10 @@ class InlistTests(FunctionalTestCase):
             [item.text for item in inlist_page.thelist])
         self.assertIn('Reset the database',
             [item.text for item in inlist_page.thelist])
+
+        # Bob tries to send an empty form, but he gets an error
+        inlist_page.add_box.send_keys('')
+        inlist_page.add_button.click()
+
+        self.assertIn('You cannot add empty items',
+            [error.text for error in inlist_page.error_lists])
