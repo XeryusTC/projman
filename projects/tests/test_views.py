@@ -25,10 +25,14 @@ class TestMainPage(TestCase):
 
 
 class InlistpageTest(TestCase):
-    def setUp(self):
-        self.alice = User.objects.create_user('alice', 'alice@test.com',
+    @classmethod
+    def setUpClass(cls):
+        super(InlistpageTest, cls).setUpClass()
+        cls.alice = User.objects.create_user('alice', 'alice@test.com',
             'alice')
-        self.bob = User.objects.create_user('bob', 'bob@test.com', 'bob')
+        cls.bob = User.objects.create_user('bob', 'bob@test.com', 'bob')
+
+    def setUp(self):
         self.client.login(username='alice', password='alice')
         self.url = reverse('projects:inlist')
 
