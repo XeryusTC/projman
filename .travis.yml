@@ -29,11 +29,11 @@ before_script:
     - sleep 3 # allow xvfb some time to start
 script:
     - coverage run -p manage.py test landing
-    - coverage run -p manage.py test project
+    - coverage run -p manage.py test projects
     - coverage run -p manage.py test functional_tests
     # Run tests in reverse to ensure test independence
     - python manage.py test landing --reverse
-    - python manage.py test project --reverse
+    - python manage.py test projects --reverse
     - python manage.py test functional_tests --reverse
 after_success:
     - "coverage combine && coveralls"
