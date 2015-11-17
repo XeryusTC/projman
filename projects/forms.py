@@ -13,5 +13,7 @@ class InlistForm(forms.Form):
             'required': EMPTY_TEXT_ERROR})
 
     def save(self, user):
-        return InlistItem(text=self.cleaned_data['text'],
+        item = InlistItem(text=self.cleaned_data['text'],
             user=user)
+        item.save()
+        return item

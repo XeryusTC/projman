@@ -23,5 +23,5 @@ class InlistView(FormView):
         return context
 
     def form_valid(self, form):
-        form.save(self.request.user).save()
+        form.save(self.request.user)
         return super(InlistView, self).form_valid(form)

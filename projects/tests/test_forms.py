@@ -27,7 +27,6 @@ class InlistFormSlowTest(TestCase):
 
         form.is_valid()
         new_item = form.save(alice)
-        new_item.save()
 
         self.assertEqual(InlistItem.objects.count(), 1)
         self.assertEqual(new_item, InlistItem.objects.first())
