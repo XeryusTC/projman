@@ -83,4 +83,4 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         loginpage.signin.click()
 
     def is_logged_in(self):
-        self.assertTrue(self.browser.current_url.endswith('/project/'))
+        self.assertTrue(self.browser.current_url.endswith('/projects/'))

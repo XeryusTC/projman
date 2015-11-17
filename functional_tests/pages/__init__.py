@@ -2,4 +2,4 @@
 from .accounts import *
 from .inlist import *
 from .landingpage import *
-from .project import *
+from .projects import *

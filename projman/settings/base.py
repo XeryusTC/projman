@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'landing',
     'functional_tests',
-    'project',
+    'projects',
 
     # allauth related
     'django.contrib.sites',
@@ -128,7 +128,7 @@ STATICFILES_DIRS = (
 )
 
 # Allauth related
-LOGIN_REDIRECT_URL = "project:main"
+LOGIN_REDIRECT_URL = "projects:main"
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',

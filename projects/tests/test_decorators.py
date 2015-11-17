@@ -2,7 +2,7 @@
 import unittest
 from unittest import mock
 
-from project import decorators as dec
+from projects import decorators as dec
 
 class AnonymousRequiredDecoratorTests(unittest.TestCase):
     def test_anonymous_user(self):

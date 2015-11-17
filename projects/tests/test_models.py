@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from project.factories import InlistItemFactory
-from project.models import InlistItem
+from projects.factories import InlistItemFactory
+from projects.models import InlistItem
 
 User = get_user_model()
 

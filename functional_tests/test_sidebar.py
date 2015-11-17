@@ -14,7 +14,7 @@ class SidebarTests(FunctionalTestCase):
         self.browser.set_window_size(1200, 800)
 
         # The sidebar should be active
-        page = pages.project.BaseProjectPage(self.browser)
+        page = pages.projects.BaseProjectPage(self.browser)
         self.assertTrue(page.sidebar.is_displayed())
         self.assertGreaterEqual(page.sidebar.location['x'], 0)
 
@@ -34,7 +34,7 @@ class SidebarTests(FunctionalTestCase):
         self.browser.set_window_size(480, 800)
 
         # The sidebar should not be active
-        page = pages.project.BaseProjectPage(self.browser)
+        page = pages.projects.BaseProjectPage(self.browser)
         self.wait_for(lambda: self.assertEqual(page.sidebar.location['x'],
             -200))
         self.assertNotIn('active', page.sidebar.get_attribute('class'))

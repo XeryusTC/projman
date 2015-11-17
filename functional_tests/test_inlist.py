@@ -11,7 +11,7 @@ class InlistTests(FunctionalTestCase):
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
 
         # In the sidebar she finds an inlist link and she clicks it
-        page = pages.project.BaseProjectPage(self.browser)
+        page = pages.projects.BaseProjectPage(self.browser)
         page.inlist_link(page.sidebar).click()
 
         # On the new page is a text box where she is invited to enter something
@@ -40,7 +40,7 @@ class InlistTests(FunctionalTestCase):
         # and he does not see Alice's list
         self.browser.quit()
         self.browser = webdriver.Firefox()
-        page = pages.project.BaseProjectPage(self.browser)
+        page = pages.projects.BaseProjectPage(self.browser)
         inlist_page = pages.inlist.InlistPage(self.browser)
 
         self.create_and_login_user('bob', 'bob@test.com', 'bob')

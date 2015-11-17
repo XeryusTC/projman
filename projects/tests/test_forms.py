@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 import unittest
 
-from project.forms import InlistForm, EMPTY_TEXT_ERROR
-from project.models import InlistItem
+from projects.forms import InlistForm, EMPTY_TEXT_ERROR
+from projects.models import InlistItem
 
 User = get_user_model()
 

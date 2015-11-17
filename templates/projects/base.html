@@ -9,13 +9,13 @@
 {% block body %}
 <div id="sidebar" class="mui--z1">
 	<div id="sidebar-brand" class="mui--appbar-line-height mui--text-title">
-		<a href="{% url 'project:main' %}">{{ site.name }}</a>
+		<a href="{% url 'projects:main' %}">{{ site.name }}</a>
 	</div>
 	<div class="mui-divider"></div>
 	<ul>
 		<li>
 			<a class="sidebar-mainlink"
-				href="{% url 'project:inlist' %}">In list</a>
+				href="{% url 'projects:inlist' %}">In list</a>
 		</li>
 	{% block sidebar %}{% endblock %}
 	</ul>
@@ -33,7 +33,7 @@
 				</div>
 				<div class="mui-col-xs-4 mui--visible-xs-inline-block">
 					<a class="mui--text-title appbar-correct"
-						href="{% url 'project:main' %}">{{ site.name }}</a>
+						href="{% url 'projects:main' %}">{{ site.name }}</a>
 				</div>
 				<div class="mui-col-xs-6 mui-col-sm-11 mui--text-right">
 					{% block appbar %}{% endblock %}

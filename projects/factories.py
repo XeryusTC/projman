@@ -3,4 +3,4 @@ from factory.django import DjangoModelFactory
 
 class InlistItemFactory(DjangoModelFactory):
     class Meta:
-        model = 'project.InlistItem'
+        model = 'projects.InlistItem'

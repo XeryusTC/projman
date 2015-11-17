@@ -5,23 +5,23 @@ from django.test import TestCase
 import unittest
 from unittest.mock import Mock, patch
 
-from project import factories, views
-from project.forms import InlistForm, EMPTY_TEXT_ERROR
-from project.models import InlistItem
+from projects import factories, views
+from projects.forms import InlistForm, EMPTY_TEXT_ERROR
+from projects.models import InlistItem
 
 User = get_user_model()
 
 class TestMainPage(TestCase):
     def test_mainpage_url_resolves_to_mainpage_view(self):
-        found = resolve(reverse('project:main'))
+        found = resolve(reverse('projects:main'))
         self.assertEqual(found.func.__name__,
             views.MainPageView.as_view().__name__)
 
     def test_mainpage_uses_correct_templates(self):
-        response = self.client.get('/en/project/')
+        response = self.client.get('/en/projects/')
         self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'project/base.html')
-        self.assertTemplateUsed(response, 'project/mainpage.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response, 'projects/mainpage.html')
 
 
 class InlistpageTest(TestCase):
@@ -30,18 +30,18 @@ class InlistpageTest(TestCase):
             'alice')
         self.bob = User.objects.create_user('bob', 'bob@test.com', 'bob')
         self.client.login(username='alice', password='alice')
-        self.url = reverse('project:inlist')
+        self.url = reverse('projects:inlist')
 
     def test_inlist_url_resolves_to_inlist_view(self):
-        found = resolve(reverse('project:inlist'))
+        found = resolve(self.url)
         self.assertEqual(found.func.__name__,
             views.InlistView.as_view().__name__)
 
     def test_inlist_uses_correct_templates(self):
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'project/base.html')
-        self.assertTemplateUsed(response, 'project/inlist.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response, 'projects/inlist.html')
 
     def test_inlist_uses_inlist_form(self):
         response = self.client.get(self.url)
@@ -67,9 +67,9 @@ class InlistpageTest(TestCase):
         self.assertEqual(item.user, self.alice)
 
     def test_POST_redirects_to_inlist_page(self):
-        response = self.client.post('/en/project/inlist/',
+        response = self.client.post('/en/projects/inlist/',
             data={'text': 'test'})
-        self.assertRedirects(response, '/en/project/inlist/')
+        self.assertRedirects(response, '/en/projects/inlist/')
 
     def test_invalid_input_saves_nothing_to_db(self):
         response = self.client.post(self.url, data={'text': ''})

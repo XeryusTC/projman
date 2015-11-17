@@ -10,7 +10,7 @@ import re
 
 from . import remote
 from .base import FunctionalTestCase
-from .pages import accounts, landingpage, thirdparty, project
+from .pages import accounts, landingpage, thirdparty, projects
 
 User = get_user_model()
 
@@ -249,7 +249,7 @@ class HomePageTest(FunctionalTestCase):
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
 
         # She clicks the log out button
-        page = project.BaseProjectPage(self.browser)
+        page = projects.BaseProjectPage(self.browser)
         page.logout.click()
 
         # She ends up on the confirmation page
@@ -273,4 +273,4 @@ class HomePageTest(FunctionalTestCase):
         # She ended up at the main page (check directly instead of using a
         # helper like function is_logged_in because its internals might
         # change and make this test fail
-        self.assertTrue(self.browser.current_url.endswith('/en/project/'))
+        self.assertTrue(self.browser.current_url.endswith('/en/projects/'))

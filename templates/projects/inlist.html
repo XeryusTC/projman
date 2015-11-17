@@ -1,9 +1,9 @@
-{% extends 'project/base.html' %}
+{% extends 'projects/base.html' %}
 {% load i18n %}
 
 {% block content %}
 <form class="mui-form--inline" method="POST"
-	action="{% url 'project:inlist' %}">
+	action="{% url 'projects:inlist' %}">
 	{% csrf_token %}
 
 	{% for error in form.non_field_errors %}

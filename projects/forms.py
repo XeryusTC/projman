@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from project.models import InlistItem
+from projects.models import InlistItem
 
 EMPTY_TEXT_ERROR = _('You cannot add empty items')
 
