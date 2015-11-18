@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
 from django.db.utils import IntegrityError
 from django.views.generic import TemplateView, FormView
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
+from django.utils.decorators import method_decorator
 
 from projects.forms import InlistForm, DUPLICATE_ITEM_ERROR
 from projects.models import InlistItem
 
-class MainPageView(TemplateView):
+
+class LoginRequiredMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+
+class MainPageView(LoginRequiredMixin, TemplateView):
     template_name = 'projects/mainpage.html'
 
 
-class InlistView(FormView):
+class InlistView(LoginRequiredMixin, FormView):
     template_name = 'projects/inlist.html'
     form_class = InlistForm
 

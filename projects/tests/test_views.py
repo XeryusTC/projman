@@ -19,10 +19,17 @@ class TestMainPage(TestCase):
             views.MainPageView.as_view().__name__)
 
     def test_mainpage_uses_correct_templates(self):
+        User.objects.create_user('alice', 'alice@test.com', 'alice')
+        self.client.login(username='alice', password='alice')
         response = self.client.get('/en/projects/')
         self.assertTemplateUsed(response, 'html.html')
         self.assertTemplateUsed(response, 'projects/base.html')
         self.assertTemplateUsed(response, 'projects/mainpage.html')
+
+    def test_login_required(self):
+        response = self.client.get(reverse('projects:main'))
+        self.assertRedirects(response,
+            '/en/accounts/login/?next=/en/projects/')
 
 
 class InlistpageTest(TestCase):
@@ -51,6 +58,12 @@ class InlistpageTest(TestCase):
     def test_inlist_uses_inlist_form(self):
         response = self.client.get(self.url)
         self.assertIsInstance(response.context['form'], InlistForm)
+
+    def test_login_required(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+        self.assertRedirects(response,
+            '/en/accounts/login/?next=/en/projects/inlist/')
 
     def test_displays_only_items_for_that_user(self):
         item1 = factories.InlistItemFactory(text='item 1', user=self.alice)
