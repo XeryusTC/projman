@@ -2,11 +2,12 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import resolve, reverse
 from django.test import TestCase
+from django.utils.html import escape
 import unittest
 from unittest.mock import Mock, patch
 
 from projects import factories, views
-from projects.forms import InlistForm, EMPTY_TEXT_ERROR
+from projects.forms import InlistForm, EMPTY_TEXT_ERROR, DUPLICATE_ITEM_ERROR
 from projects.models import InlistItem
 
 User = get_user_model()
@@ -94,3 +95,11 @@ class InlistpageTest(TestCase):
 
         self.assertFalse(InlistItem.objects.count(), 0)
         self.assertContains(response, EMPTY_TEXT_ERROR)
+
+    def test_trying_to_enter_same_item_twice_shows_error_on_page(self):
+        item1 = factories.InlistItemFactory(text='dupe', user=self.alice)
+
+        response = self.client.post(self.url, data={'text': 'dupe'})
+
+        self.assertEqual(InlistItem.objects.count(), 1)
+        self.assertContains(response, escape(DUPLICATE_ITEM_ERROR))

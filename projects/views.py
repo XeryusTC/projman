@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from django.db.utils import IntegrityError
 from django.views.generic import TemplateView, FormView
 from django.core.urlresolvers import reverse_lazy
 
-from projects.forms import InlistForm
+from projects.forms import InlistForm, DUPLICATE_ITEM_ERROR
 from projects.models import InlistItem
 
 class MainPageView(TemplateView):
@@ -23,5 +24,10 @@ class InlistView(FormView):
         return context
 
     def form_valid(self, form):
-        form.save(self.request.user)
+        form.instance.user = self.request.user
+        form.validate_unique()
+        if form.is_valid():
+            form.save(self.request.user)
+        else:
+            return super(InlistView, self).form_invalid(form)
         return super(InlistView, self).form_valid(form)

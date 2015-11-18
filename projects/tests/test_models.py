@@ -24,6 +24,20 @@ class InlistItemModelTest(TestCase):
             item.save()
             item.full_clean()
 
+    def test_duplicate_items_are_invalid(self):
+        alice = User.objects.create_user('alice', 'alice@test.com', 'alice')
+        InlistItemFactory(text='dupe', user=alice)
+        with self.assertRaises(ValidationError):
+            item = InlistItem(text='dupe', user=alice)
+            item.full_clean()
+
+    def test_can_different_users_can_have_same_items(self):
+        alice = User.objects.create_user('alice', 'alice@test.com', 'alice')
+        bob = User.objects.create_user('bob', 'bob@test.com', 'bob')
+        InlistItemFactory(text='not dupe', user=alice)
+        item = InlistItemFactory(text='not dupe', user=bob)
+        item.full_clean() # should not raise ValidationError
+
     def test_string_representation(self):
         alice = User.objects.create_user('alice', 'alice@test.com', 'alice')
         item = InlistItemFactory(text='test item', user=alice)

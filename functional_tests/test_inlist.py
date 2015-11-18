@@ -69,3 +69,20 @@ class InlistTests(FunctionalTestCase):
 
         self.assertIn('You cannot add empty items',
             [error.text for error in inlist_page.error_lists])
+
+    def test_cannot_add_duplicate_items(self):
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+
+        # Alice tries to add an item
+        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page.add_box.send_keys('Test duplication')
+        inlist_page.add_box.send_keys(Keys.ENTER)
+
+        # Alice tries to add the same item again
+        inlist_page.add_box.send_keys('Test duplication')
+        inlist_page.add_box.send_keys(Keys.ENTER)
+        self.assertIn("You've already got this on your list",
+            [error.text for error in inlist_page.error_lists])

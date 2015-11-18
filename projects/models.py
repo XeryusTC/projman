@@ -8,3 +8,6 @@ class InlistItem(models.Model):
 
     def __str__(self):
         return self.text
+
+    class Meta:
+        unique_together = ('text', 'user')
