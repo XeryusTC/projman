@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-05 22:35+0000\n"
+"POT-Creation-Date: 2015-11-18 23:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,230 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: projman/settings/base.py:102
+#: projects/forms.py:8
+msgid "You cannot add empty items"
+msgstr "Je kunt geen lege items toevoegen"
+
+#: projects/forms.py:9
+msgid "You've already got this on your list"
+msgstr "Je hebt dit al op je lijst staan"
+
+#: projects/forms.py:23
+msgid "What needs to be done?"
+msgstr "Wat moet er gebeuren?"
+
+#: projman/settings/base.py:113
 msgid "English"
 msgstr "Engels"
 
-#: projman/settings/base.py:103
+#: projman/settings/base.py:114
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: templates/landing/index.html:7 templates/landing/index.html.py:13
+#: templates/account/email_confirm.html:6
+#: templates/account/email_confirm.html:8
+msgid "Confirm E-mail Address"
+msgstr "Bevestig E-mail Adres"
+
+#: templates/account/email_confirm.html:16
+#, python-format
+msgid ""
+"\n"
+"\t\t\tPlease confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is\n"
+"\t\t\tan e-mail address for user %(user_display)s."
+msgstr ""
+"\n"
+"Bevestig dat <a href=\"mailto:%(email)s\">%(email)s</a> een geldig e-mail "
+"adres is voor gebruiker %(user_display)s."
+
+#: templates/account/email_confirm.html:27
+msgid "Confirm"
+msgstr "Bevestig"
+
+#: templates/account/email_confirm.html:38
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is\n"
+"\t\t\tinvalid. Please <a href=\"%(email_url)s\">issue a new e-mail\n"
+"\t\t\tconfirmation request</a>."
+msgstr ""
+"Deze e-mail bevestigings link is verlopen of incorrect. <a href="
+"\"%(email_url)s\">Vraag een nieuw bevestigings verzoek aan.</a>"
+
+#: templates/account/login.html:7 templates/account/login.html.py:11
+#, fuzzy
+#| msgid "Sign in"
+msgid "Sign In"
+msgstr "Inloggen"
+
+#: templates/account/login.html:21
+#, python-format
+msgid ""
+"Please sign in with\n"
+"\t\t\tone of your existing third party accounts. Or,\n"
+"\t\t\t<a href=\"%(signup_url)s\">sign up</a> for a %(site_name)s\n"
+"\t\t\taccount and sign in below:"
+msgstr ""
+"Log in met een third party account. Of, <a href=\"%(signup_url)s\">Schrijfje "
+"in</a> voor een %(site_name)s account and log hier onder in:"
+
+#: templates/account/login.html:37
+msgid "or"
+msgstr "of"
+
+#: templates/account/login.html:43
+#, python-format
+msgid ""
+"If you have not created an account yet, then\n"
+"\t\t\tplease <a href=\"%(signup_url)s\">sign up</a> first.\n"
+"\t\t\t"
+msgstr ""
+"Als je nog geen account hebt, dan kun je je <a href=\"%(signup_url)s"
+"\">inschrijven</a>"
+
+#: templates/account/login.html:118 templates/landing/index.html:8
+#: templates/landing/index.html.py:17
 msgid "Sign in"
 msgstr "Inloggen"
+
+#: templates/account/login.html:128
+msgid "Forgot Password?"
+msgstr "Wachtwoord vergeten?"
+
+#: templates/account/login.html:134
+msgid "Register"
+msgstr "Registreren"
+
+#: templates/account/logout.html:5 templates/account/logout.html.py:7
+#: templates/account/logout.html:26
+#, fuzzy
+#| msgid "Sign in"
+msgid "Sign Out"
+msgstr "Inloggen"
+
+#: templates/account/logout.html:12
+msgid "Are you sure you want to sign out?"
+msgstr "Weet je zeker dat je je wilt afmelden?"
+
+#: templates/account/password_reset.html:6
+#: templates/account/password_reset.html:8
+#: templates/account/password_reset_done.html:6
+#: templates/account/password_reset_done.html:8
+msgid "Password Reset"
+msgstr "Wachtwoord herstellen"
+
+#: templates/account/password_reset.html:17
+msgid ""
+" Forgotten your password? Enter your e-mail\n"
+"\t\taddress below,and we'll send you an e-mail allowing you to reset\n"
+"\t\tit. Please contact us if you have any trouble resetting your\n"
+"\t\tpassword."
+msgstr ""
+"Ben je je wachtwoord vergeten? Enter je e-mail adres hier onder en wij "
+"zullen je een e-mail sturen waarmee je weer toegang kunt krijgen tot je "
+"account. Neem contact met ons op als je problemen hebt met het herstellen  "
+"van je wachtwoord."
+
+#: templates/account/password_reset.html:55
+msgid "Reset My Password"
+msgstr "Herstel mijn wachtwoord"
+
+#: templates/account/password_reset_done.html:17
+msgid ""
+"We have sent you an e-mail. Please contact us if you\n"
+"\t\tdo not receive it within a few minutes."
+msgstr ""
+"We hebben een e-mail naar je verstuurd. Neem contact met ons op als je na "
+"een paar minuten niets ontvangen hebt."
+
+#: templates/account/password_reset_from_key.html:4
+#: templates/account/password_reset_from_key.html:10
+#: templates/account/password_reset_from_key.html:66
+#: templates/account/password_reset_from_key_done.html:4
+#: templates/account/password_reset_from_key_done.html:6
+msgid "Change Password"
+msgstr "Verander Wachtwoord"
+
+#: templates/account/password_reset_from_key.html:8
+msgid "Bad Token"
+msgstr "Verkeerde token"
+
+#: templates/account/password_reset_from_key.html:17
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it\n"
+"\thas already been used.  Please request a <a href=\"%(passwd_reset_url)s"
+"\">\n"
+"\t\tnew password reset</a>."
+msgstr ""
+"De link om je wachtwoord te herstellen is verkeerd, waarschijnlijk omdat het "
+"al een keer gebruikt is. Vraag een <a href=\"%(passwd_reset_url)s>nieuw "
+"verzoek</a> om je wachtwoord te herstellen aan."
+
+#: templates/account/password_reset_from_key.html:71
+msgid "Your password is now changed."
+msgstr "Je wachtwoord is veranderd."
+
+#: templates/account/password_reset_from_key_done.html:12
+#, python-format
+msgid ""
+"Your password is now changed. You can now\n"
+"\t\t<a href=\"%(account_login)s\">\n"
+"\t\tsign in</a>."
+msgstr ""
+"Je wachtwoord is veranderd. Je kunt nu <a href=\"%(account_login)s"
+"\">inloggen</a>"
+
+#: templates/account/signup.html:5 templates/account/signup.html.py:8
+#: templates/account/signup.html:111
+#, fuzzy
+#| msgid "Sign in"
+msgid "Sign Up"
+msgstr "Inloggen"
+
+#: templates/account/signup.html:14
+#, python-format
+msgid ""
+"Already have an account or want to use your social\n"
+"\t\tmedia account? Then please <a href=\"%(login_url)s\">sign in</a>\n"
+"\t\tinstead.\n"
+"\t\t"
+msgstr ""
+"Heb je al een account of wil je inloggen met een social media ccount? Dan "
+"kun je <a href=\"%(login_url)s\">inloggen</a>."
+
+#: templates/account/snippets/already_logged_in.html:5
+msgid "Note"
+msgstr "Opmerking"
+
+#: templates/account/snippets/already_logged_in.html:6
+#, python-format
+msgid "you are already logged in as %(user_display)s.\n"
+msgstr "je bent al ingelogd als %(user_display)s.\n"
+
+#: templates/account/verification_sent.html:5
+#: templates/account/verification_sent.html:7
+msgid "Verify Your E-mail Address"
+msgstr "Bevestig je E-mail Adres"
+
+#: templates/account/verification_sent.html:12
+msgid ""
+"We have sent an e-mail to you for verification. Follow\n"
+"\t\tthe link provided to finalize the signup process. Please contact us if\n"
+"\t\tyou do not receive it within a few minutes."
+msgstr ""
+"We hebben je een e-mail verstuurd zodat we je kunnen verifieren. Volg de "
+"link in die e-mail om je inschrijving compleet te maken. Neem contact met "
+"ons op als je binnen een paar minuten geen email hebt gekregen."
+
+#: templates/projects/base.html:19
+msgid "In list"
+msgstr "In lijst"
+
+#: templates/projects/inlist.html:32
+msgid "Add"
+msgstr "Toevoegen"
+
+#: templates/projects/mainpage.html:7
+msgid "Log out"
+msgstr ""
