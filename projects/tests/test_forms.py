@@ -18,6 +18,11 @@ class InlistFormTest(unittest.TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['text'], [EMPTY_TEXT_ERROR])
 
+    def test_form_crispy_helper(self):
+        form = InlistForm()
+        self.assertEqual(form.helper.form_method.lower(), 'post')
+        self.assertIn('mui-form--inline', form.helper.form_class)
+
 
 class InlistFormSlowTest(TestCase):
     def test_form_save(self):

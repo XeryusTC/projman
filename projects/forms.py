@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import ButtonHolder, Div, Field, Layout, Submit
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -9,6 +11,18 @@ EMPTY_TEXT_ERROR = _('You cannot add empty items')
 DUPLICATE_ITEM_ERROR = _("You've already got this on your list")
 
 class InlistForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(InlistForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+        self.helper.form_class = 'mui-form--inline'
+        self.helper.layout = Layout(
+            Div(Div('text', css_class="mui-col-xs-8 mui-col-md-4"),
+                Div(ButtonHolder(Submit('submit', _('Add'))),
+                    css_class="mui-col-xs-4 mui-col-md-2"),
+                css_class="mui-row"),
+        )
+
     def validate_unique(self):
         try:
             self.instance.validate_unique()

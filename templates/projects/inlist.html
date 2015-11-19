@@ -1,40 +1,9 @@
 {% extends 'projects/base.html' %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<form class="mui-form--inline" method="POST"
-	action="{% url 'projects:inlist' %}">
-	{% csrf_token %}
-
-	{% for error in form.non_field_errors %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-danger">
-				{{ error }}
-			</div>
-		</div>
-	{% endfor %}
-
-	{% if form.text.errors %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
-				{{ form.text.errors }}
-			</div>
-		</div>
-	{% endif %}
-	<div class="mui-row">
-		<div class="mui-col-xs-8 mui-col-md-4">
-			<div class="mui-textfield">
-				{{ form.text }}
-			</div>
-		</div>
-		<div class="mui-col-xs-4 mui-col-md-2">
-	<button class="mui-btn mui-btn--primary" type="submit">
-		{% trans "Add" %}
-	</button>
-		</div>
-	</div>
-
-</form>
+{% crispy form %}
 <div class="mui-row">
 	<div class="mui-col-xs-12">
 		<ul class="mui-list--unstyled">
