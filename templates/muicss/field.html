@@ -1,0 +1,40 @@
+{% load crispy_forms_field %}
+
+{% if field.is_hidden %}
+	{{ field }}
+{% else %}
+	{% if field.errors and form_show_errors %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
+				{{ field.errors }}
+			</div>
+		</div>
+	{% endif %}
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			{% if field|is_checkbox %}
+				<div class="mui-checkbox">
+			{% elif field|is_radioselect %}
+				<div class="mui-radio">
+			{% else %}
+				<div class="mui-textfield mui-textfield--float-label">
+			{% endif %}
+			{{ field }}
+			{% if field.label %}
+				<label for="{{ field.id_for_label }}" tabindex="100">
+					{{ field.label }}
+				</label>
+			{% endif %}
+			</div>
+		</div>
+	</div>
+	{% if field.help_text %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12">
+				<div id="hint_{{ field.auto_id }}" class="hint">
+					{{ field.help_text|safe }}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endif %}

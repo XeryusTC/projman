@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'landing',
     'functional_tests',
     'projects',
+    'crispy_forms',
 
     # allauth related
     'django.contrib.sites',
@@ -144,3 +145,5 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUDIENCE': 'localhost'
     }
 }
+
+CRISPY_TEMPLATE_PACK = 'muicss'

@@ -1,0 +1,16 @@
+{% if redirect_field_value %}
+	<input type="hidden" name="{{ redirect_field_name }}"
+		value="{{ redirect_field_value }}" />
+{% endif %}
+
+{% for error in form.non_field_errors %}
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui--text-danger">
+			{{ error }}
+		</div>
+	</div>
+{% endfor %}
+
+{% for field in form %}
+	{% include "muicss/field.html" %}
+{% endfor %}
