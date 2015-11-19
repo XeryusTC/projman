@@ -51,12 +51,15 @@ class AccountPagesLayout(FunctionalTestCase):
         self.element_centered(page.username)
         self.element_centered(page.password)
 
-        # She sees that the remember me checkbox and the sign in button
-        # are next to each other and on opposite sides
+        # She sees that the sign in button and register button are on the
+        # left side of the page, and that the forgot password is on the
+        # right and vertically aligned with the sign in button
         self.assertLess(page.remember.location['x'], self.width / 2)
-        self.assertGreater(page.signin.location['x'], self.width / 2)
-        self.assertAlmostEqual(page.remember.location['y'],
-                page.signin.location['y'], delta=10)
+        self.assertLess(page.signin.location['x'], self.width / 2)
+        self.assertLess(page.register.location['x'], self.width / 2)
+        self.assertGreater(page.forgot.location['x'], self.width / 2)
+        self.assertAlmostEqual(page.signin.location['y'],
+            page.forgot.location['y'], delta=10)
 
     def test_accounts_signup_page(self):
         """Test the page under /accounts/signup/"""

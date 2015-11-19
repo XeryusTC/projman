@@ -1,6 +1,7 @@
 {% extends "account/base.html" %}
 
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block head_title %}{% trans "Sign Up" %}{% endblock %}
 
@@ -20,91 +21,7 @@
 
 <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
 	{% csrf_token %}
-	{% if redirect_field_value %}
-		<input type="hidden" name="{{ redirect_field_name }}"
-			value="{{ redirect_field_value }}" />
-	{% endif %}
-
-	{% for error in form.non_field_errors %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-danger">
-				{{ error }}
-			</div>
-		</div>
-	{% endfor %}
-
-	{% if form.username.errors %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
-				{{ form.username.errors }}
-			</div>
-		</div>
-	{% endif %}
-	<div class="mui-row">
-		<div class="mui-col-xs-12">
-			<div class="mui-textfield mui-textfield--float-label">
-				{{ form.username }}
-				<label for="{{ form.username.id_for_label }}">
-					{{ form.username.label }}
-				</label>
-			</div>
-		</div>
-	</div>
-
-	{% if form.password1.errors %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
-				{{ form.password1.errors }}
-			</div>
-		</div>
-	{% endif %}
-	<div class="mui-row">
-		<div class="mui-col-xs-12">
-			<div class="mui-textfield mui-textfield--float-label">
-				{{ form.password1 }}
-				<label for="{{ form.password1.id_for_label }}">
-					{{ form.password1.label }}
-				</label>
-			</div>
-		</div>
-	</div>
-
-	{% if form.password2.errors %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
-				{{ form.password2.errors }}
-			</div>
-		</div>
-	{% endif %}
-	<div class="mui-row">
-		<div class="mui-col-xs-12">
-			<div class="mui-textfield mui-textfield--float-label">
-				{{ form.password2 }}
-				<label for="{{ form.password2.id_for_label }}">
-					{{ form.password2.label }}
-				</label>
-			</div>
-		</div>
-	</div>
-
-	{% if form.email.errors %}
-		<div class="mui-row">
-			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
-				{{ form.email.errors }}
-			</div>
-		</div>
-	{% endif %}
-	<div class="mui-row">
-		<div class="mui-col-xs-12">
-			<div class="mui-textfield mui-textfield--float-label">
-				{{ form.email }}
-				<label for="{{ form.email.id_for_label }}">
-					{{ form.email.label }}
-				</label>
-			</div>
-		</div>
-	</div>
-
+	{{ form|crispy }}
 	<div class="mui-row">
 		<div class="mui-col-xs-12 mui--text-right">
 			<button class="mui-btn mui-btn--primary" type="submit">
