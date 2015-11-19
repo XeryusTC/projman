@@ -20,7 +20,7 @@
 				<div class="mui-textfield mui-textfield--float-label">
 			{% endif %}
 			{{ field }}
-			{% if field.label %}
+			{% if field.label and not field.field.widget.attrs.placeholder %}
 				<label for="{{ field.id_for_label }}" tabindex="100">
 					{{ field.label }}
 				</label>
