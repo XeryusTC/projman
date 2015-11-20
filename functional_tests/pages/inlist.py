@@ -11,4 +11,5 @@ class InlistPage(PageObject):
 
 
 class InlistDeletePage(PageObject):
+    content = PageElement(id_='content')
     confirm = PageElement(xpath="//input[@type='submit']")

@@ -146,3 +146,8 @@ class InlistItemDeleteViewTests(TestCase):
         response = self.client.get('/en/projects/inlist/0/delete/')
         self.assertRedirects(response,
             '/en/accounts/login/?next=/en/projects/inlist/0/delete/')
+
+    def test_inlist_item_delete_view_shows_item_name(self):
+        response = self.client.get('/en/projects/inlist/{}/delete/'.format(
+            self.item.pk))
+        self.assertContains(response, self.item.text)

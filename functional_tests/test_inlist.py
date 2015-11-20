@@ -115,8 +115,10 @@ class InlistTests(FunctionalTestCase):
         # She clicks the delete button that is next to it
         inlist_page.delete_item(second_item).click()
 
-        # She clicks the confirm button
+        # She ends up on a new page with the item name and a confirm button
         confirm_page = pages.inlist.InlistDeletePage(self.browser)
+        self.assertIn('Remove this item', confirm_page.content.text)
+        # She clicks the confirm button
         confirm_page.confirm.click()
 
         # The item is not in the list anymore
