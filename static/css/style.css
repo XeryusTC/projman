@@ -20,3 +20,8 @@ a.appbar-correct {
 .hide-label label {
 	display: none;
 }
+
+.full-height {
+	padding-top: 1%;
+	padding-bottom: 1%;
+}

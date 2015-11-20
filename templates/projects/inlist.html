@@ -4,21 +4,19 @@
 
 {% block content %}
 {% crispy form %}
-<div class="mui-row">
-	<div class="mui-col-xs-12">
-		<table class="mui-table" id="list">
-			{% for item in inlist_items %}
-				<tr>
-					<td>{{ item.text }}</td>
-					<td>
-						<a class="mui-btn"
-							href="{% url 'projects:delete_inlist' item.pk %}">
-							{% trans 'Delete' %}
-						</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</table>
+<div id="list">
+{% for item in inlist_items %}
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui-col-md-6 full-height">
+			{{ item.text }}
+		</div>
+		<div class="mui-col-xs-4">
+			<a class="mui-btn mui-btn--accent"
+				href="{% url 'projects:delete_inlist' item.pk %}">
+				{% trans 'Delete' %}
+			</a>
+		</div>
 	</div>
+{% endfor %}
 </div>
 {% endblock %}
