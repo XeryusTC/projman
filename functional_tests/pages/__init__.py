@@ -3,3 +3,4 @@ from .accounts import *
 from .inlist import *
 from .landingpage import *
 from .projects import *
+from .actionlist import *

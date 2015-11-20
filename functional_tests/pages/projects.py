@@ -10,3 +10,4 @@ class BaseProjectPage(PageObject):
     sidebar_show = PageElement(class_name='js-show-sidebar')
 
     inlist_link = PageElement(link_text='In list', context=True)
+    action_link = PageElement(link_text='Actions', context=True)
