@@ -6,11 +6,19 @@
 {% crispy form %}
 <div class="mui-row">
 	<div class="mui-col-xs-12">
-		<ul class="mui-list--unstyled">
+		<table class="mui-table" id="list">
 			{% for item in inlist_items %}
-				<li>{{ item.text }}</li>
+				<tr>
+					<td>{{ item.text }}</td>
+					<td>
+						<a class="mui-btn"
+							href="{% url 'projects:delete_inlist' item.pk %}">
+							{% trans 'Delete' %}
+						</a>
+					</td>
+				</tr>
 			{% endfor %}
-		</ul>
+		</table>
 	</div>
 </div>
 {% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'projects/base.html' %}
+{% load i18n %}
+
+{% block content %}
+{% trans 'Are you sure you want to remove this item from your in list?' %}
+<form action="" method="post">{% csrf_token %}
+	<input class="mui-btn mui-btn--primary" type="submit"
+		value="{% trans 'Confirm' %}" />
+</form>
+{% endblock content %}

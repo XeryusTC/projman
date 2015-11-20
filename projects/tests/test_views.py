@@ -116,3 +116,33 @@ class InlistpageTest(TestCase):
 
         self.assertEqual(InlistItem.objects.count(), 1)
         self.assertContains(response, escape(DUPLICATE_ITEM_ERROR))
+
+
+class InlistItemDeleteViewTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user('alice', 'alice@test.com',
+            'alice')
+        self.client.login(username='alice', password='alice')
+        self.item = factories.InlistItemFactory(user=self.alice)
+
+    def test_inlist_item_delete_view_is_delete_view(self):
+        found = resolve(reverse('projects:delete_inlist',
+            kwargs={'pk': 0}))
+        self.assertEqual(found.func.__name__,
+            views.InlistItemDelete.as_view().__name__)
+
+    def test_inlist_item_delete_view_uses_correct_templates(self):
+        # For some reason reverse doesn't work, so we have to construct
+        # the url ourselves
+        response = self.client.get('/en/projects/inlist/{}/delete/'.format(
+            self.item.pk))
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response,
+            'projects/inlistitem_confirm_delete.html')
+
+    def test_login_required(self):
+        self.client.logout()
+        response = self.client.get('/en/projects/inlist/0/delete/')
+        self.assertRedirects(response,
+            '/en/accounts/login/?next=/en/projects/inlist/0/delete/')

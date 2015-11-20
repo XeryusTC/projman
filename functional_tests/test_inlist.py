@@ -94,3 +94,31 @@ class InlistTests(FunctionalTestCase):
         inlist_page.add_box.send_keys(Keys.ENTER)
         self.assertIn("You've already got this on your list",
             [error.text for error in inlist_page.error_lists])
+
+    def test_can_delete_inlist_item(self):
+        # Alice is a user who logs in and goes to the inlist page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+
+        # She adds two items to the inlist
+        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page.add_box.send_keys('Test deletion\n')
+        inlist_page.add_box.send_keys('Remove this item\n')
+
+        # She selects the item she added second
+        second_item = [item for item in inlist_page.thelist
+            if 'Remove this item' in item.text]
+        self.assertEqual(len(second_item), 1)
+        second_item = inlist_page.listrows[1]
+
+        # She clicks the delete button that is next to it
+        inlist_page.delete_item(second_item).click()
+
+        # She clicks the confirm button
+        confirm_page = pages.inlist.InlistDeletePage(self.browser)
+        confirm_page.confirm.click()
+
+        # The item is not in the list anymore
+        self.assertNotIn('Remove this item',
+            [item.text for item in inlist_page.thelist])

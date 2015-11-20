@@ -5,4 +5,6 @@ from projects import views
 urlpatterns = [
     url(r'^$', views.MainPageView.as_view(), name='main'),
     url(r'^inlist/$', views.InlistView.as_view(), name='inlist'),
+    url(r'^inlist/(?P<pk>[0-9]+)/delete/$', views.InlistItemDelete.as_view(),
+        name='delete_inlist'),
 ]
