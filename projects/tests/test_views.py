@@ -11,6 +11,17 @@ from projects.forms import InlistForm, EMPTY_TEXT_ERROR, DUPLICATE_ITEM_ERROR
 from projects.models import InlistItem
 
 User = get_user_model()
+alice = None
+bob = None
+
+def setUpModule():
+    global alice, bob
+    alice = User.objects.create_user('alice', 'alice@test.com', 'alice')
+    bob = User.objects.create_user('bob', 'bob@test.com', 'bob')
+
+def tearDownModule():
+    alice.delete()
+    bob.delete()
 
 class TestMainPage(TestCase):
     def test_mainpage_url_resolves_to_mainpage_view(self):
@@ -19,7 +30,6 @@ class TestMainPage(TestCase):
             views.MainPageView.as_view().__name__)
 
     def test_mainpage_uses_correct_templates(self):
-        User.objects.create_user('alice', 'alice@test.com', 'alice')
         self.client.login(username='alice', password='alice')
         response = self.client.get('/en/projects/')
         self.assertTemplateUsed(response, 'html.html')
@@ -36,9 +46,8 @@ class InlistpageTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super(InlistpageTest, cls).setUpClass()
-        cls.alice = User.objects.create_user('alice', 'alice@test.com',
-            'alice')
-        cls.bob = User.objects.create_user('bob', 'bob@test.com', 'bob')
+        cls.alice = alice
+        cls.bob = bob
 
     def setUp(self):
         self.client.login(username='alice', password='alice')
@@ -120,8 +129,7 @@ class InlistpageTest(TestCase):
 
 class InlistItemDeleteViewTests(TestCase):
     def setUp(self):
-        self.alice = User.objects.create_user('alice', 'alice@test.com',
-            'alice')
+        self.alice = alice
         self.client.login(username='alice', password='alice')
         self.item = factories.InlistItemFactory(user=self.alice)
 
