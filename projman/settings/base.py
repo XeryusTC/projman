@@ -36,13 +36,16 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    # our apps
     'landing',
     'functional_tests',
     'projects',
-    'crispy_forms',
 
+    # external apps
+    'crispy_forms',
+    'braces',
     # allauth related
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

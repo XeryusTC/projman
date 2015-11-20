@@ -20,8 +20,6 @@ from django.contrib import admin
 import allauth.urls
 import projects.urls
 
-import projects.decorators
-
 from landing.views import LandingView
 
 urlpatterns = [
@@ -31,6 +29,5 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     url(r'^accounts/', include(allauth.urls)),
     url(r'^projects/', include(projects.urls, namespace='projects')),
-    url(r'^$', projects.decorators.anonymous_required(LandingView.as_view()),
-        name='landingpage'),
+    url(r'^$', LandingView.as_view(), name='landingpage'),
 )
