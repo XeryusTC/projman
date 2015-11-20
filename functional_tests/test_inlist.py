@@ -122,3 +122,19 @@ class InlistTests(FunctionalTestCase):
         # The item is not in the list anymore
         self.assertNotIn('Remove this item',
             [item.text for item in inlist_page.thelist])
+
+    def test_inlist_page_has_logout_button(self):
+        # Alice is a user who logs in and goes to the inlist page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+
+        # She sees a logout button on the appbar and clicks it
+        page.logout.click()
+
+        # She ends up on the confirmation page where she clicks the button
+        confirmpage = pages.accounts.LogoutConfirmPage(self.browser)
+        confirmpage.confirm.click()
+
+        # She ends up on the landing page
+        self.assertTrue(self.browser.current_url.endswith('/en/'))

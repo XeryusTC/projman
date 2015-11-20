@@ -38,6 +38,9 @@
 				</div>
 				<div class="mui-col-xs-6 mui-col-sm-11 mui--text-right">
 					{% block appbar %}{% endblock %}
+					<a class="mui-btn" href="{% url 'account_logout' %}">
+						{% trans 'Log out' %}
+					</a>
 				</div>
 			</div>
 		</div>
