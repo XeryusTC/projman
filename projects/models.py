@@ -11,3 +11,4 @@ class InlistItem(models.Model):
 
     class Meta:
         unique_together = ('text', 'user')
+        ordering = ('pk',)
