@@ -17,10 +17,14 @@
 			{% elif field|is_radioselect %}
 				<div class="mui-radio">
 			{% else %}
-				<div class="mui-textfield mui-textfield--float-label">
+				{% if field.field.widget.attrs.placeholder != field.label %}
+					<div class="mui-textfield">
+				{% else %}
+					<div class="mui-textfield mui-textfield--float-label">
+				{% endif %}
 			{% endif %}
 			{{ field }}
-			{% if field.label and not field.field.widget.attrs.placeholder %}
+			{% if field.label %}
 				<label for="{{ field.id_for_label }}" tabindex="100">
 					{{ field.label }}
 				</label>

@@ -16,3 +16,7 @@ a.appbar-correct {
 .errorlist {
 	list-style: outside none none;
 }
+
+.hide-label label {
+	display: none;
+}
