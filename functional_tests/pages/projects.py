@@ -30,5 +30,12 @@ class InlistDeletePage(PageObject):
 class ActionlistPage(PageObject):
     add_box     = PageElement(name='text')
     add_button  = PageElement(xpath="//form//input[@id='submit-id-submit']")
-    thelist     = MultiPageElement(css='#list .full-height')
     error_lists = MultiPageElement(css='.errorlist')
+    thelist     = MultiPageElement(css='#list .mui-row')
+
+    _list_text  = PageElement(css='.full-height', context=True)
+
+    @property
+    def list_text(self):
+        text = [self._list_text(row).text for row in self.thelist]
+        return text
