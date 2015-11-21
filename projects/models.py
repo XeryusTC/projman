@@ -12,3 +12,14 @@ class InlistItem(models.Model):
     class Meta:
         unique_together = ('text', 'user')
         ordering = ('pk',)
+
+
+class ActionlistItem(models.Model):
+    text = models.CharField(max_length=255, default='')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        unique_together = ('text', 'user')

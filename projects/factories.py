@@ -7,3 +7,8 @@ class InlistItemFactory(DjangoModelFactory):
         model = 'projects.InlistItem'
 
     text = factory.Sequence(lambda n: 'Inlist item %d' %n)
+
+
+class ActionlistItemFactory(DjangoModelFactory):
+    class Meta:
+        model = 'projects.ActionlistItem'
