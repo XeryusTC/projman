@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from . import remote
 from .base import FunctionalTestCase
-from .pages import accounts, landingpage
+from . import pages
 
 User = get_user_model()
 
@@ -11,7 +11,7 @@ class StylesheetTest(FunctionalTestCase):
     def test_framework_is_loaded(self):
         # Alice visits the website
         self.browser.get(self.server_url)
-        page = landingpage.LandingPage(self.browser)
+        page = pages.landingpage.LandingPage(self.browser)
 
         # She sees that MUI css is loaded
         self.assertTrue(any(['mui.min.css' in s.get_attribute('href')
@@ -45,7 +45,7 @@ class AccountPagesLayout(FunctionalTestCase):
         # Alice goes to the login page directly
         self.browser.get(self.server_url + '/en/accounts/login/')
         self.set_size()
-        page = accounts.LoginPage(self.browser)
+        page = pages.accounts.LoginPage(self.browser)
 
         # She sees that the username and password field are nicely centered
         self.element_centered(page.username)
@@ -66,7 +66,7 @@ class AccountPagesLayout(FunctionalTestCase):
         # Alice goes to the register page directly
         self.browser.get(self.server_url + '/en/accounts/signup/')
         self.set_size()
-        page = accounts.RegisterPage(self.browser)
+        page = pages.accounts.RegisterPage(self.browser)
 
         # She sees that all the fields are nicely centered
         self.element_centered(page.username)
@@ -81,7 +81,7 @@ class AccountPagesLayout(FunctionalTestCase):
         # Alice goes to the reset password page
         self.browser.get(self.server_url+'/en/accounts/password/reset/')
         self.set_size()
-        page = accounts.PasswordResetPage(self.browser)
+        page = pages.accounts.PasswordResetPage(self.browser)
 
         # She sees that the email field is centered
         self.element_centered(page.email)
@@ -98,7 +98,7 @@ class AccountPagesLayout(FunctionalTestCase):
         else:
             User.objects.create_user('alice', 'alice@test.com', 'alice')
         self.browser.get(self.server_url + '/en/accounts/login/')
-        loginpage = accounts.LoginPage(self.browser)
+        loginpage = pages.accounts.LoginPage(self.browser)
         loginpage.username.send_keys('alice')
         loginpage.password.send_keys('alice')
         loginpage.signin.click()
@@ -107,6 +107,46 @@ class AccountPagesLayout(FunctionalTestCase):
         self.set_size()
 
         # The sign out button is left aligned
-        logoutpage = accounts.LogoutPage(self.browser)
+        logoutpage = pages.accounts.LogoutPage(self.browser)
         self.assertLess(logoutpage.signout.location['x'], self.width / 2)
         self.assertGreater(logoutpage.signout.location['x'], self.width / 4)
+
+
+class ProjectsPagesTests(FunctionalTestCase):
+    def test_inlist_page(self):
+        """Test the page under /projects/inlist/"""
+        # Alice is a user who goes to the inlist page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+
+        # She adds an item
+        inlist_page = pages.projects.InlistPage(self.browser)
+        inlist_page.add_box.send_keys('This is a test item\n')
+
+        # The text field and button to add items are horizontally aligned
+        self.assertAlmostEqual(inlist_page.add_box.location['y'],
+            inlist_page.add_button.location['y'], delta=10)
+
+        # The inlist is underneath the form
+        self.assertLess(inlist_page.add_box.location['y'],
+            inlist_page.thelist[0].location['y'])
+
+    def test_actionlist_page(self):
+        """Test the page under /projects/actions/"""
+        # Alice is a user who goes to the action list page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She adds an item
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Complete this test\n')
+
+        # The text field and button to add items are horizontally aligned
+        self.assertAlmostEqual(action_page.add_box.location['y'],
+            action_page.add_button.location['y'], delta=10)
+
+        # The action list is underneath the form
+        self.assertLess(action_page.add_box.location['y'],
+            action_page.thelist[0].location['y'])
