@@ -48,6 +48,10 @@ class ActionlistForm(forms.ModelForm):
         super(ActionlistForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_class = 'mui-form--inline'
+        self.helper.layout = Layout(
+            Div('text', ButtonHolder(Submit('submit', _('Add'))),
+            )
+        )
 
     def validate_unique(self):
         try:

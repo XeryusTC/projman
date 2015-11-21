@@ -4,7 +4,13 @@
 {% block content %}
 {% crispy form %}
 
-{% for item in actionlist_items %}
-	{{ item.text }}
-{% endfor %}
+<div id="list">
+	{% for item in actionlist_items %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui-col-md-6 full-height">
+				{{ item.text }}
+			</div>
+		</div>
+	{% endfor %}
+</div>
 {% endblock %}
