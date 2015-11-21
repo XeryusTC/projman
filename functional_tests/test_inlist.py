@@ -15,7 +15,7 @@ class InlistTests(FunctionalTestCase):
         page.inlist_link(page.sidebar).click()
 
         # On the new page is a text box where she is invited to enter something
-        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page = pages.projects.InlistPage(self.browser)
         self.assertEqual(inlist_page.add_box.get_attribute('placeholder'),
             'What needs to be done?')
         # She enters something in the text box and hits enter
@@ -41,7 +41,7 @@ class InlistTests(FunctionalTestCase):
         self.browser.quit()
         self.browser = webdriver.Firefox()
         page = pages.projects.BaseProjectPage(self.browser)
-        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page = pages.projects.InlistPage(self.browser)
 
         self.create_and_login_user('bob', 'bob@test.com', 'bob')
         page.inlist_link(page.sidebar).click()
@@ -70,7 +70,7 @@ class InlistTests(FunctionalTestCase):
         page.inlist_link(page.sidebar).click()
 
         # Alice tries to add an empty item
-        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page = pages.projects.InlistPage(self.browser)
         inlist_page.add_box.send_keys('')
         inlist_page.add_box.send_keys('\n')
 
@@ -85,7 +85,7 @@ class InlistTests(FunctionalTestCase):
         page.inlist_link(page.sidebar).click()
 
         # Alice tries to add an item
-        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page = pages.projects.InlistPage(self.browser)
         inlist_page.add_box.send_keys('Test duplication')
         inlist_page.add_box.send_keys(Keys.ENTER)
 
@@ -102,7 +102,7 @@ class InlistTests(FunctionalTestCase):
         page.inlist_link(page.sidebar).click()
 
         # She adds two items to the inlist
-        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page = pages.projects.InlistPage(self.browser)
         inlist_page.add_box.send_keys('Test deletion\n')
         inlist_page.add_box.send_keys('Remove this item\n')
 
@@ -116,7 +116,7 @@ class InlistTests(FunctionalTestCase):
         inlist_page.delete_item(second_item).click()
 
         # She ends up on a new page with the item name and a confirm button
-        confirm_page = pages.inlist.InlistDeletePage(self.browser)
+        confirm_page = pages.projects.InlistDeletePage(self.browser)
         self.assertIn('Remove this item', confirm_page.content.text)
         # She clicks the confirm button
         confirm_page.confirm.click()

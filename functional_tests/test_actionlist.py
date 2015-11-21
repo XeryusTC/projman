@@ -17,7 +17,7 @@ class ActionPageTests(FunctionalTestCase):
 
         # On the new page there is a text box where she is invited to enter
         # a new action item
-        action_page = pages.actionlist.ActionlistPage(self.browser)
+        action_page = pages.projects.ActionlistPage(self.browser)
         self.assertEqual(action_page.add_box.get_attribute('placeholder'),
             'What do you need to do?')
         # She enters something in the text box and hits enter
@@ -43,7 +43,7 @@ class ActionPageTests(FunctionalTestCase):
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
-        action_page = pages.actionlist.ActionlistPage(self.browser)
+        action_page = pages.projects.ActionlistPage(self.browser)
         action_page.add_box.send_keys('Pet the cat\n')
         action_page.add_box.send_keys('Repaint the bed\n')
         # The items are both on the page
@@ -56,7 +56,7 @@ class ActionPageTests(FunctionalTestCase):
         self.browser.quit()
         self.browser = webdriver.Firefox()
         page = pages.projects.BaseProjectPage(self.browser)
-        action_page = pages.actionlist.ActionlistPage(self.browser)
+        action_page = pages.projects.ActionlistPage(self.browser)
 
         self.create_and_login_user('bob', 'bob@test.com', 'bob')
         page.action_link(page.sidebar).click()
@@ -87,7 +87,7 @@ class ActionPageTests(FunctionalTestCase):
         page.action_link(page.sidebar).click()
 
         # Alice tries to add an empty item
-        action_page = pages.actionlist.ActionlistPage(self.browser)
+        action_page = pages.projects.ActionlistPage(self.browser)
         action_page.add_box.send_keys('\n')
 
         # She sees an error on the page
@@ -101,7 +101,7 @@ class ActionPageTests(FunctionalTestCase):
         page.action_link(page.sidebar).click()
 
         # Bob adds an item
-        action_page = pages.actionlist.ActionlistPage(self.browser)
+        action_page = pages.projects.ActionlistPage(self.browser)
         action_page.add_box.send_keys('Test duplication\n')
 
         # He tries to add an item again but gets an error
@@ -128,14 +128,14 @@ class ActionPageTests(FunctionalTestCase):
         page.inlist_link(page.sidebar).click()
 
         # She adds an item on the inlist page
-        inlist_page = pages.inlist.InlistPage(self.browser)
+        inlist_page = pages.projects.InlistPage(self.browser)
         inlist_page.add_box.send_keys('Inlist item\n')
         self.assertIn('Inlist item',
             [item.text for item in inlist_page.thelist])
 
         # She then goes to the action list page
         page.action_link(page.sidebar).click()
-        action_page = pages.actionlist.ActionlistPage(self.browser)
+        action_page = pages.projects.ActionlistPage(self.browser)
 
         # The previously added item is not on this page
         self.assertNotIn('Inlist item',
@@ -153,3 +153,19 @@ class ActionPageTests(FunctionalTestCase):
             [item.text for item in inlist_page.thelist])
         self.assertIn('Inlist item',
             [item.text for item in inlist_page.thelist])
+
+    def test_can_logout_from_action_page(self):
+        # Alice is a user who goes to the actionlist page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # Alice can click a log out button
+        page.logout.click()
+
+        # She lands on the logout confirmation page
+        confirm_page = pages.accounts.LogoutConfirmPage(self.browser)
+        confirm_page.confirm.click()
+
+        # She is now logged out and on the landing page again
+        self.assertTrue(self.browser.current_url.endswith('/en/'))
