@@ -5,7 +5,7 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from projects.models import InlistItem
+from projects.models import ActionlistItem, InlistItem
 
 EMPTY_TEXT_ERROR = _('You cannot add empty items')
 DUPLICATE_ITEM_ERROR = _("You've already got this on your list")
@@ -39,4 +39,28 @@ class InlistForm(forms.ModelForm):
         error_messages = {
             'text': {'required': EMPTY_TEXT_ERROR},
             NON_FIELD_ERRORS: {'unique_together': DUPLICATE_ITEM_ERROR},
+        }
+
+
+class ActionlistForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ActionlistForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'mui-form--inline'
+
+    def validate_unique(self):
+        try:
+            self.instance.validate_unique()
+        except ValidationError as e:
+            e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
+            self._update_errors(e)
+
+    class Meta:
+        model = ActionlistItem
+        fields = ('text',)
+        widgets = {'text': forms.TextInput(
+            {'placeholder': _('What do you need to do?')},
+        )}
+        error_messages = {
+            'text': {'required': EMPTY_TEXT_ERROR},
         }
