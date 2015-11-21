@@ -29,7 +29,6 @@ class InlistFormTest(unittest.TestCase):
 class InlistFormSlowTest(TestCase):
     def test_form_save(self):
         alice = User.objects.create_user('alice', 'alice@test.com', 'alice')
-        self.client.login(username='alice', password='alice')
         form = InlistForm(data={'text': 'test'})
         form.instance.user = alice
 
@@ -41,7 +40,6 @@ class InlistFormSlowTest(TestCase):
 
     def test_form_validation_for_duplicate_items(self):
         alice = User.objects.create_user('alice', 'alice@test.com', 'alice')
-        self.client.login(username='alice', password='alice')
         InlistItem.objects.create(text='dupe', user=alice)
 
         form = InlistForm(data={'text': 'dupe'})
