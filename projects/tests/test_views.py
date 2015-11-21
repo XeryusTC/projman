@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from projects import factories, views
 from projects.forms import (ActionlistForm, InlistForm, EMPTY_TEXT_ERROR,
-    DUPLICATE_ITEM_ERROR)
+        DUPLICATE_ITEM_ERROR, DUPLICATE_ACTION_ERROR)
 from projects.models import InlistItem, ActionlistItem
 
 User = get_user_model()
@@ -228,7 +228,7 @@ class ActionlistViewTests(TestCase):
         response = self.client.post(self.url, data={'text': 'twice'})
 
         self.assertEqual(ActionlistItem.objects.count(), 1)
-        self.assertContains(response, escape(DUPLICATE_ITEM_ERROR))
+        self.assertContains(response, escape(DUPLICATE_ACTION_ERROR))
 
     def test_context_includes_users_actionlist_items(self):
         item1 = factories.ActionlistItemFactory(text='action 1', user=alice)

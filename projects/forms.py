@@ -9,6 +9,7 @@ from projects.models import ActionlistItem, InlistItem
 
 EMPTY_TEXT_ERROR = _('You cannot add empty items')
 DUPLICATE_ITEM_ERROR = _("You've already got this on your list")
+DUPLICATE_ACTION_ERROR = _("You already planned to do this")
 
 class InlistForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -52,7 +53,7 @@ class ActionlistForm(forms.ModelForm):
         try:
             self.instance.validate_unique()
         except ValidationError as e:
-            e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
+            e.error_dict = {'text': [DUPLICATE_ACTION_ERROR]}
             self._update_errors(e)
 
     class Meta:

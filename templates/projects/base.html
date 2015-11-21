@@ -18,6 +18,10 @@
 			<a class="sidebar-mainlink"
 				href="{% url 'projects:inlist' %}">{% trans 'In list' %}</a>
 		</li>
+		<li>
+			<a class="sidebar-mainlink"
+			  href="{% url 'projects:actionlist' %}">{% trans 'Actions' %}</a>
+		</li>
 	{% block sidebar %}{% endblock %}
 	</ul>
 </div>

@@ -91,7 +91,7 @@ class ActionPageTests(FunctionalTestCase):
         action_page.add_box.send_keys('\n')
 
         # She sees an error on the page
-        self.assertIn('You cannod add empty action items',
+        self.assertIn('You cannot add empty items',
             [error.text for error in action_page.error_lists])
 
     def test_cannot_add_duplicate_items_to_action_list(self):
@@ -107,7 +107,7 @@ class ActionPageTests(FunctionalTestCase):
         # He tries to add an item again but gets an error
         action_page.add_box.send_keys('Test duplication\n')
         self.assertIn("You already planned to do this",
-            [error.text for error in action_page.error_list])
+            [error.text for error in action_page.error_lists])
 
     @unittest.expectedFailure
     def test_can_complete_action_item(self):

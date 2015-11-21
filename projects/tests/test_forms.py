@@ -5,7 +5,7 @@ import unittest
 
 from projects.factories import ActionlistItemFactory
 from projects.forms import (ActionlistForm, InlistForm, EMPTY_TEXT_ERROR,
-    DUPLICATE_ITEM_ERROR)
+        DUPLICATE_ITEM_ERROR, DUPLICATE_ACTION_ERROR)
 from projects.models import InlistItem, ActionlistItem
 
 User = get_user_model()
@@ -86,4 +86,4 @@ class ActionlistFormSlowTest(TestCase):
         form.instance.user = u
 
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['text'], [DUPLICATE_ITEM_ERROR])
+        self.assertEqual(form.errors['text'], [DUPLICATE_ACTION_ERROR])
