@@ -7,8 +7,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 from projects import factories, views
-from projects.forms import InlistForm, EMPTY_TEXT_ERROR, DUPLICATE_ITEM_ERROR
-from projects.models import InlistItem
+from projects.forms import (ActionlistForm, InlistForm, EMPTY_TEXT_ERROR,
+    DUPLICATE_ITEM_ERROR)
+from projects.models import InlistItem, ActionlistItem
 
 User = get_user_model()
 alice = None
@@ -159,3 +160,82 @@ class InlistItemDeleteViewTests(TestCase):
         response = self.client.get('/en/projects/inlist/{}/delete/'.format(
             self.item.pk))
         self.assertContains(response, self.item.text)
+
+
+class ActionlistViewTests(TestCase):
+    def setUp(self):
+        self.url = reverse('projects:actionlist')
+        self.client.login(username='alice', password='alice')
+
+    def test_actionlist_url_resolves_to_actionlist_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__,
+            views.ActionlistView.as_view().__name__)
+
+    def test_actionlist_uses_correct_templates(self):
+        self.client.login(username='alice', password='alice')
+        response = self.client.get('/en/projects/actions/')
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response, 'projects/actionlist.html')
+
+    def test_login_required(self):
+        self.client.logout()
+        response = self.client.get(reverse('projects:actionlist'))
+        self.assertRedirects(response,
+        '/en/accounts/login/?next=/en/projects/actions/')
+
+    def test_actionlist_uses_actionlist_form(self):
+        response = self.client.get(self.url)
+        self.assertIsInstance(response.context['form'], ActionlistForm)
+
+    def test_actionlist_displays_only_items_for_that_user(self):
+        item1 = factories.ActionlistItemFactory(text='item 1', user=alice)
+        item2 = factories.ActionlistItemFactory(text='item 2', user=alice)
+        item3 = factories.ActionlistItemFactory(text='item 3', user=bob)
+
+        response = self.client.get(self.url)
+
+        self.assertContains(response, 'item 1')
+        self.assertContains(response, 'item 2')
+        self.assertNotContains(response, 'item 3')
+
+    def test_POST_request_saves_to_users_actionlist(self):
+        self.client.post(self.url, data={'text': 'giants'})
+
+        self.assertEqual(ActionlistItem.objects.count(), 1)
+        item = ActionlistItem.objects.first()
+        self.assertEqual(item.text, 'giants')
+        self.assertEqual(item.user, alice)
+
+    def test_POST_redirects_to_actionlist(self):
+        response = self.client.post(self.url, data={'text': 'test'})
+        self.assertRedirects(response, self.url)
+
+    def test_empty_input_saves_nothing_to_db(self):
+        response = self.client.post(self.url, data={'text': ''})
+        self.assertEqual(ActionlistItem.objects.count(), 0)
+
+    def test_empty_input_shows_error_on_page(self):
+        response = self.client.post(self.url, data={'text': ''})
+
+        self.assertEqual(ActionlistItem.objects.count(), 0)
+        self.assertContains(response, EMPTY_TEXT_ERROR)
+
+    def test_trying_to_enter_same_text_twice_shows_error_on_page(self):
+        item1 = factories.ActionlistItemFactory(text='twice', user=alice)
+
+        response = self.client.post(self.url, data={'text': 'twice'})
+
+        self.assertEqual(ActionlistItem.objects.count(), 1)
+        self.assertContains(response, escape(DUPLICATE_ITEM_ERROR))
+
+    def test_context_includes_users_actionlist_items(self):
+        item1 = factories.ActionlistItemFactory(text='action 1', user=alice)
+        item2 = factories.ActionlistItemFactory(text='action 2', user=alice)
+
+        response = self.client.get(self.url)
+
+        self.assertIn('actionlist_items', response.context.keys())
+        self.assertIn(item1, response.context['actionlist_items'])
+        self.assertIn(item2, response.context['actionlist_items'])
