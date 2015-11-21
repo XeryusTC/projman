@@ -1,0 +1,12 @@
+{% extends 'projects/base.html' %}
+{% load i18n %}
+
+{% block content %}
+{% blocktrans %}Are you sure you want to remove the action
+"{{ actionlistitem }}" from your action list?{% endblocktrans %}
+<form method="post" action="">
+	{% csrf_token %}
+	<input class="mui-btn mui-btn--primary" type="submit"
+		value="{% trans 'Confirm' %}" />
+</form>
+{% endblock %}

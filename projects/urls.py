@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^inlist/(?P<pk>[0-9]+)/delete/$', views.InlistItemDelete.as_view(),
         name='delete_inlist'),
     url(r'^actions/$', views.ActionlistView.as_view(), name='actionlist'),
+    url(r'^actions/(?P<pk>[0-9]+)/delete/$',
+        views.ActionlistItemDelete.as_view(), name='delete_actionlist'),
 ]

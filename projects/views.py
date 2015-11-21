@@ -60,3 +60,8 @@ class ActionlistView(LoginRequiredMixin, FormView):
         else:
             return super(ActionlistView, self).form_invalid(form)
         return super(ActionlistView, self).form_valid(form)
+
+
+class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
+    model = ActionlistItem
+    success_url = reverse_lazy('projects:actionlist')
