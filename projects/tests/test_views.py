@@ -209,8 +209,8 @@ class ActionlistViewTests(TestCase):
         self.assertEqual(item.user, alice)
 
     def test_POST_redirects_to_actionlist(self):
-        response = self.client.post(self.url, data={'text': 'test'})
-        self.assertRedirects(response, self.url)
+        response = self.client.post('/en/projects/actions/', data={'text': 'test'})
+        self.assertRedirects(response, '/en/projects/actions/')
 
     def test_empty_input_saves_nothing_to_db(self):
         response = self.client.post(self.url, data={'text': ''})

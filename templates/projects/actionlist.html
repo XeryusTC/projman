@@ -1,0 +1,10 @@
+{% extends 'projects/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% crispy form %}
+
+{% for item in actionlist_items %}
+	{{ item.text }}
+{% endfor %}
+{% endblock %}
