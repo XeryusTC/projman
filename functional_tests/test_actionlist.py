@@ -103,9 +103,35 @@ class ActionPageTests(FunctionalTestCase):
     def test_can_complete_action_item(self):
         self.fail('Implement this')
 
-    @unittest.expectedFailure
     def test_can_delete_action_item(self):
-        self.fail('Implement this')
+        # Alice is a user who logs in and goes to the action list page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She adds two items to the action_page
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Create actions\n')
+        action_page.add_box.send_keys('Remove an action\n')
+
+        # She wants to remove the last item that she has added, so she
+        # looks it up in the list and removes it
+        actions = action_page.get_list_rows()
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Remove an action':
+                elems['delete'].click()
+
+        # She ends up on a new page that asks her if she wants to confirm
+        # to delete the item, she first checks whether the item is correct
+        confirm_page = pages.projects.ActionDeletePage(self.browser)
+        self.assertIn('Remove an action', confirm_page.content.text)
+        # She clicks the confirm button
+        confirm_page.confirm.click()
+
+        # She is returned to the action list page, which doesn't have the
+        # item anymore, but the other one is still there
+        self.assertIn('Create actions', action_page.list_text)
+        self.assertNotIn('Remove an action', action_page.list_text)
 
     @unittest.expectedFailure
     def test_can_change_inlist_items_into_action_item(self):

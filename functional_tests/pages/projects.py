@@ -34,8 +34,21 @@ class ActionlistPage(PageObject):
     thelist     = MultiPageElement(css='#list .mui-row')
 
     _list_text  = PageElement(css='.full-height', context=True)
+    _delete_item = PageElement(link_text='DELETE', context=True)
 
     @property
     def list_text(self):
         text = [self._list_text(row).text for row in self.thelist]
         return text
+
+    def get_list_rows(self):
+        res = {}
+        for i in range(len(self.thelist)):
+            res[i] = {'text': self._list_text(self.thelist[i]),
+                'delete': self._delete_item(self.thelist[i])}
+        return res
+
+
+class ActionDeletePage(PageObject):
+    content = PageElement(id_='content')
+    confirm = PageElement(xpath="//input[@type='submit']")

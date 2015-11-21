@@ -239,3 +239,36 @@ class ActionlistViewTests(TestCase):
         self.assertIn('actionlist_items', response.context.keys())
         self.assertIn(item1, response.context['actionlist_items'])
         self.assertIn(item2, response.context['actionlist_items'])
+
+
+class ActionlistItemDeleteViewTests(TestCase):
+    def setUp(self):
+        self.client.login(username='alice', password='alice')
+        self.item = factories.ActionlistItemFactory(user=alice)
+        self.url = '/en/projects/actions/{}/delete/'.format(self.item.pk)
+
+    def test_inlist_item_delete_view_is_delete_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__,
+            views.ActionlistItemDelete.as_view().__name__)
+
+    def test_actionlist_item_delete_view_uses_correct_templates(self):
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response,
+            'projects/actionlistitem_confirm_delete.html')
+
+    def test_login_required(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+        self.assertRedirects(response,
+            '/en/accounts/login/?next=' + self.url)
+
+    def test_actionlist_item_delete_view_shows_item_text(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, self.item.text)
+
+    def test_POST_redirects_to_action_list(self):
+        response = self.client.post(self.url)
+        self.assertRedirects(response, '/en/projects/actions/')
