@@ -49,7 +49,7 @@ class ActionlistForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_class = 'mui-form--inline'
         self.helper.layout = Layout(
-            Div(Div('text', css_class="mui-col-xs-8 mui-col-md-6"),
+            Div(Div('text', css_class="mui-col-xs-8 mui-col-md-6 hide-label"),
                 Div(ButtonHolder(Submit('submit', _('Add'))),
                     css_class="mui-col-xs-4 mui-col-md-2"),
             css_class="mui-row")
