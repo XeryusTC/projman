@@ -99,9 +99,34 @@ class ActionPageTests(FunctionalTestCase):
         self.assertIn("You already planned to do this",
             [error.text for error in action_page.error_lists])
 
-    @unittest.expectedFailure
     def test_can_complete_action_item(self):
-        self.fail('Implement this')
+        # Alice is a user who logs in and goes to the action list page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She adds an item to the action page
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Check this action\n')
+
+        # The element should end up on the page
+        self.assertIn('Check this action', action_page.list_text)
+
+        # She moves her mouse over the text and sees that it gets crossed out
+        item = action_page.get_list_rows()[0]
+        self.assertEqual(item['text'].value_of_css_property('text-decoration'),
+            'none')
+        chain = webdriver.ActionChains(self.browser)
+        chain.move_to_element(item['text'])
+        chain.perform()
+        self.assertEqual(item['text'].value_of_css_property('text-decoration'),
+            'line-through')
+        # She also notices that her curser indicates that she can click it
+        self.assertEqual(item['text'].value_of_css_property('cursor'), 'pointer')
+
+        # When she clicks it the page reloads and the action is "checked"
+        item['text'].click()
+        self.assertIn('Check this action', action_page.checked_list)
 
     def test_can_delete_action_item(self):
         # Alice is a user who logs in and goes to the action list page
