@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 import unittest
@@ -61,6 +62,7 @@ class ActionlistFormTest(unittest.TestCase):
         self.assertEqual(form.helper.form_method.lower(), 'post')
         self.assertIn('mui-form--inline', form.helper.form_class)
 
+
 class ActionlistFormSlowTest(TestCase):
     def test_form_save(self):
         u = User.objects.create_user('alice', 'alice@test.org', 'alice')
@@ -82,3 +84,26 @@ class ActionlistFormSlowTest(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['text'], [forms.DUPLICATE_ACTION_ERROR])
+
+
+class CompleteActionFormTest(TestCase):
+    def test_form_save(self):
+        alice = User.objects.create_user('alice', 'alice@test.org', 'alice')
+        item = factories.ActionlistItemFactory(user=alice)
+        form = forms.CompleteActionForm()
+
+        form.save(item, alice)
+
+        self.assertTrue(item.complete)
+
+    def test_form_invalid_for_wrong_user(self):
+        alice = User.objects.create_user('alice', 'alice@test.org', 'alice')
+        trudy = User.objects.create_user('trudy', 'trudy@test.org', 'trudy')
+        item = factories.ActionlistItemFactory(user=alice)
+        form = forms.CompleteActionForm()
+
+        form.is_valid()
+        form.save(item, trudy)
+
+        self.assertFalse(item.complete)
+        self.assertEqual(form.errors[NON_FIELD_ERRORS], [forms.ILLEGAL_ACTION_ERROR])

@@ -10,6 +10,7 @@ from projects import models
 EMPTY_TEXT_ERROR = _('You cannot add empty items')
 DUPLICATE_ITEM_ERROR = _("You've already got this on your list")
 DUPLICATE_ACTION_ERROR = _("You already planned to do this")
+ILLEGAL_ACTION_ERROR = _("You are not allowed to do this")
 
 class InlistForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -71,3 +72,13 @@ class ActionlistForm(forms.ModelForm):
         error_messages = {
             'text': {'required': EMPTY_TEXT_ERROR},
         }
+
+
+class CompleteActionForm(forms.Form):
+    def save(self, item, user):
+        if item.user == user:
+            item.complete = True
+            item.save()
+        else:
+            self.cleaned_data = []
+            self.add_error(None, ILLEGAL_ACTION_ERROR)

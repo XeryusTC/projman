@@ -65,3 +65,17 @@ class ActionlistView(LoginRequiredMixin, FormView):
 class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
     model = models.ActionlistItem
     success_url = reverse_lazy('projects:actionlist')
+
+
+class ActionCompleteView(LoginRequiredMixin, FormView):
+    form_class = forms.CompleteActionForm
+    success_url = reverse_lazy('projects:actionlist')
+    template_name = 'projects/actionlistitem_errorform.html'
+
+    def form_valid(self, form):
+        form.save(models.ActionlistItem.objects.get(pk=self.kwargs['pk']),
+            self.request.user)
+        if form.is_valid():
+            return super(ActionCompleteView, self).form_valid(form)
+        else:
+            return super(ActionCompleteView, self).form_invalid(form)

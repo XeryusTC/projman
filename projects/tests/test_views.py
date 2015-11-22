@@ -307,3 +307,46 @@ class ActionlistItemDeleteViewTests(TestCase):
         response = self.view(request, pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('projects:actionlist'))
+
+
+class ActionCompleteViewTest(TestCase):
+    def setUp(self):
+        self.item = factories.ActionlistItemFactory(user=alice)
+        self.url = reverse('projects:complete_action',
+            kwargs={'pk': self.item.pk})
+        self.factory = RequestFactory()
+        self.view = views.ActionCompleteView.as_view()
+
+    def test_complete_action_view_is_complete_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__, self.view.__name__)
+
+    def test_actioncomple_can_fall_back_to_correct_template(self):
+        self.client.login(username='alice', password='alice')
+        response = self.client.get('/en/projects/actions/0/complete/')
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response,
+            'projects/actionlistitem_errorform.html')
+
+    def test_login_required(self):
+        request = self.factory.get(self.url)
+        request.user = AnonymousUser()
+        response = self.view(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+            reverse('account_login') + '?next=' + self.url)
+
+    def test_POST_changes_the_complete_status_to_true(self):
+        self.assertFalse(self.item.complete)
+        request = self.factory.post(self.url)
+        request.user = alice
+        self.view(request, pk=self.item.pk)
+        self.item = models.ActionlistItem.objects.get(pk=self.item.pk)
+        self.assertTrue(self.item.complete)
+
+    def test_only_owner_can_change_complete_status(self):
+        request = self.factory.post(self.url)
+        request.user = bob
+        response = self.view(request, pk=self.item.pk)
+        self.assertContains(response, forms.ILLEGAL_ACTION_ERROR)
