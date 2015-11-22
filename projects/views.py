@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from braces.views import LoginRequiredMixin
 from django.db.utils import IntegrityError
-from django.views.generic import TemplateView, FormView, DeleteView
+from django.views.generic import TemplateView, FormView, DeleteView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 
-from projects.forms import ActionlistForm, InlistForm, DUPLICATE_ITEM_ERROR
-from projects.models import InlistItem, ActionlistItem
+from projects import forms, models
 
 class MainPageView(LoginRequiredMixin, TemplateView):
     template_name = 'projects/mainpage.html'
@@ -15,14 +15,14 @@ class MainPageView(LoginRequiredMixin, TemplateView):
 
 class InlistView(LoginRequiredMixin, FormView):
     template_name = 'projects/inlist.html'
-    form_class = InlistForm
+    form_class = forms.InlistForm
 
     def get_success_url(self):
         return reverse_lazy('projects:inlist')
 
     def get_context_data(self, **kwargs):
         context = super(InlistView, self).get_context_data(**kwargs)
-        context['inlist_items'] = InlistItem.objects.filter(
+        context['inlist_items'] = models.InlistItem.objects.filter(
             user=self.request.user)
         return context
 
@@ -37,18 +37,18 @@ class InlistView(LoginRequiredMixin, FormView):
 
 
 class InlistItemDelete(LoginRequiredMixin, DeleteView):
-    model = InlistItem
+    model = models.InlistItem
     success_url = reverse_lazy('projects:inlist')
 
 
 class ActionlistView(LoginRequiredMixin, FormView):
     template_name = 'projects/actionlist.html'
-    form_class = ActionlistForm
+    form_class = forms.ActionlistForm
     success_url = reverse_lazy('projects:actionlist')
 
     def get_context_data(self, **kwargs):
         context = super(ActionlistView, self).get_context_data(**kwargs)
-        context['actionlist_items'] = ActionlistItem.objects.filter(
+        context['actionlist_items'] = models.ActionlistItem.objects.filter(
             user=self.request.user)
         return context
 
@@ -63,5 +63,5 @@ class ActionlistView(LoginRequiredMixin, FormView):
 
 
 class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
-    model = ActionlistItem
+    model = models.ActionlistItem
     success_url = reverse_lazy('projects:actionlist')

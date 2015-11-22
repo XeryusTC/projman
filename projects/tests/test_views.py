@@ -7,10 +7,7 @@ from django.utils.html import escape
 import unittest
 from unittest.mock import Mock, patch
 
-from projects import factories, views
-from projects.forms import (ActionlistForm, InlistForm, EMPTY_TEXT_ERROR,
-        DUPLICATE_ITEM_ERROR, DUPLICATE_ACTION_ERROR)
-from projects.models import InlistItem, ActionlistItem
+from projects import factories, forms, models, views
 
 User = get_user_model()
 alice = None
@@ -72,7 +69,7 @@ class InlistpageTest(TestCase):
         request = self.factory.get(self.url)
         request.user = alice
         response = self.view(request)
-        self.assertIsInstance(response.context_data['form'], InlistForm)
+        self.assertIsInstance(response.context_data['form'], forms.InlistForm)
 
     def test_displays_only_items_for_that_user(self):
         item1 = factories.InlistItemFactory(text='item 1', user=alice)
@@ -92,8 +89,8 @@ class InlistpageTest(TestCase):
         request.user = alice
         response = self.view(request)
 
-        self.assertEqual(InlistItem.objects.count(), 1)
-        item = InlistItem.objects.first()
+        self.assertEqual(models.InlistItem.objects.count(), 1)
+        item = models.InlistItem.objects.first()
         self.assertEqual(item.text, 'ecila')
         self.assertEqual(item.user, alice)
 
@@ -108,7 +105,7 @@ class InlistpageTest(TestCase):
         request = self.factory.post(self.url, {'text': ''})
         request.user = alice
         response = self.view(request)
-        self.assertEqual(InlistItem.objects.count(), 0)
+        self.assertEqual(models.InlistItem.objects.count(), 0)
 
     def test_context_variable_contains_users_inlist_items(self):
         item1 = factories.InlistItemFactory(text='item 1', user=alice)
@@ -127,8 +124,8 @@ class InlistpageTest(TestCase):
         request.user = alice
         response = self.view(request)
 
-        self.assertEqual(InlistItem.objects.count(), 0)
-        self.assertContains(response, EMPTY_TEXT_ERROR)
+        self.assertEqual(models.InlistItem.objects.count(), 0)
+        self.assertContains(response, forms.EMPTY_TEXT_ERROR)
 
     def test_trying_to_enter_same_item_twice_shows_error_on_page(self):
         item1 = factories.InlistItemFactory(text='dupe', user=alice)
@@ -137,8 +134,8 @@ class InlistpageTest(TestCase):
         request.user = alice
         response = self.view(request)
 
-        self.assertEqual(InlistItem.objects.count(), 1)
-        self.assertContains(response, escape(DUPLICATE_ITEM_ERROR))
+        self.assertEqual(models.InlistItem.objects.count(), 1)
+        self.assertContains(response, escape(forms.DUPLICATE_ITEM_ERROR))
 
 
 class InlistItemDeleteViewTests(TestCase):
@@ -202,7 +199,8 @@ class ActionlistViewTests(TestCase):
         request = self.factory.get(self.url)
         request.user = alice
         response = self.view(request)
-        self.assertIsInstance(response.context_data['form'], ActionlistForm)
+        self.assertIsInstance(response.context_data['form'],
+            forms.ActionlistForm)
 
     def test_actionlist_displays_only_items_for_that_user(self):
         item1 = factories.ActionlistItemFactory(text='item 1', user=alice)
@@ -223,8 +221,8 @@ class ActionlistViewTests(TestCase):
 
         response = self.view(request)
 
-        self.assertEqual(ActionlistItem.objects.count(), 1)
-        item = ActionlistItem.objects.first()
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+        item = models.ActionlistItem.objects.first()
         self.assertEqual(item.text, 'giants')
         self.assertEqual(item.user, alice)
 
@@ -239,13 +237,13 @@ class ActionlistViewTests(TestCase):
         request = self.factory.post(self.url, {'text': ''})
         request.user = alice
         response = self.view(request)
-        self.assertEqual(ActionlistItem.objects.count(), 0)
+        self.assertEqual(models.ActionlistItem.objects.count(), 0)
 
     def test_empty_input_shows_error_on_page(self):
         request = self.factory.post(self.url, {'text': ''})
         request.user = alice
         response = self.view(request)
-        self.assertContains(response, EMPTY_TEXT_ERROR)
+        self.assertContains(response, forms.EMPTY_TEXT_ERROR)
 
     def test_trying_to_enter_same_text_twice_shows_error_on_page(self):
         item1 = factories.ActionlistItemFactory(text='twice', user=alice)
@@ -254,8 +252,8 @@ class ActionlistViewTests(TestCase):
         request.user = alice
         response = self.view(request)
 
-        self.assertEqual(ActionlistItem.objects.count(), 1)
-        self.assertContains(response, DUPLICATE_ACTION_ERROR)
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+        self.assertContains(response, forms.DUPLICATE_ACTION_ERROR)
 
     def test_context_includes_users_actionlist_items(self):
         item1 = factories.ActionlistItemFactory(text='action 1', user=alice)
