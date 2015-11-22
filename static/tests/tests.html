@@ -9,13 +9,22 @@
 
 <body>
 <div id="qunit"></div>
+
 <div id="qunit-fixture">
 	<a class="js-hide-sidebar">&#9776;</a>
-	<div id="sidebar">
+	<div id="sidebar" style="display:none;"></div>
+
+	<div class="action-item">
+		<form onsubmit="return false"></form>
+	</div>
 </div>
+
 <script src="https://code.jquery.com/jquery.min.js"></script>
-<script src="../js/qunit-1.20.0.js"></script>
+<script src="http://code.jquery.com/qunit/qunit-1.20.0.js"></script>
+<script src="http://sinonjs.org/releases/sinon-1.17.2.js"></script>
+<script src="http://sinonjs.org/releases/sinon-qunit-1.0.0.js"></script>
 <script src="../js/sidebar.js"></script>
+<script src="../js/projects.js"></script>
 <script>
 test("Sidebar should be toggled when clicking hide button", function() {
 	ok($('#sidebar').position().left >= 0);
@@ -25,7 +34,15 @@ test("Sidebar should be toggled when clicking hide button", function() {
 	// Toggle on
 	$('.js-hide-sidebar').trigger('click');
 	ok($('#sidebar').position().left >= 0);
+});
 
+test("Clicking an action-item should submit the form", function() {
+	var spy = this.spy();
+	$('.action-item form').submit(spy);
+
+	$('.action-item').click();
+
+	ok(spy.called);
 });
 </script>
 
