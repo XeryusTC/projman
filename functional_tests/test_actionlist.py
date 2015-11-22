@@ -117,8 +117,6 @@ class ActionPageTests(FunctionalTestCase):
         # Wait for the elements to be added
         self.assertIn('Create actions', action_page.list_text)
         self.assertIn('Remove an action', action_page.list_text)
-        self.wait_for(lambda:
-            self.assertEqual(len(action_page.get_list_rows()), 2))
 
         # She wants to remove the last item that she has added, so she
         # looks it up in the list and removes it
@@ -126,6 +124,7 @@ class ActionPageTests(FunctionalTestCase):
         for idx, elems in actions.items():
             if elems['text'].text == 'Remove an action':
                 elems['delete'].click()
+                break
 
         # She ends up on a new page that asks her if she wants to confirm
         # to delete the item, she first checks whether the item is correct
