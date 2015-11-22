@@ -116,6 +116,8 @@ class ActionPageTests(FunctionalTestCase):
 
         # She wants to remove the last item that she has added, so she
         # looks it up in the list and removes it
+        self.wait_for(lambda:
+            self.assertEqual(len(action_page.get_list_rows()), 2))
         actions = action_page.get_list_rows()
         for idx, elems in actions.items():
             if elems['text'].text == 'Remove an action':
