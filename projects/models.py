@@ -17,6 +17,7 @@ class InlistItem(models.Model):
 class ActionlistItem(models.Model):
     text = models.CharField(max_length=255, default='')
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    complete = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
         return self.text

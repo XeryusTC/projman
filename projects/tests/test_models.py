@@ -78,3 +78,12 @@ class ActionlistItemModelTest(TestCase):
         item2 = factories.ActionlistItemFactory(text='other item', user=u)
         self.assertEqual(str(item1), 'test item')
         self.assertEqual(str(item2), 'other item')
+
+    def test_has_complete_field(self):
+        item = ActionlistItem(text='test', user=u, complete=False)
+        item.save()
+
+    def test_complete_field_defaults_to_false(self):
+        item = factories.ActionlistItemFactory(user=u)
+        item.save()
+        self.assertFalse(item.complete)
