@@ -25,3 +25,8 @@ a.appbar-correct {
 	padding-top: 1%;
 	padding-bottom: 1%;
 }
+
+.action-item:hover {
+	cursor: pointer;
+	text-decoration: line-through;
+}
