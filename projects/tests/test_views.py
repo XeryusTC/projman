@@ -276,7 +276,11 @@ class ActionlistViewTests(TestCase):
         request = self.factory.get(self.url)
         request.user = alice
         response = self.view(request)
-        self.assertSequenceEqual(nc, response.context_data['actionlist_items'])
+
+        context = response.context_data['actionlist_items']
+        self.assertEqual(len(nc), len(context))
+        self.assertIn(nc[0], context)
+        self.assertIn(nc[1], context)
 
     def test_context_includes_users_completed_action_list(self):
         item1 = factories.ActionlistItemFactory(user=alice, complete=True)
@@ -298,8 +302,11 @@ class ActionlistViewTests(TestCase):
         request = self.factory.get(self.url)
         request.user = alice
         response = self.view(request)
-        self.assertSequenceEqual(co,
-            response.context_data['actionlist_complete'])
+
+        context = response.context_data['actionlist_complete']
+        self.assertEqual(len(co), len(context))
+        self.assertIn(co[0], context)
+        self.assertIn(co[1], context)
 
 
 class ActionlistItemDeleteViewTests(TestCase):
