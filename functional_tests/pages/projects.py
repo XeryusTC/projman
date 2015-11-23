@@ -37,28 +37,15 @@ class ActionlistPage(PageObject):
     _list_text  = PageElement(css='.full-height', context=True)
     _delete_item = PageElement(link_text='DELETE', context=True)
 
-    @property
-    def list_text(self):
-        text = [self._list_text(row).text for row in self.thelist]
+    def list_text(self, context):
+        text = [self._list_text(row).text for row in context]
         return text
 
-    @property
-    def checked_list_text(self):
-        text = [self._list_text(row).text for row in self.checked_list]
-        return text
-
-    def get_list_rows(self):
+    def get_list_rows(self, context):
         res = {}
-        for i in range(len(self.thelist)):
-            res[i] = {'text': self._list_text(self.thelist[i]),
-                'delete': self._delete_item(self.thelist[i])}
-        return res
-
-    def get_checked_rows(self):
-        res = {}
-        for i in range(len(self.checked_list)):
-            res[i] = {'text': self._list_text(self.checked_list[i]),
-                'delete': self._delete_item(self.checked_list[i])}
+        for i in range(len(context)):
+            res[i] = {'text': self._list_text(context[i]),
+                'delete': self._delete_item(context[i])}
         return res
 
 

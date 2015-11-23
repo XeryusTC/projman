@@ -25,15 +25,18 @@ class ActionPageTests(FunctionalTestCase):
         action_page.add_box.send_keys(Keys.RETURN)
 
         # The page reloads and she sees that the item is in a list on the page
-        self.assertIn('Test the action list', action_page.list_text)
+        self.assertIn('Test the action list',
+            action_page.list_text(action_page.thelist))
 
         # She decides to add a second item to the list
         action_page.add_box.send_keys('Ride the comet')
         action_page.add_button.click()
 
         # The page reloads again and now both items are on the page
-        self.assertIn('Test the action list', action_page.list_text)
-        self.assertIn('Ride the comet', action_page.list_text)
+        self.assertIn('Test the action list',
+            action_page.list_text(action_page.thelist))
+        self.assertIn('Ride the comet',
+            action_page.list_text(action_page.thelist))
 
     def test_action_list_items_are_not_visible_for_other_users(self):
         # Alice visits the website and creates an item for the action list
@@ -44,8 +47,10 @@ class ActionPageTests(FunctionalTestCase):
         action_page.add_box.send_keys('Pet the cat\n')
         action_page.add_box.send_keys('Repaint the bed\n')
         # The items are both on the page
-        self.assertIn('Pet the cat', action_page.list_text)
-        self.assertIn('Repaint the bed', action_page.list_text)
+        self.assertIn('Pet the cat',
+            action_page.list_text(action_page.thelist))
+        self.assertIn('Repaint the bed',
+            action_page.list_text(action_page.thelist))
 
         # Bob is another user who goes to the action list page on the site
         self.browser.quit()
@@ -57,8 +62,10 @@ class ActionPageTests(FunctionalTestCase):
         page.action_link(page.sidebar).click()
 
         # He cannot see Alice's items
-        self.assertNotIn('Pet the cat', action_page.list_text)
-        self.assertNotIn('Repaint the bed', action_page.list_text)
+        self.assertNotIn('Pet the cat',
+            action_page.list_text(action_page.thelist))
+        self.assertNotIn('Repaint the bed',
+            action_page.list_text(action_page.thelist))
 
         # Bob enters some items of his own
         action_page.add_box.send_keys('Eat some sushi')
@@ -66,9 +73,12 @@ class ActionPageTests(FunctionalTestCase):
 
         # There is still no sign of Alice's list, but Bob can see the item
         # that he just added
-        self.assertNotIn('Pet the cat', action_page.list_text)
-        self.assertNotIn('Repaint the bed', action_page.list_text)
-        self.assertIn('Eat some sushi', action_page.list_text)
+        self.assertNotIn('Pet the cat',
+            action_page.list_text(action_page.thelist))
+        self.assertNotIn('Repaint the bed',
+            action_page.list_text(action_page.thelist))
+        self.assertIn('Eat some sushi',
+            action_page.list_text(action_page.thelist))
 
     def test_cannot_add_empty_items_to_action_list(self):
         # Alice is a user who goes to the action list page
@@ -110,10 +120,11 @@ class ActionPageTests(FunctionalTestCase):
         action_page.add_box.send_keys('Check this action\n')
 
         # The element should end up on the page
-        self.assertIn('Check this action', action_page.list_text)
+        self.assertIn('Check this action',
+            action_page.list_text(action_page.thelist))
 
         # She moves her mouse over the text and sees that it gets crossed out
-        item = action_page.get_list_rows()[0]
+        item = action_page.get_list_rows(action_page.thelist)[0]
         self.assertEqual(item['text'].value_of_css_property('text-decoration'),
             'none')
         chain = webdriver.ActionChains(self.browser)
@@ -126,7 +137,8 @@ class ActionPageTests(FunctionalTestCase):
 
         # When she clicks it the page reloads and the action is "checked"
         item['text'].click()
-        self.assertIn('Check this action', action_page.checked_list_text)
+        self.assertIn('Check this action',
+            action_page.list_text(action_page.checked_list))
 
     def test_can_delete_action_item(self):
         # Alice is a user who logs in and goes to the action list page
@@ -140,12 +152,14 @@ class ActionPageTests(FunctionalTestCase):
         action_page.add_box.send_keys('Remove an action\n')
 
         # Wait for the elements to be added
-        self.assertIn('Create actions', action_page.list_text)
-        self.assertIn('Remove an action', action_page.list_text)
+        self.assertIn('Create actions',
+            action_page.list_text(action_page.thelist))
+        self.assertIn('Remove an action',
+            action_page.list_text(action_page.thelist))
 
         # She wants to remove the last item that she has added, so she
         # looks it up in the list and removes it
-        actions = action_page.get_list_rows()
+        actions = action_page.get_list_rows(action_page.thelist)
         for idx, elems in actions.items():
             if elems['text'].text == 'Remove an action':
                 elems['delete'].click()
@@ -160,8 +174,10 @@ class ActionPageTests(FunctionalTestCase):
 
         # She is returned to the action list page, which doesn't have the
         # item anymore, but the other one is still there
-        self.assertIn('Create actions', action_page.list_text)
-        self.assertNotIn('Remove an action', action_page.list_text)
+        self.assertIn('Create actions',
+            action_page.list_text(action_page.thelist))
+        self.assertNotIn('Remove an action',
+            action_page.list_text(action_page.thelist))
 
     def test_can_delete_completed_action_items(self):
         # Alice is a user who logs in and goes to the action list page
@@ -173,11 +189,13 @@ class ActionPageTests(FunctionalTestCase):
         action_page.add_box.send_keys('Remove completed action\n')
 
         # Make sure the elements are added
-        self.assertIn('Complete action', action_page.list_text)
-        self.assertIn('Remove completed action', action_page.list_text)
+        self.assertIn('Complete action',
+            action_page.list_text(action_page.thelist))
+        self.assertIn('Remove completed action',
+            action_page.list_text(action_page.thelist))
 
         # Alice goes to complete the first action she's added
-        actions = action_page.get_list_rows()
+        actions = action_page.get_list_rows(action_page.thelist)
         for idx, elems in actions.items():
             if elems['text'].text == 'Complete action':
                 elems['text'].click()
@@ -185,7 +203,7 @@ class ActionPageTests(FunctionalTestCase):
 
         # The item is now in the completed list next to a delete button,
         # she clicks it
-        actions = action_page.get_checked_rows()
+        actions = action_page.get_list_rows(action_page.checked_list)
         for idx, elems in actions.items():
             if elems['text'].text == 'Complete action':
                 elems['delete'].click()
@@ -199,9 +217,12 @@ class ActionPageTests(FunctionalTestCase):
 
         # She is returned to the action list page, which doesn't have the
         # item in either list anymore
-        self.assertIn('Remove completed action', action_page.list_text)
-        self.assertNotIn('Complete action', action_page.list_text)
-        self.assertNotIn('complete action', action_page.checked_list_text)
+        self.assertIn('Remove completed action',
+            action_page.list_text(action_page.thelist))
+        self.assertNotIn('Complete action',
+            action_page.list_text(action_page.thelist))
+        self.assertNotIn('complete action',
+            action_page.list_text(action_page.checked_list))
 
     @unittest.expectedFailure
     def test_can_change_inlist_items_into_action_item(self):
@@ -224,11 +245,13 @@ class ActionPageTests(FunctionalTestCase):
         action_page = pages.projects.ActionlistPage(self.browser)
 
         # The previously added item is not on this page
-        self.assertNotIn('Inlist item', action_page.list_text)
+        self.assertNotIn('Inlist item',
+            action_page.list_text(action_page.thelist))
 
         # She adds an item on the action page
         action_page.add_box.send_keys('Action list item\n')
-        self.assertIn('Action list item', action_page.list_text)
+        self.assertIn('Action list item',
+            action_page.list_text(action_page.thelist))
 
         # She navigates back to the inlist page and sees that the last
         # added item is not on that list, but the first item is
