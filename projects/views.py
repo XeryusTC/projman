@@ -49,7 +49,9 @@ class ActionlistView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(ActionlistView, self).get_context_data(**kwargs)
         context['actionlist_items'] = models.ActionlistItem.objects.filter(
-            user=self.request.user)
+            user=self.request.user, complete=False)
+        context['actionlist_complete'] = models.ActionlistItem.objects.filter(
+            user=self.request.user, complete=True)
         return context
 
     def form_valid(self, form):

@@ -126,7 +126,7 @@ class ActionPageTests(FunctionalTestCase):
 
         # When she clicks it the page reloads and the action is "checked"
         item['text'].click()
-        self.assertIn('Check this action', action_page.checked_list)
+        self.assertIn('Check this action', action_page.checked_list_text)
 
     def test_can_delete_action_item(self):
         # Alice is a user who logs in and goes to the action list page

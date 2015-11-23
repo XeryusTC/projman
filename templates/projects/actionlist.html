@@ -30,4 +30,14 @@
 		</div>
 	{% endfor %}
 </div>
+
+<div id="checked">
+	{% for item in actionlist_complete %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui-col-md-6 full-height">
+				{{ item.text }}
+			</div>
+		</div>
+	{% endfor %}
+</div>
 {% endblock %}

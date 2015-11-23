@@ -32,6 +32,7 @@ class ActionlistPage(PageObject):
     add_button  = PageElement(xpath="//form//input[@id='submit-id-submit']")
     error_lists = MultiPageElement(css='.errorlist')
     thelist     = MultiPageElement(css='#list .mui-row')
+    checked_list = MultiPageElement(css='#checked .mui-row')
 
     _list_text  = PageElement(css='.full-height', context=True)
     _delete_item = PageElement(link_text='DELETE', context=True)
@@ -39,6 +40,11 @@ class ActionlistPage(PageObject):
     @property
     def list_text(self):
         text = [self._list_text(row).text for row in self.thelist]
+        return text
+
+    @property
+    def checked_list_text(self):
+        text = [self._list_text(row).text for row in self.checked_list]
         return text
 
     def get_list_rows(self):

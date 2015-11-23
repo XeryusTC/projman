@@ -267,6 +267,40 @@ class ActionlistViewTests(TestCase):
         self.assertIn(item1, response.context_data['actionlist_items'])
         self.assertIn(item2, response.context_data['actionlist_items'])
 
+    def test_only_uncompleted_items_in_context_actionlist(self):
+        nc = factories.ActionlistItemFactory.create_batch(2, user=alice,
+            complete=False)
+        co = factories.ActionlistItemFactory.create_batch(2, user=alice,
+            complete=True)
+
+        request = self.factory.get(self.url)
+        request.user = alice
+        response = self.view(request)
+        self.assertSequenceEqual(nc, response.context_data['actionlist_items'])
+
+    def test_context_includes_users_completed_action_list(self):
+        item1 = factories.ActionlistItemFactory(user=alice, complete=True)
+        item2 = factories.ActionlistItemFactory(user=alice, complete=True)
+
+        request = self.factory.get(self.url)
+        request.user = alice
+        response = self.view(request)
+        self.assertIn('actionlist_complete', response.context_data.keys())
+        self.assertIn(item1, response.context_data['actionlist_complete'])
+        self.assertIn(item2, response.context_data['actionlist_complete'])
+
+    def test_only_completed_items_in_context_actionlist_complete(self):
+        nc = factories.ActionlistItemFactory.create_batch(2, user=alice,
+            complete=False)
+        co = factories.ActionlistItemFactory.create_batch(2, user=alice,
+            complete=True)
+
+        request = self.factory.get(self.url)
+        request.user = alice
+        response = self.view(request)
+        self.assertSequenceEqual(co,
+            response.context_data['actionlist_complete'])
+
 
 class ActionlistItemDeleteViewTests(TestCase):
     def setUp(self):
