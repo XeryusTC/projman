@@ -163,6 +163,46 @@ class ActionPageTests(FunctionalTestCase):
         self.assertIn('Create actions', action_page.list_text)
         self.assertNotIn('Remove an action', action_page.list_text)
 
+    def test_can_delete_completed_action_items(self):
+        # Alice is a user who logs in and goes to the action list page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Complete action\n')
+        action_page.add_box.send_keys('Remove completed action\n')
+
+        # Make sure the elements are added
+        self.assertIn('Complete action', action_page.list_text)
+        self.assertIn('Remove completed action', action_page.list_text)
+
+        # Alice goes to complete the first action she's added
+        actions = action_page.get_list_rows()
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Complete action':
+                elems['text'].click()
+                break
+
+        # The item is now in the completed list next to a delete button,
+        # she clicks it
+        actions = action_page.get_checked_rows()
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Complete action':
+                elems['delete'].click()
+                break
+
+        # She ends up on a confirmation page which has the text of the
+        # item and a confirmation button on it, which she clicks
+        confirm_page = pages.projects.ActionDeletePage(self.browser)
+        self.assertIn('Complete action', confirm_page.content.text)
+        confirm_page.confirm.click()
+
+        # She is returned to the action list page, which doesn't have the
+        # item in either list anymore
+        self.assertIn('Remove completed action', action_page.list_text)
+        self.assertNotIn('Complete action', action_page.list_text)
+        self.assertNotIn('complete action', action_page.checked_list_text)
+
     @unittest.expectedFailure
     def test_can_change_inlist_items_into_action_item(self):
         self.fail('Implement this')

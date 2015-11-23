@@ -54,6 +54,13 @@ class ActionlistPage(PageObject):
                 'delete': self._delete_item(self.thelist[i])}
         return res
 
+    def get_checked_rows(self):
+        res = {}
+        for i in range(len(self.checked_list)):
+            res[i] = {'text': self._list_text(self.checked_list[i]),
+                'delete': self._delete_item(self.checked_list[i])}
+        return res
+
 
 class ActionDeletePage(PageObject):
     content = PageElement(id_='content')
