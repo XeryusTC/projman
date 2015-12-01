@@ -107,3 +107,12 @@ class CompleteActionFormTest(TestCase):
 
         self.assertFalse(item.complete)
         self.assertEqual(form.errors[NON_FIELD_ERRORS], [forms.ILLEGAL_ACTION_ERROR])
+
+    def test_form_toggles_true_to_false(self):
+        alice = User.objects.create_user('alice', 'alice@test.org', 'alice')
+        item = factories.ActionlistItemFactory(user=alice, complete=True)
+        form = forms.CompleteActionForm()
+
+        form.save(item, alice)
+
+        self.assertFalse(item.complete)

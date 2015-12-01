@@ -34,8 +34,12 @@
 <div id="checked">
 	{% for item in actionlist_complete %}
 		<div class="mui-row">
-			<div class="mui-col-xs-12 mui-col-md-6 full-height">
+			<div class="mui-col-xs-12 mui-col-md-6 full-height action-item">
 				{{ item.text }}
+				<form method="post"
+					action="{% url 'projects:complete_action' item.pk %}">
+					{% csrf_token %}
+				</form>
 			</div>
 			<div class="mui-col-xs-4">
 				<a class="mui-btn mui-btn--accent"

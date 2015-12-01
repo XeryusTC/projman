@@ -77,7 +77,7 @@ class ActionlistForm(forms.ModelForm):
 class CompleteActionForm(forms.Form):
     def save(self, item, user):
         if item.user == user:
-            item.complete = True
+            item.complete = not item.complete
             item.save()
         else:
             self.cleaned_data = []

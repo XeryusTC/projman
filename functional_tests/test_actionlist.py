@@ -140,6 +140,28 @@ class ActionPageTests(FunctionalTestCase):
         self.assertIn('Check this action',
             action_page.list_text(action_page.checked_list))
 
+    def test_can_undo_completed_action_item(self):
+        # Alice is a user who logs in and goes to the action list page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She adds an item to the action page and completes it
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Uncomplete this action\n')
+        action_page.get_list_rows(action_page.thelist)[0]['text'].click()
+
+        # The item is in the completed list
+        self.assertIn('Uncomplete this action',
+            action_page.list_text(action_page.checked_list))
+
+        # She clicks the item in the complete list
+        action_page.get_list_rows(action_page.checked_list)[0]['text'].click()
+
+        # The item is back in the incomplete list
+        self.assertIn('Uncomplete this action',
+            action_page.list_text(action_page.thelist))
+
     def test_can_delete_action_item(self):
         # Alice is a user who logs in and goes to the action list page
         self.create_and_login_user('alice', 'alice@test.com', 'alice')

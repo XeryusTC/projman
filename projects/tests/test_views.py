@@ -343,6 +343,17 @@ class ActionCompleteViewTest(ViewTestCase):
         self.item = models.ActionlistItem.objects.get(pk=self.item.pk)
         self.assertTrue(self.item.complete)
 
+    def test_POST_toggles_the_complete_status(self):
+        self.assertFalse(self.item.complete)
+        self.item.complete = True
+        self.item.save()
+        self.assertTrue(models.ActionlistItem.objects.get(pk=self.item.pk))
+
+        self.post_request(alice, pk=self.item.pk)
+
+        item = models.ActionlistItem.objects.get(pk=self.item.pk)
+        self.assertFalse(item.complete)
+
     def test_only_owner_can_change_complete_status(self):
         response = self.post_request(bob, pk=self.item.pk)
         self.assertContains(response, forms.ILLEGAL_ACTION_ERROR)
