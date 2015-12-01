@@ -30,3 +30,7 @@ a.appbar-correct {
 	cursor: pointer;
 	text-decoration: line-through;
 }
+
+#checked .action-item {
+	color: #9e9e9e;
+}
