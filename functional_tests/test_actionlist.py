@@ -246,9 +246,44 @@ class ActionPageTests(FunctionalTestCase):
         self.assertNotIn('complete action',
             action_page.list_text(action_page.checked_list))
 
-    @unittest.expectedFailure
     def test_can_change_inlist_items_into_action_item(self):
-        self.fail('Implement this')
+        # Alice is a user who logs in and goes to the inlist page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+
+        # She adds an item to the inlist page
+        inlist_page = pages.projects.InlistPage(self.browser)
+        inlist_page.add_box.send_keys('Create action\n')
+        self.assertIn('Create action',
+            [item.text for item in inlist_page.thelist])
+
+        # There is a button next to it that lets her convert it to an
+        # action, she clicks it
+        item = inlist_page.listrows[0]
+        inlist_page.convert_action(item).click()
+
+        # She ends up on a new page where she can create the action
+        convert_page = pages.projects.ConvertToActionPage(self.browser)
+        # The text box holds the text from the inlist item
+        self.assertEqual(convert_page.text_box.get_attribute('value'),
+            'Create action')
+
+        # She enters a new text
+        convert_page.text_box.clear()
+        convert_page.text_box.send_keys('Create an action')
+
+        # She clicks the convert button, which saves the action
+        convert_page.convert_button.click()
+
+        # She returns to the linst page
+        self.assertTrue(
+            self.browser.current_url.endswith('/projects/inlist/'))
+        # When she navigates to the action page she finds the item there
+        page.action_link(page.sidebar).click()
+        action_page = pages.projects.ActionlistPage(self.browser)
+        self.assertIn('Create an action',
+            action_page.list_text(action_page.thelist))
 
     def test_action_list_and_inlist_are_separate_lists(self):
         # Alice is a user who goes to the inlist page

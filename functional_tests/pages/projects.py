@@ -20,6 +20,7 @@ class InlistPage(PageObject):
     listrows    = MultiPageElement(css='#list .mui-row')
     error_lists = MultiPageElement(css='.errorlist')
     delete_item = PageElement(link_text='DELETE', context=True)
+    convert_action = PageElement(link_text='CONVERT TO ACTION', context=True)
 
 
 class InlistDeletePage(PageObject):
@@ -52,3 +53,8 @@ class ActionlistPage(PageObject):
 class ActionDeletePage(PageObject):
     content = PageElement(id_='content')
     confirm = PageElement(xpath="//input[@type='submit']")
+
+
+class ConvertToActionPage(PageObject):
+    text_box = PageElement(name='text')
+    convert_button = PageElement(xpath="//input[@type='submit']")
