@@ -82,3 +82,31 @@ class CompleteActionForm(forms.Form):
         else:
             self.cleaned_data = []
             self.add_error(None, ILLEGAL_ACTION_ERROR)
+
+
+class ConvertInlistToActionForm(forms.Form):
+    text = forms.CharField(error_messages={'required': EMPTY_TEXT_ERROR})
+
+    def __init__(self, *args, **kwargs):
+        super(ConvertInlistToActionForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'mui-form'
+        self.helper.layout = Layout('text',
+            Div(Div(ButtonHolder(Submit('submit', _('Convert'))),
+                    css_class="mui-col-xs-12"),
+                css_class="mui-row"),
+        )
+
+    def save(self, item, user):
+        if item.user != user:
+            self.cleaned_data = []
+            self.add_error(None, ILLEGAL_ACTION_ERROR)
+        elif models.ActionlistItem.objects.filter(
+                text=self.cleaned_data['text'],
+                user=user).count():
+            self.add_error('text', DUPLICATE_ACTION_ERROR)
+        else:
+            item.delete()
+            action = models.ActionlistItem(user=user,
+                text=self.cleaned_data['text'])
+            action.save()
