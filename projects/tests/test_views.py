@@ -2,6 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import resolve, reverse
+from django.http.response import Http404
 from django.test import TestCase, RequestFactory
 from django.utils.html import escape
 import unittest
@@ -357,3 +358,68 @@ class ActionCompleteViewTest(ViewTestCase):
     def test_only_owner_can_change_complete_status(self):
         response = self.post_request(bob, pk=self.item.pk)
         self.assertContains(response, forms.ILLEGAL_ACTION_ERROR)
+
+
+class ConvertInlistItemToActionItemTest(ViewTestCase):
+    def setUp(self):
+        self.item = factories.InlistItemFactory(user=alice)
+        self.url = reverse('projects:convert_inlist_action',
+            kwargs={'pk': self.item.pk})
+        self.view = views.InlistItemToActionView.as_view()
+
+    def test_convert_inlist_to_action_is_correct_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__, self.view.__name__)
+
+    def test_convert_to_action_view_usses_correct_templates(self):
+        self.client.login(username='alice', password='alice')
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response,
+            'projects/convert_inlist_to_action.html')
+
+    def test_uses_correct_form_class(self):
+        response = self.get_request(alice, pk=self.item.pk)
+        self.assertIsInstance(response.context_data['form'],
+            forms.ConvertInlistToActionForm)
+
+    def test_login_required(self):
+        response = self.get_request(AnonymousUser(), pk=self.item.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+            reverse('account_login') + '?next=' + self.url)
+
+    def test_shows_item_text_on_page(self):
+        response = self.get_request(alice, pk=self.item.pk)
+        self.assertContains(response, self.item.text)
+
+    def test_returns_404_when_item_does_not_exist(self):
+        self.item.delete()
+        with self.assertRaises(Http404):
+            response = self.get_request(alice, pk=self.item.pk)
+
+    def test_POST_request_saves_to_actionlist(self):
+        self.assertEqual(models.ActionlistItem.objects.count(), 0)
+        response = self.post_request(alice, {'text': 'test'}, pk=self.item.pk)
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+
+    def test_POST_request_deletes_inlist_item(self):
+        self.assertEqual(models.InlistItem.objects.count(), 1)
+        response = self.post_request(alice, {'text': 'test'}, pk=self.item.pk)
+        self.assertEqual(models.InlistItem.objects.count(), 0)
+
+    def test_displays_error_when_text_is_empty(self):
+        response = self.post_request(alice, {'text': ''}, pk=self.item.pk)
+        self.assertContains(response, forms.EMPTY_TEXT_ERROR)
+
+    def test_displays_error_when_item_has_duplicate_action_text(self):
+        factories.ActionlistItemFactory(user=alice, text='duplo')
+        response = self.post_request(alice, data={'text': 'duplo'},
+            pk=self.item.pk)
+        self.assertContains(response, forms.DUPLICATE_ACTION_ERROR)
+
+    def test_redirects_to_inlist_page(self):
+        response = self.post_request(alice, {'text': 'test'}, pk=self.item.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('projects:inlist'))

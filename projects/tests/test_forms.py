@@ -116,3 +116,73 @@ class CompleteActionFormTest(TestCase):
         form.save(item, alice)
 
         self.assertFalse(item.complete)
+
+
+class ConvertInlistToActionFormTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('alice', 'alice@test.org', 'alice')
+
+    def test_form_save_creates_action_item(self):
+        item = factories.InlistItemFactory(user=self.user)
+        form = forms.ConvertInlistToActionForm(data={'text': item.text})
+        self.assertEqual(models.ActionlistItem.objects.count(), 0)
+
+        form.is_valid()
+        form.save(item, self.user)
+
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+        self.assertEqual(models.ActionlistItem.objects.first().text,
+            item.text)
+
+    def test_form_save_deletes_inlist_item(self):
+        item = factories.InlistItemFactory(user=self.user)
+        form = forms.ConvertInlistToActionForm(data={'text': item.text})
+        self.assertEqual(models.InlistItem.objects.count(), 1)
+
+        form.is_valid()
+        form.save(item, self.user)
+
+        self.assertEqual(models.InlistItem.objects.count(), 0)
+
+    def test_form_invalid_for_wrong_user(self):
+        trudy = User.objects.create_user('trudy', 'trudy@test.org', 'trudy')
+        item = factories.InlistItemFactory(user=self.user)
+        form = forms.ConvertInlistToActionForm(data={'text': item.text})
+
+        form.is_valid()
+        form.save(item, trudy)
+
+        self.assertEqual(form.errors[NON_FIELD_ERRORS],
+            [forms.ILLEGAL_ACTION_ERROR])
+
+    def test_form_invalid_for_duplicate_action_text(self):
+        factories.ActionlistItemFactory(user=self.user, text='duplicate')
+        item = factories.InlistItemFactory(user=self.user, text='duplicate')
+        form = forms.ConvertInlistToActionForm(data={'text': item.text})
+
+        form.is_valid()
+        form.save(item, self.user)
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['text'], [forms.DUPLICATE_ACTION_ERROR])
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+
+    def test_form_valid_for_duplicate_action_text_for_other_user(self):
+        bob = User.objects.create_user('bob', 'bob@test.org', 'bob')
+        factories.ActionlistItemFactory(user=bob, text='not dupe')
+        item = factories.InlistItemFactory(user=self.user, text='not dupe')
+        form = forms.ConvertInlistToActionForm(data={'text': item.text})
+
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+        form.is_valid()
+        form.save(item, self.user)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(models.ActionlistItem.objects.count(), 2)
+
+    def test_form_invalid_for_empty_text(self):
+        item = factories.InlistItemFactory(user=self.user, text='')
+        form = forms.ConvertInlistToActionForm(data={'text': item.text})
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['text'], [forms.EMPTY_TEXT_ERROR])
