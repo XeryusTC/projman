@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 from projects import forms, models
 
@@ -81,3 +82,29 @@ class ActionCompleteView(LoginRequiredMixin, FormView):
             return super(ActionCompleteView, self).form_valid(form)
         else:
             return super(ActionCompleteView, self).form_invalid(form)
+
+
+class InlistItemToActionView(LoginRequiredMixin, FormView):
+    template_name = 'projects/convert_inlist_to_action.html'
+    form_class = forms.ConvertInlistToActionForm
+    success_url = reverse_lazy('projects:inlist')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.inlist_item = get_object_or_404(models.InlistItem,
+            pk=self.kwargs['pk'])
+        return super(InlistItemToActionView, self).dispatch(request, *args,
+            **kwargs)
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        kwargs = self.get_form_kwargs()
+        kwargs['initial'].update({'text': self.inlist_item.text})
+        return form_class(**kwargs)
+
+    def form_valid(self, form):
+        form.save(self.inlist_item, self.request.user)
+        if form.is_valid():
+            return super(InlistItemToActionView, self).form_valid(form)
+        else:
+            return super(InlistItemToActionView, self).form_invalid(form)

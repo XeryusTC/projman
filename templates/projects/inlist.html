@@ -10,10 +10,14 @@
 		<div class="mui-col-xs-12 mui-col-md-6 full-height">
 			{{ item.text }}
 		</div>
-		<div class="mui-col-xs-4">
+		<div class="mui-col-xs-12 mui-col-md-6">
 			<a class="mui-btn mui-btn--accent"
 				href="{% url 'projects:delete_inlist' item.pk %}">
 				{% trans 'Delete' %}
+			</a>
+			<a class="mui-btn"
+				href="{% url 'projects:convert_inlist_action' item.pk %}">
+				{% trans 'Convert to action' %}
 			</a>
 		</div>
 	</div>
