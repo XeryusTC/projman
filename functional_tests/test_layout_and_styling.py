@@ -17,6 +17,10 @@ class StylesheetTest(FunctionalTestCase):
         self.assertTrue(any(['mui.min.css' in s.get_attribute('href')
             for s in page.stylesheets]))
 
+        # She sees that Font Awesome is loaded
+        self.assertTrue(any(['font-awesome.min.css' in s.get_attribute('href')
+            for s in page.stylesheets]))
+
         # A generic style css is loaded
         self.assertTrue(any(['css/style.css' in s.get_attribute('href')
             for s in page.stylesheets]))
