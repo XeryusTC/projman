@@ -14,6 +14,9 @@ class InlistTests(FunctionalTestCase):
         page = pages.projects.BaseProjectPage(self.browser)
         page.inlist_link(page.sidebar).click()
 
+        # The title also changed
+        self.assertEqual(self.browser.title, 'In list')
+
         # On the new page is a text box where she is invited to enter something
         inlist_page = pages.projects.InlistPage(self.browser)
         self.assertEqual(inlist_page.add_box.get_attribute('placeholder'),
@@ -118,6 +121,7 @@ class InlistTests(FunctionalTestCase):
         inlist_page.delete_item(second_item).click()
 
         # She ends up on a new page with the item name and a confirm button
+        self.assertEqual(self.browser.title, 'Delete in list item')
         confirm_page = pages.projects.InlistDeletePage(self.browser)
         self.assertIn('Remove this item', confirm_page.content.text)
         # She clicks the confirm button

@@ -1,6 +1,8 @@
 {% extends 'projects/base.html' %}
 {% load i18n %}
 
+{% block head_title %}{% trans 'Delete action' %}{% endblock %}
+
 {% block content %}
 {% blocktrans %}Are you sure you want to remove the action
 "{{ actionlistitem }}" from your action list?{% endblocktrans %}

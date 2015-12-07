@@ -17,6 +17,7 @@ class ActionPageTests(FunctionalTestCase):
 
         # On the new page there is a text box where she is invited to enter
         # a new action item
+        self.assertEqual(self.browser.title, 'Action list')
         action_page = pages.projects.ActionlistPage(self.browser)
         self.assertEqual(action_page.add_box.get_attribute('placeholder'),
             'What do you need to do?')
@@ -191,6 +192,7 @@ class ActionPageTests(FunctionalTestCase):
 
         # She ends up on a new page that asks her if she wants to confirm
         # to delete the item, she first checks whether the item is correct
+        self.assertEqual(self.browser.title, 'Delete action')
         confirm_page = pages.projects.ActionDeletePage(self.browser)
         self.assertIn('Remove an action', confirm_page.content.text)
         # She clicks the confirm button
@@ -237,6 +239,7 @@ class ActionPageTests(FunctionalTestCase):
 
         # She ends up on a confirmation page which has the text of the
         # item and a confirmation button on it, which she clicks
+        self.assertEqual(self.browser.title, 'Delete action')
         confirm_page = pages.projects.ActionDeletePage(self.browser)
         self.assertIn('Complete action', confirm_page.content.text)
         confirm_page.confirm.click()
@@ -270,6 +273,7 @@ class ActionPageTests(FunctionalTestCase):
         inlist_page.convert_action(item).click()
 
         # She ends up on a new page where she can create the action
+        self.assertEqual('Convert in item to action', self.browser.title)
         convert_page = pages.projects.ConvertToActionPage(self.browser)
         # The text box holds the text from the inlist item
         self.assertEqual(convert_page.text_box.get_attribute('value'),

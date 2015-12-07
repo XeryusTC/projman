@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 
+{% block head_title %}{% trans 'In list' %}{% endblock %}
+
 {% block content %}
 {% crispy form %}
 <div id="list">

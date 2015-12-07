@@ -8,6 +8,8 @@
 <script src="{% static 'js/projects.js' %}"></script>
 {% endblock script %}
 
+{% block head_title %}{% trans 'Action list' %}{% endblock %}
+
 {% block content %}
 {% crispy form %}
 
