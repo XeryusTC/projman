@@ -113,6 +113,8 @@ class InlistTests(FunctionalTestCase):
         second_item = inlist_page.listrows[1]
 
         # She clicks the delete button that is next to it
+        self.assertEqual('Delete',
+            inlist_page.delete_item(second_item).get_attribute('title'))
         inlist_page.delete_item(second_item).click()
 
         # She ends up on a new page with the item name and a confirm button

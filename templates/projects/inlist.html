@@ -11,13 +11,15 @@
 			{{ item.text }}
 		</div>
 		<div class="mui-col-xs-12 mui-col-md-6">
-			<a class="mui-btn mui-btn--accent"
-				href="{% url 'projects:delete_inlist' item.pk %}">
-				{% trans 'Delete' %}
+			<a class="mui-btn mui-btn--fab mui-btn--alert action-delete"
+				href="{% url 'projects:delete_inlist' item.pk %}"
+				title="{% trans 'Delete' %}">
+				<span class="fa fa-times fa-2x"></span>
 			</a>
-			<a class="mui-btn"
-				href="{% url 'projects:convert_inlist_action' item.pk %}">
-				{% trans 'Convert to action' %}
+			<a class="mui-btn mui-btn--fab action-convert"
+				href="{% url 'projects:convert_inlist_action' item.pk %}"
+				title="{% trans 'Convert to action' %}">
+				<span class="fa fa-gavel fa-2x"></span>
 			</a>
 		</div>
 	</div>

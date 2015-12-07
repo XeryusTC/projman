@@ -19,8 +19,8 @@ class InlistPage(PageObject):
     thelist     = MultiPageElement(css='#list .full-height')
     listrows    = MultiPageElement(css='#list .mui-row')
     error_lists = MultiPageElement(css='.errorlist')
-    delete_item = PageElement(link_text='DELETE', context=True)
-    convert_action = PageElement(link_text='CONVERT TO ACTION', context=True)
+    delete_item = PageElement(class_name='action-delete', context=True)
+    convert_action = PageElement(class_name='action-convert', context=True)
 
 
 class InlistDeletePage(PageObject):

@@ -261,6 +261,8 @@ class ActionPageTests(FunctionalTestCase):
         # There is a button next to it that lets her convert it to an
         # action, she clicks it
         item = inlist_page.listrows[0]
+        self.assertEqual('Convert to action',
+            inlist_page.convert_action(item).get_attribute('title'))
         inlist_page.convert_action(item).click()
 
         # She ends up on a new page where she can create the action
