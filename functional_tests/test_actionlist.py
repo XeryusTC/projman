@@ -184,6 +184,8 @@ class ActionPageTests(FunctionalTestCase):
         actions = action_page.get_list_rows(action_page.thelist)
         for idx, elems in actions.items():
             if elems['text'].text == 'Remove an action':
+                self.assertEqual('Delete',
+                    elems['delete'].get_attribute('title'))
                 elems['delete'].click()
                 break
 
@@ -228,6 +230,8 @@ class ActionPageTests(FunctionalTestCase):
         actions = action_page.get_list_rows(action_page.checked_list)
         for idx, elems in actions.items():
             if elems['text'].text == 'Complete action':
+                self.assertEqual('Delete',
+                    elems['delete'].get_attribute('title'))
                 elems['delete'].click()
                 break
 

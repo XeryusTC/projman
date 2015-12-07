@@ -36,7 +36,7 @@ class ActionlistPage(PageObject):
     checked_list = MultiPageElement(css='#checked .mui-row')
 
     _list_text  = PageElement(css='.full-height', context=True)
-    _delete_item = PageElement(link_text='DELETE', context=True)
+    _delete_item = PageElement(class_name='action-delete', context=True)
 
     def list_text(self, context):
         text = [self._list_text(row).text for row in context]
