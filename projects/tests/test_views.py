@@ -165,6 +165,14 @@ class InlistItemDeleteViewTests(ViewTestCase):
         response = self.get_request(alice, pk=self.item.pk)
         self.assertContains(response, self.item.text)
 
+    def test_returns_403_when_wrong_user_requests_page_with_get(self):
+        response = self.get_request(bob, pk=self.item.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_returns_403_when_wrong_user_requests_page_with_post(self):
+        response = self.post_request(bob, pk=self.item.pk)
+        self.assertEqual(response.status_code, 403)
+
 
 class ActionlistViewTests(ViewTestCase):
     def setUp(self):

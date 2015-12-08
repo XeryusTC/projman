@@ -146,3 +146,33 @@ class InlistTests(FunctionalTestCase):
 
         # She ends up on the landing page
         self.assertTrue(self.browser.current_url.endswith('/en/'))
+
+    def test_trying_to_delete_other_persons_inlist_item_gives_403(self):
+        # Alice is a user who logs in and goes to the inlist page
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+
+        # She adds an item
+        inlist_page = pages.projects.InlistPage(self.browser)
+        inlist_page.add_box.send_keys('Test forbidden status\n')
+
+        # She goes to the delete page
+        item = inlist_page.listrows[0]
+        inlist_page.delete_item(item).click()
+        ## We copy the URL for trudy
+        self.wait_for(lambda: self.assertIn('/delete/',
+            self.browser.current_url))
+        delete_url = self.browser.current_url
+
+        # Now Trudy logs in
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
+
+        # Trudy goes directly to the delete page
+        self.browser.get(delete_url)
+        # She is greeted with a 403 Forbidden error
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('403', body_text)
+        self.assertIn('Forbidden', body_text)

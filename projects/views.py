@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from braces.views import LoginRequiredMixin
-from django.db.utils import IntegrityError
-from django.views.generic import TemplateView, FormView, DeleteView, UpdateView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse_lazy
+from django.db.utils import IntegrityError
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView, FormView, DeleteView, UpdateView
+from django.views.defaults import permission_denied
 
 from projects import forms, models
 
@@ -40,6 +42,13 @@ class InlistView(LoginRequiredMixin, FormView):
 class InlistItemDelete(LoginRequiredMixin, DeleteView):
     model = models.InlistItem
     success_url = reverse_lazy('projects:inlist')
+
+    def dispatch(self, request, *args, **kwargs):
+        item = get_object_or_404(models.InlistItem, pk=self.kwargs['pk'])
+        # Need to check against AnonymousUser to not break LoginRequiredMixin
+        if request.user != item.user and request.user != AnonymousUser():
+            return permission_denied(request)
+        return super(InlistItemDelete, self).dispatch(request, *args, **kwargs)
 
 
 class ActionlistView(LoginRequiredMixin, FormView):
