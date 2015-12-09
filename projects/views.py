@@ -101,6 +101,11 @@ class InlistItemToActionView(LoginRequiredMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         self.inlist_item = get_object_or_404(models.InlistItem,
             pk=self.kwargs['pk'])
+        # Test if the request came from the right user
+        if request.user != self.inlist_item.user \
+            and request.user != AnonymousUser():
+            return permission_denied(request)
+
         return super(InlistItemToActionView, self).dispatch(request, *args,
             **kwargs)
 

@@ -343,3 +343,34 @@ class ActionPageTests(FunctionalTestCase):
 
         # She is now logged out and on the landing page again
         self.assertTrue(self.browser.current_url.endswith('/en/'))
+
+    def test_converting_other_persons_inlist_item_to_action_gives_403(self):
+        # Alice is a user who logs in and goes to the inlist page
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+
+        # She adds an item
+        inlist_page = pages.projects.InlistPage(self.browser)
+        inlist_page.add_box.send_keys('Test forbidden status\n')
+
+        # She goes to the convert page
+        item = inlist_page.listrows[0]
+        inlist_page.convert_action(item).click()
+
+        ## Copy the url so Trudy can use it
+        self.wait_for(lambda: self.assertIn('/convert/',
+            self.browser.current_url))
+        convert_url = self.browser.current_url
+
+        # Trudy is another user who tries to mess with Alice's items
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
+
+        # Trudy directly enters the url
+        self.browser.get(convert_url)
+        # She is greeted with a 403 Forbidden error
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('403', body_text)
+        self.assertIn('Forbidden', body_text)

@@ -431,3 +431,11 @@ class ConvertInlistItemToActionItemTest(ViewTestCase):
         response = self.post_request(alice, {'text': 'test'}, pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('projects:inlist'))
+
+    def test_get_request_from_wrong_user_returns_403_Forbidden(self):
+        response = self.get_request(bob, pk=self.item.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_post_request_from_wrong_user_returns_403_Forbidden(self):
+        response = self.post_request(bob, pk=self.item.pk)
+        self.assertEqual(response.status_code, 403)
