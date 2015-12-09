@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-18 23:01+0000\n"
+"POT-Creation-Date: 2015-12-09 23:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,23 +18,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: projects/forms.py:8
+#: projects/forms.py:10
 msgid "You cannot add empty items"
 msgstr "Je kunt geen lege items toevoegen"
 
-#: projects/forms.py:9
+#: projects/forms.py:11
 msgid "You've already got this on your list"
 msgstr "Je hebt dit al op je lijst staan"
 
-#: projects/forms.py:23
+#: projects/forms.py:12
+#, fuzzy
+#| msgid "You've already got this on your list"
+msgid "You already planned to do this"
+msgstr "Je hebt dit al op je lijst staan"
+
+#: projects/forms.py:13
+msgid "You are not allowed to do this"
+msgstr "Je hebt geen toestemming om dit te doen"
+
+#: projects/forms.py:23 projects/forms.py:54
+msgid "Add"
+msgstr "Toevoegen"
+
+#: projects/forms.py:39
 msgid "What needs to be done?"
 msgstr "Wat moet er gebeuren?"
 
-#: projman/settings/base.py:113
+#: projects/forms.py:70
+#, fuzzy
+#| msgid "What needs to be done?"
+msgid "What do you need to do?"
+msgstr "Wat moet er gebeuren?"
+
+#: projects/forms.py:95
+msgid "Convert"
+msgstr "Converteren"
+
+#: projman/settings/base.py:117
 msgid "English"
 msgstr "Engels"
 
-#: projman/settings/base.py:114
+#: projman/settings/base.py:118
 msgid "Dutch"
 msgstr "Nederlands"
 
@@ -55,6 +79,8 @@ msgstr ""
 "adres is voor gebruiker %(user_display)s."
 
 #: templates/account/email_confirm.html:27
+#: templates/projects/actionlistitem_confirm_delete.html:12
+#: templates/projects/inlistitem_confirm_delete.html:11
 msgid "Confirm"
 msgstr "Bevestig"
 
@@ -68,13 +94,13 @@ msgstr ""
 "Deze e-mail bevestigings link is verlopen of incorrect. <a href="
 "\"%(email_url)s\">Vraag een nieuw bevestigings verzoek aan.</a>"
 
-#: templates/account/login.html:7 templates/account/login.html.py:11
+#: templates/account/login.html:8 templates/account/login.html.py:12
 #, fuzzy
 #| msgid "Sign in"
 msgid "Sign In"
 msgstr "Inloggen"
 
-#: templates/account/login.html:21
+#: templates/account/login.html:22
 #, python-format
 msgid ""
 "Please sign in with\n"
@@ -85,11 +111,11 @@ msgstr ""
 "Log in met een third party account. Of, <a href=\"%(signup_url)s\">Schrijfje "
 "in</a> voor een %(site_name)s account and log hier onder in:"
 
-#: templates/account/login.html:37
+#: templates/account/login.html:38
 msgid "or"
 msgstr "of"
 
-#: templates/account/login.html:43
+#: templates/account/login.html:44
 #, python-format
 msgid ""
 "If you have not created an account yet, then\n"
@@ -99,16 +125,16 @@ msgstr ""
 "Als je nog geen account hebt, dan kun je je <a href=\"%(signup_url)s"
 "\">inschrijven</a>"
 
-#: templates/account/login.html:118 templates/landing/index.html:8
+#: templates/account/login.html:58 templates/landing/index.html:8
 #: templates/landing/index.html.py:17
 msgid "Sign in"
 msgstr "Inloggen"
 
-#: templates/account/login.html:128
+#: templates/account/login.html:64
 msgid "Forgot Password?"
 msgstr "Wachtwoord vergeten?"
 
-#: templates/account/login.html:134
+#: templates/account/login.html:71
 msgid "Register"
 msgstr "Registreren"
 
@@ -123,14 +149,14 @@ msgstr "Inloggen"
 msgid "Are you sure you want to sign out?"
 msgstr "Weet je zeker dat je je wilt afmelden?"
 
-#: templates/account/password_reset.html:6
-#: templates/account/password_reset.html:8
+#: templates/account/password_reset.html:7
+#: templates/account/password_reset.html:9
 #: templates/account/password_reset_done.html:6
 #: templates/account/password_reset_done.html:8
 msgid "Password Reset"
 msgstr "Wachtwoord herstellen"
 
-#: templates/account/password_reset.html:17
+#: templates/account/password_reset.html:18
 msgid ""
 " Forgotten your password? Enter your e-mail\n"
 "\t\taddress below,and we'll send you an e-mail allowing you to reset\n"
@@ -142,7 +168,7 @@ msgstr ""
 "account. Neem contact met ons op als je problemen hebt met het herstellen  "
 "van je wachtwoord."
 
-#: templates/account/password_reset.html:55
+#: templates/account/password_reset.html:33
 msgid "Reset My Password"
 msgstr "Herstel mijn wachtwoord"
 
@@ -154,19 +180,19 @@ msgstr ""
 "We hebben een e-mail naar je verstuurd. Neem contact met ons op als je na "
 "een paar minuten niets ontvangen hebt."
 
-#: templates/account/password_reset_from_key.html:4
-#: templates/account/password_reset_from_key.html:10
-#: templates/account/password_reset_from_key.html:66
+#: templates/account/password_reset_from_key.html:6
+#: templates/account/password_reset_from_key.html:12
+#: templates/account/password_reset_from_key.html:31
 #: templates/account/password_reset_from_key_done.html:4
 #: templates/account/password_reset_from_key_done.html:6
 msgid "Change Password"
 msgstr "Verander Wachtwoord"
 
-#: templates/account/password_reset_from_key.html:8
+#: templates/account/password_reset_from_key.html:10
 msgid "Bad Token"
 msgstr "Verkeerde token"
 
-#: templates/account/password_reset_from_key.html:17
+#: templates/account/password_reset_from_key.html:19
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it\n"
@@ -178,7 +204,7 @@ msgstr ""
 "al een keer gebruikt is. Vraag een <a href=\"%(passwd_reset_url)s>nieuw "
 "verzoek</a> om je wachtwoord te herstellen aan."
 
-#: templates/account/password_reset_from_key.html:71
+#: templates/account/password_reset_from_key.html:36
 msgid "Your password is now changed."
 msgstr "Je wachtwoord is veranderd."
 
@@ -192,14 +218,14 @@ msgstr ""
 "Je wachtwoord is veranderd. Je kunt nu <a href=\"%(account_login)s"
 "\">inloggen</a>"
 
-#: templates/account/signup.html:5 templates/account/signup.html.py:8
-#: templates/account/signup.html:111
+#: templates/account/signup.html:6 templates/account/signup.html.py:9
+#: templates/account/signup.html:28
 #, fuzzy
 #| msgid "Sign in"
 msgid "Sign Up"
 msgstr "Inloggen"
 
-#: templates/account/signup.html:14
+#: templates/account/signup.html:15
 #, python-format
 msgid ""
 "Already have an account or want to use your social\n"
@@ -234,14 +260,58 @@ msgstr ""
 "link in die e-mail om je inschrijving compleet te maken. Neem contact met "
 "ons op als je binnen een paar minuten geen email hebt gekregen."
 
-#: templates/projects/base.html:19
+#: templates/projects/actionlist.html:11
+msgid "Action list"
+msgstr "Actie lijst"
+
+#: templates/projects/actionlist.html:29 templates/projects/actionlist.html:50
+#: templates/projects/inlist.html:18
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: templates/projects/actionlistitem_confirm_delete.html:4
+msgid "Delete action"
+msgstr "Verwijder actie"
+
+#: templates/projects/actionlistitem_confirm_delete.html:7
+#, python-format
+msgid ""
+"Are you sure you want to remove the action\n"
+"\"%(actionlistitem)s\" from your action list?"
+msgstr ""
+"Weet je zeker dat je de actie \"%(actionlistitem)s\" wil verwijderen van"
+"je actie lijst?"
+
+
+#: templates/projects/base.html:19 templates/projects/inlist.html:5
 msgid "In list"
 msgstr "In lijst"
 
-#: templates/projects/inlist.html:32
-msgid "Add"
-msgstr "Toevoegen"
+#: templates/projects/base.html:23
+msgid "Actions"
+msgstr "Acties"
 
-#: templates/projects/mainpage.html:7
+#: templates/projects/base.html:46
 msgid "Log out"
+msgstr "Afmelden"
+
+#: templates/projects/convert_inlist_to_action.html:5
+msgid "Convert in item to action"
+msgstr "Converteer een item naar een actie"
+
+#: templates/projects/inlist.html:23
+msgid "Convert to action"
+msgstr "Converteer naar actie"
+
+#: templates/projects/inlistitem_confirm_delete.html:4
+msgid "Delete in list item"
+msgstr "Verwijder in lijst item"
+
+#: templates/projects/inlistitem_confirm_delete.html:7
+#, python-format
+msgid ""
+"Are you sure you want to remove the item \"%(inlistitem)s\"\n"
+"from your in list?"
 msgstr ""
+"Weet je zeker dat je het item \"%(inlistitem)s\" van je in lijst wilt"
+"verwijderen?"
