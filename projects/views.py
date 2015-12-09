@@ -78,6 +78,13 @@ class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
     model = models.ActionlistItem
     success_url = reverse_lazy('projects:actionlist')
 
+    def dispatch(self, request, *args, **kwargs):
+        item = get_object_or_404(models.ActionlistItem, pk=self.kwargs['pk'])
+        # Need to check against AnonymousUser to not break LoginRequiredMixin
+        if request.user != item.user and request.user != AnonymousUser():
+            return permission_denied(request)
+        return super(ActionlistItemDelete, self).dispatch(request, *args, **kwargs)
+
 
 class ActionCompleteView(LoginRequiredMixin, FormView):
     form_class = forms.CompleteActionForm

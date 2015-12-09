@@ -307,7 +307,7 @@ class ActionlistItemDeleteViewTests(ViewTestCase):
             'projects/actionlistitem_confirm_delete.html')
 
     def test_login_required(self):
-        response = self.get_request(AnonymousUser())
+        response = self.get_request(AnonymousUser(), pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
 
@@ -319,6 +319,14 @@ class ActionlistItemDeleteViewTests(ViewTestCase):
         response = self.post_request(alice, pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('projects:actionlist'))
+
+    def test_GET_from_different_user_shows_403_Forbidden(self):
+        response = self.get_request(bob, pk=self.item.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_POST_from_different_user_shows_403_Forbidden(self):
+        response = self.post_request(bob, pk=self.item.pk)
+        self.assertEqual(response.status_code, 403)
 
 
 class ActionCompleteViewTest(ViewTestCase):

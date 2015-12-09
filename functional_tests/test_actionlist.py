@@ -374,3 +374,33 @@ class ActionPageTests(FunctionalTestCase):
         body_text = self.browser.find_element_by_tag_name('body').text
         self.assertIn('403', body_text)
         self.assertIn('Forbidden', body_text)
+
+    def test_deleting_other_persons_action_item_returns_403(self):
+        # Alice is a user who logs in and goes to the inlist page
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She adds an item
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Test forbidden status\n')
+        # She goes to the delete page
+        item = action_page.get_list_rows(action_page.thelist)[0]
+        item['delete'].click()
+
+        ## Copy the url so Trudy can use it
+        self.wait_for(lambda: self.assertIn('/delete/',
+            self.browser.current_url))
+        delete_url = self.browser.current_url
+
+        # Trudy is another user who tries to delete Alice's action
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
+
+        # Trudy directly enters the url
+        self.browser.get(delete_url)
+        # She sees a 403 Forbidden error
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('403', body_text)
+        self.assertIn('Forbidden', body_text)
