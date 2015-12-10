@@ -14,3 +14,10 @@ class ActionlistItemFactory(DjangoModelFactory):
         model = 'projects.ActionlistItem'
 
     text = factory.Sequence(lambda n: 'Action %d' % n)
+
+
+class ProjectFactory(DjangoModelFactory):
+    class Meta:
+        model = 'projects.Project'
+
+    name = factory.Sequence(lambda n: 'Project %d' % n)

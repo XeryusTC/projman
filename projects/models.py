@@ -24,3 +24,15 @@ class ActionlistItem(models.Model):
 
     class Meta:
         unique_together = ('text', 'user')
+
+
+class Project(models.Model):
+    name = models.CharField(max_length=64, default='')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    description = models.CharField(max_length=1024, default='', blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        unique_together = ('name', 'user')
