@@ -59,3 +59,8 @@ class ActionDeletePage(PageObject):
 class ConvertToActionPage(PageObject):
     text_box = PageElement(name='text')
     convert_button = PageElement(xpath="//input[@type='submit']")
+
+
+class CreateProjectPage(PageObject):
+    name_box        = PageElement(name='name')
+    description_box = PageElement(name='description')
