@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from crispy_forms.helper import FormHelper
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -186,3 +187,46 @@ class ConvertInlistToActionFormTest(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['text'], [forms.EMPTY_TEXT_ERROR])
+
+
+class CreateProjectFormTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('alice', 'alice@test.org', 'a')
+
+    def test_crispy_helper_is_set(self):
+        form = forms.CreateProjectForm()
+        self.assertIsInstance(form.helper, FormHelper)
+
+    def test_form_save(self):
+        form = forms.CreateProjectForm(data={'name': 'test',
+            'description': 'test description'})
+        form.instance.user = self.user
+
+        form.is_valid()
+        project = form.save(self.user)
+
+        self.assertEqual(models.Project.objects.count(), 1)
+        self.assertEqual(project, models.Project.objects.first())
+
+    def test_form_validation_for_empty_name(self):
+        form = forms.CreateProjectForm(data={'name': '', 'description': 'test'})
+        form.instance.user = self.user
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['name'], [forms.EMPTY_PROJECT_NAME_ERROR])
+
+    def test_form_validation_for_duplicate_projects(self):
+        factories.ProjectFactory(name='dupe', user=self.user)
+        form = forms.CreateProjectForm(data={'name': 'dupe'})
+        form.instance.user = self.user
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['name'], [forms.DUPLICATE_PROJECT_ERROR])
+
+    def test_form_validation_for_duplicate_projects_from_different_users(self):
+        bob = User.objects.create_user('bob', 'bob@test.org', 'bob')
+        factories.ProjectFactory(name='dupe', user=bob)
+        form = forms.CreateProjectForm(data={'name': 'dupe'})
+        form.instance.user = self.user
+
+        self.assertTrue(form.is_valid())
