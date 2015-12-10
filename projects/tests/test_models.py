@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from projects import factories
-from projects.models import InlistItem, ActionlistItem
+from projects.models import InlistItem, ActionlistItem, Project
 
 User = get_user_model()
 u = None
@@ -87,3 +87,44 @@ class ActionlistItemModelTest(TestCase):
         item = factories.ActionlistItemFactory(user=u)
         item.save()
         self.assertFalse(item.complete)
+
+
+class ProjectModelTests(TestCase):
+    def test_default_name(self):
+        item = Project()
+        self.assertEqual(item.name, '')
+
+    def test_user_required(self):
+        item = factories.ProjectFactory(user=u)
+
+    def test_cannot_save_projects_without_a_name(self):
+        item = factories.ProjectFactory(name='', user=u)
+        with self.assertRaises(ValidationError):
+            item.save()
+            item.full_clean()
+
+    def test_user_cannot_have_duplicate_projects(self):
+        factories.ProjectFactory(name='dupe', user=u)
+        with self.assertRaises(ValidationError):
+            item = Project(name='dupe', user=u)
+            item.full_clean()
+
+    def test_different_users_can_have_the_same_project(self):
+        bob = User.objects.create_user('bob', 'bob@test.org', 'bob')
+        factories.ProjectFactory(name='build website', user=u)
+        item = factories.ProjectFactory(name='build website', user=bob)
+        item.full_clean()
+
+    def test_can_have_description(self):
+        item = factories.ProjectFactory(user=u, name='test',
+            description='desc')
+
+    def test_description_is_not_required(self):
+        item = factories.ProjectFactory(user=u, name='test', description='')
+        item.full_clean()
+
+    def test_string_representation(self):
+        item1 = factories.ProjectFactory(name='test project', user=u)
+        item2 = factories.ProjectFactory(name='second project', user=u)
+        self.assertEqual(str(item1), 'test project')
+        self.assertEqual(str(item2), 'second project')
