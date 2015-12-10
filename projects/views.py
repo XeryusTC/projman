@@ -7,7 +7,8 @@ from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import TemplateView, FormView, DeleteView, UpdateView
+from django.views.generic import (TemplateView, FormView, DeleteView,
+    UpdateView, CreateView)
 from django.views.defaults import permission_denied
 
 from projects import forms, models
@@ -129,3 +130,9 @@ class InlistItemToActionView(LoginRequiredMixin, FormView):
             return super(InlistItemToActionView, self).form_valid(form)
         else:
             return super(InlistItemToActionView, self).form_invalid(form)
+
+
+class CreateProjectView(LoginRequiredMixin, CreateView):
+    template_name = 'projects/create_project.html'
+    model = models.Project
+    fields = ['name', 'description']

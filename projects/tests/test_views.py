@@ -447,3 +447,25 @@ class ConvertInlistItemToActionItemTest(ViewTestCase):
     def test_post_request_from_wrong_user_returns_403_Forbidden(self):
         response = self.post_request(bob, pk=self.item.pk)
         self.assertEqual(response.status_code, 403)
+
+
+class CreateProjectViewTests(ViewTestCase):
+    def setUp(self):
+        self.url = reverse('projects:create_project')
+        self.view = views.CreateProjectView.as_view()
+
+    def test_create_project_url_resolves_to_create_project_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__, self.view.__name__)
+
+    def test_create_project_uses_correct_templates(self):
+        self.client.login(username='alice', password='alice')
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response, 'projects/create_project.html')
+
+    def test_login_required(self):
+        response = self.get_request(AnonymousUser())
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
