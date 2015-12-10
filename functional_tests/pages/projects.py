@@ -3,6 +3,7 @@ from page_objects import PageObject, PageElement, MultiPageElement
 
 class BaseProjectPage(PageObject):
     body    = PageElement(tag_name='body')
+    content = PageElement(id_='content')
     logout  = PageElement(link_text='LOG OUT')
     overlay = PageElement(id_='mui-overlay')
     sidebar = PageElement(id_="sidebar")

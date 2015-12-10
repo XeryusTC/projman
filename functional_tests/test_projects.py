@@ -17,6 +17,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # She ends up on a page with a form that allows her to enter a
         # name and a description
         self.assertEqual(self.browser.title, 'Create project')
+        self.assertIn('Create project', page.content.text)
         create_page = pages.projects.CreateProjectPage(self.browser)
         create_page.name_box.send_keys('Save the city')
         create_page.description_box.send_keys('Stop the super humans')
