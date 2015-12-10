@@ -8,8 +8,10 @@ from django.utils.translation import ugettext_lazy as _
 from projects import models
 
 EMPTY_TEXT_ERROR = _('You cannot add empty items')
+EMPTY_PROJECT_NAME_ERROR = _('You cannot a project without a name')
 DUPLICATE_ITEM_ERROR = _("You've already got this on your list")
 DUPLICATE_ACTION_ERROR = _("You already planned to do this")
+DUPLICATE_PROJECT_ERROR = ('You already have this project')
 ILLEGAL_ACTION_ERROR = _("You are not allowed to do this")
 
 class InlistForm(forms.ModelForm):
@@ -110,3 +112,24 @@ class ConvertInlistToActionForm(forms.Form):
             action = models.ActionlistItem(user=user,
                 text=self.cleaned_data['text'])
             action.save()
+
+
+class CreateProjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CreateProjectForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+
+    def validate_unique(self):
+        try:
+            self.instance.validate_unique()
+        except ValidationError as e:
+            e.error_dict = {'name': [DUPLICATE_PROJECT_ERROR]}
+            self._update_errors(e)
+
+    class Meta:
+        model = models.Project
+        fields = ('name', 'description')
+        error_messages = {
+            'name': {'required': EMPTY_PROJECT_NAME_ERROR},
+        }

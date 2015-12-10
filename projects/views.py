@@ -132,7 +132,7 @@ class InlistItemToActionView(LoginRequiredMixin, FormView):
             return super(InlistItemToActionView, self).form_invalid(form)
 
 
-class CreateProjectView(LoginRequiredMixin, CreateView):
+class CreateProjectView(LoginRequiredMixin, FormView):
     template_name = 'projects/create_project.html'
-    model = models.Project
-    fields = ['name', 'description']
+    form_class = forms.CreateProjectForm
+    success_url = '/'
