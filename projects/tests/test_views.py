@@ -469,3 +469,37 @@ class CreateProjectViewTests(ViewTestCase):
         response = self.get_request(AnonymousUser())
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
+
+    def test_uses_create_project_form(self):
+        response = self.get_request(alice)
+        self.assertIsInstance(response.context_data['form'],
+            forms.CreateProjectForm)
+
+    def test_POST_request_saves_to_user(self):
+        response = self.post_request(alice, {'name': 'Watch videos'})
+        self.assertEqual(models.Project.objects.count(), 1)
+        item = models.Project.objects.first()
+        self.assertEqual(item.name, 'Watch videos')
+        self.assertEqual(item.user, alice)
+
+    @unittest.expectedFailure
+    def test_POST_redirects_to_project_page(self):
+        self.fail('Implement')
+
+    def test_empty_name_saves_nothing_to_db(self):
+        response = self.post_request(alice, {'name': ''})
+        self.assertEqual(models.Project.objects.count(), 0)
+
+    def test_empty_name_shows_error_on_page(self):
+        response = self.post_request(alice, {'name': ''})
+        self.assertContains(response, forms.EMPTY_PROJECT_NAME_ERROR)
+
+    def test_duplicate_name_saves_nothing_to_db(self):
+        factories.ProjectFactory(name='dupe', user=alice)
+        response = self.post_request(alice, {'name': 'dupe'})
+        self.assertEqual(models.Project.objects.count(), 1)
+
+    def test_duplicate_name_shows_error(self):
+        factories.ProjectFactory(name='dupe', user=alice)
+        response = self.post_request(alice, {'name': 'dupe'})
+        self.assertContains(response, escape(forms.DUPLICATE_PROJECT_ERROR))
