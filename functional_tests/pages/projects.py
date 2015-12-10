@@ -11,6 +11,7 @@ class BaseProjectPage(PageObject):
 
     inlist_link = PageElement(link_text='In list', context=True)
     action_link = PageElement(link_text='Actions', context=True)
+    create_project_link = PageElement(link_text='Create project', context=True)
 
 
 class InlistPage(PageObject):

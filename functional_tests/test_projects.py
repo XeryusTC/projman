@@ -1,20 +1,69 @@
 # -*- coding:utf-8 -*-
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 from .base import FunctionalTestCase
 from . import pages
 
 class ProjectsPageTests(FunctionalTestCase):
-    @unittest.expectedFailure
     def test_projects_can_be_created_from_scratch(self):
         # Alice is a user
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+
         # She sees a create project button in the sidebar and clicks it
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+
         # She ends up on a page with a form that allows her to enter a
-        # title and a description
-        # Completing the form redirects her to a new page where she can
-        # add actions
+        # name and a description
+        self.assertEqual(self.browser.title, 'Create project')
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Save the city')
+        create_page.description_box.send_keys('Stop the super humans')
+
+        # Completing the form redirects her to a new page
+        create_page.create_button.click()
+
+        # The new page shows the title and the description
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.assertIn('Save the city', project_page.info.text)
+        self.assertIn('Stop the super humans', project_page.info.text)
+
+        # On the new page there is an add action box
+        self.assertEqual(project_page.add_box.get_attribute('placeholder'),
+            'What do you need to do?')
+        # She enters some text and hits enter
+        project_page.add_box.send_keys('Create a secret identity')
+        project_page.add_box.send_keys(Keys.RETURN)
+
+        # She stays on the page and sees that an action item has been added
+        self.assertIn('Create a secret identity',
+            project_page.list_text(action_page.action_list))
+        self.assertIn('Save the city', project_page.info.text)
+        self.assertIn('Stop the super humans', project_page.info.text)
+
         # She also sees that the project has ended up in the sidebar
-        self.fail('Implement')
+        self.assertIn('Save the city', page.sidebar.text)
+
+        # She goes to create a second project
+        page.create_project_link(page.sidebar).click()
+        create_page.name_box.send_keys('Get rich')
+        create_page.description_box.send_keys('Become a millionaire')
+        create_page.name_box.send_keys(Keys.RETURN)
+
+        # She ends up on the new project's page
+        self.assertIn('Get rich', project_page.info.text)
+        self.assertIn('Become a millionaire', project_page.info.text)
+        # The action she added is not on this page
+        self.assertNotIn('Create a secret identity',
+            project_page.list_text(action_page.action_list))
+
+        # She clicks the link to go to the other project
+        page.project_link('Save the city').click()
+
+        # She ends up on that project's page
+        self.assertIn('Save the city', project_page.info.text)
+        self.assertIn('Stop the super humans', project_page.info.text)
 
     @unittest.expectedFailure
     def test_can_only_see_own_projects(self):
