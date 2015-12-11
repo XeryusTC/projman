@@ -1,1 +1,18 @@
 {% extends 'projects/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div id="info">
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			<h1>{{ project.name }}</h1>
+		</div>
+		<div class="mui-col-xs-12">
+			{{ project.description }}
+		</div>
+	</div>
+</div>
+
+{% crispy form %}
+
+{% endblock content %}

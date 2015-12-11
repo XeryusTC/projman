@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (TemplateView, FormView, DeleteView,
-    UpdateView, CreateView)
+    UpdateView, CreateView, DetailView)
+from django.views.generic.edit import FormMixin
 from django.views.defaults import permission_denied
 
 from projects import forms, models
@@ -63,16 +64,18 @@ class ActionlistView(LoginRequiredMixin, FormView):
             user=self.request.user, complete=False)
         context['actionlist_complete'] = models.ActionlistItem.objects.filter(
             user=self.request.user, complete=True)
+        context['form'].instance.user = self.request.user
         return context
 
-    def form_valid(self, form):
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         form.instance.user = self.request.user
         form.validate_unique()
         if form.is_valid():
             form.save(self.request.user)
+            return super(ActionlistView, self).form_valid(form)
         else:
             return super(ActionlistView, self).form_invalid(form)
-        return super(ActionlistView, self).form_valid(form)
 
 
 class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
@@ -147,5 +150,30 @@ class CreateProjectView(LoginRequiredMixin, FormView):
             return super(CreateProjectView, self).form_invalid(form)
 
 
-class ProjectView(LoginRequiredMixin, TemplateView):
+class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
     template_name = 'projects/project.html'
+    model = models.Project
+    form_class = forms.ActionlistForm
+
+    def get_success_url(self):
+        return reverse_lazy('projects:project', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectView, self).get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        context['form'].instance.user = self.request.user
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        form = self.get_form()
+        form.instance.user = self.request.user
+        form.instance.project = self.object
+
+        form.validate_unique()
+        if form.is_valid():
+            form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
