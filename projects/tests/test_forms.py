@@ -48,13 +48,15 @@ class InlistFormSlowTest(TestCase):
         self.assertEqual(form.errors['text'], [forms.DUPLICATE_ITEM_ERROR])
 
 
-class ActionlistFormTest(unittest.TestCase):
+class ActionlistFormSlowTest(TestCase):
     def test_actionlist_form_placeholder(self):
         form = forms.ActionlistForm()
         self.assertIn('placeholder="What do you need to do?', form.as_p())
 
     def test_form_validation_for_blank_items(self):
+        u = User.objects.create_user('alice', 'alice@test.org', 'alice')
         form = forms.ActionlistForm(data={'text': ''})
+        form.instance.user=u
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['text'], [forms.EMPTY_TEXT_ERROR])
 
@@ -63,8 +65,6 @@ class ActionlistFormTest(unittest.TestCase):
         self.assertEqual(form.helper.form_method.lower(), 'post')
         self.assertIn('mui-form--inline', form.helper.form_class)
 
-
-class ActionlistFormSlowTest(TestCase):
     def test_form_save(self):
         u = User.objects.create_user('alice', 'alice@test.org', 'alice')
         form = forms.ActionlistForm(data={'text': 'test'})
@@ -84,7 +84,8 @@ class ActionlistFormSlowTest(TestCase):
         form.instance.user = u
 
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['text'], [forms.DUPLICATE_ACTION_ERROR])
+        self.assertEqual(form.errors[NON_FIELD_ERRORS],
+            [forms.DUPLICATE_ACTION_ERROR])
 
     def test_form_defaults_save_to_no_project(self):
         u = User.objects.create_user('alice', 'alice@test.org', 'alice')

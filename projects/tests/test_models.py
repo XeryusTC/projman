@@ -111,6 +111,19 @@ class ActionlistItemModelTest(TestCase):
         item = factories.ActionlistItemFactory(user=u, project=project)
         self.assertSequenceEqual(project.action_list.all(), [item])
 
+    def test_can_have_same_action_text_on_actionlist_and_project(self):
+        project = factories.ProjectFactory(user=u)
+        item1 = factories.ActionlistItemFactory(user=u, text='not dupe')
+        item2 = factories.ActionlistItemFactory(user=u, text='not dupe',
+            project=project)
+
+    def test_can_have_same_action_text_on_different_projects(self):
+        projects = factories.ProjectFactory.create_batch(user=u, size=2)
+        item1 = factories.ActionlistItemFactory(user=u, text='not dupe',
+            project=projects[0])
+        item2 = factories.ActionlistItemFactory(user=u, text='not dupe',
+            project=projects[1])
+
 
 class ProjectModelTests(TestCase):
     def test_default_name(self):

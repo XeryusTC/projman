@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+DUPLICATE_ACTION_ERROR = _("You already planned to do this")
 INVALID_USER_ERROR = _('Actions and projects must belong to the same user.')
 
 class InlistItem(models.Model):
@@ -31,11 +32,17 @@ class ActionlistItem(models.Model):
         if self.project != None and self.user != self.project.user:
             raise ValidationError(INVALID_USER_ERROR)
 
+        # Validate that two items on the action list are not the same
+        queryset = ActionlistItem.objects.exclude(pk=self.pk).filter(
+            text=self.text, user=self.user)
+        if self.project is None and queryset.exists():
+            raise ValidationError(DUPLICATE_ACTION_ERROR)
+
     def __str__(self):
         return self.text
 
     class Meta:
-        unique_together = ('text', 'user')
+        unique_together = (('text', 'user', 'project'),)
 
 
 class Project(models.Model):
