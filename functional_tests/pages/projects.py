@@ -72,6 +72,7 @@ class CreateProjectPage(PageObject):
     name_box        = PageElement(name='name')
     description_box = PageElement(name='description')
     create_button   = PageElement(name='create')
+    error_lists     = MultiPageElement(css='.errorlist')
 
 
 class ProjectPage(PageObject):

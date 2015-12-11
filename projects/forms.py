@@ -9,7 +9,7 @@ from projects import models
 from projects.models import DUPLICATE_ACTION_ERROR
 
 EMPTY_TEXT_ERROR = _('You cannot add empty items')
-EMPTY_PROJECT_NAME_ERROR = _('You cannot a project without a name')
+EMPTY_PROJECT_NAME_ERROR = _('You cannot create a project without a name')
 DUPLICATE_ITEM_ERROR = _("You've already got this on your list")
 DUPLICATE_PROJECT_ERROR = ('You already have this project')
 ILLEGAL_ACTION_ERROR = _("You are not allowed to do this")

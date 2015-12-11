@@ -85,12 +85,28 @@ class ProjectsPageTests(FunctionalTestCase):
         # and so is the project page
         self.fail('Implement')
 
-    @unittest.expectedFailure
     def test_cannot_create_project_with_empty_name(self):
-        # Alice is a user who tries to create a project with an empty
-        # title, which is not allowed. Trying to enter a empty description
-        # is allowed
-        self.fail('Implement')
+        # Alice is a user who goes to the project creation page
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+
+        # She tries to create a project with an emtpy name
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.create_button.click()
+
+        # She sees that she is not allowed to do this
+        self.assertIn('You cannot create a project without a name',
+            [error.text for error in create_page.error_lists])
+
+        # She goes to enter a name, but doesn't enter a description
+        create_page.name_box.send_keys('Destroy all humans\n')
+
+        # This time it is successful, so she gets redirected to the
+        # project page
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.assertIn('/projects/project/', self.browser.current_url)
+        self.assertIn('Destroy all humans', project_page.info.text)
 
     @unittest.expectedFailure
     def test_cannot_create_duplicate_projects(self):
