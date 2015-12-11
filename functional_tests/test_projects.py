@@ -108,14 +108,41 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertIn('/projects/project/', self.browser.current_url)
         self.assertIn('Destroy all humans', project_page.info.text)
 
-    @unittest.expectedFailure
     def test_cannot_create_duplicate_projects(self):
-        # Alice is a user who tries to create two projects that have the
-        # same name
-        # She sees an error when she tries to create the second project
-        # When she creates a project with a different name but the same
-        # description she is allowed to create the project
-        self.fail('Implement')
+        # Alice is a user who goes to the project creation page
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+
+        # She creates a project
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Buy an aquarium')
+        create_page.description_box.send_keys('I like turtles')
+        create_page.create_button.click()
+
+        # She is redirected to the project page
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.assertIn('Buy an aquarium', project_page.info.text)
+        self.assertIn('I like turtles', project_page.info.text)
+
+        # Because she is forgetful she goes to create the same project again
+        page.create_project_link(page.sidebar).click()
+        create_page.name_box.send_keys('Buy an aquarium')
+        create_page.description_box.send_keys('I like turtles\n')
+
+        # This time she isn't redirected to the project page but is shown
+        # an error
+        self.assertTrue(self.browser.current_url.endswith('/project/create/'))
+        self.assertIn('You already have this project',
+            [error.text for error in create_page.error_lists])
+
+        # She decides to update the name but not the description
+        create_page.name_box.send_keys(' for the turtles\n')
+
+        # This time she isn't greeted with an error but with a new project
+        self.assertIn('Buy an aquarium for the turtles',
+            project_page.info.text)
+        self.assertIn('I like turtles', project_page.info.text)
 
     @unittest.expectedFailure
     def test_can_convert_inlist_item_into_project(self):
