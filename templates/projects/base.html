@@ -28,6 +28,14 @@
 				{% trans 'Create project' %}
 			</a>
 		</li>
+
+		{% for project in project_list %}
+			<li>
+				<a class="sidebar-mainlink project"
+					href="{% url 'projects:project' project.pk %}">
+					{{ project.name }}</a>
+			</li>
+		{% endfor %}
 	{% block sidebar %}{% endblock %}
 	</ul>
 </div>

@@ -14,6 +14,12 @@ class BaseProjectPage(PageObject):
     action_link = PageElement(link_text='Actions', context=True)
     create_project_link = PageElement(link_text='Create project', context=True)
 
+    _project_links = MultiPageElement(css="a.project", context=True)
+    def project_link(self, text):
+        for link in self._project_links(self.sidebar):
+            if text == link.text:
+                return link
+
 
 class InlistPage(PageObject):
     add_box     = PageElement(name='text')
@@ -66,3 +72,14 @@ class CreateProjectPage(PageObject):
     name_box        = PageElement(name='name')
     description_box = PageElement(name='description')
     create_button   = PageElement(name='create')
+
+
+class ProjectPage(PageObject):
+    info = PageElement(id_='info')
+    add_box = PageElement(name='text')
+    thelist = MultiPageElement(css='#list .mui-row')
+
+    _list_text = PageElement(css='.action-item', context=True)
+
+    def list_text(self, context):
+        return [self._list_text(row).text for row in context]

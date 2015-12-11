@@ -15,4 +15,14 @@
 
 {% crispy form %}
 
+<div id="list">
+	{% for item in project.action_list.all %}
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui-col-md-6 action-item">
+				{{ item.text }}
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
 {% endblock content %}

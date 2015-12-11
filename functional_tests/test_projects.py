@@ -39,7 +39,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # She stays on the page and sees that an action item has been added
         self.assertIn('Create a secret identity',
-            project_page.list_text(action_page.action_list))
+            project_page.list_text(project_page.thelist))
         self.assertIn('Save the city', project_page.info.text)
         self.assertIn('Stop the super humans', project_page.info.text)
 
@@ -57,7 +57,7 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertIn('Become a millionaire', project_page.info.text)
         # The action she added is not on this page
         self.assertNotIn('Create a secret identity',
-            project_page.list_text(action_page.action_list))
+            project_page.list_text(project_page.thelist))
 
         # She clicks the link to go to the other project
         page.project_link('Save the city').click()
