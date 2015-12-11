@@ -1,8 +1,12 @@
 {% if form.errors and form.non_field_errors %}
     <div id="errorMsg">
-        {% if form_error_title %}<h3>{{ form_error_title }}</h3>{% endif %}
-        <ol>
-            {{ form.non_field_errors|unordered_list }}
-        </ol>
+		<div class="mui-row">
+			<div class="mui-col-xs-12 mui--text-danger mui-list--inline">
+		        {% if form_error_title %}<h3>{{ form_error_title }}</h3>{% endif %}
+		        <ul class="errorlist">
+        		    {{ form.non_field_errors|unordered_list }}
+		        </ul>
+			</div>
+		</div>
     </div>
 {% endif %}
