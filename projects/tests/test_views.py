@@ -532,7 +532,11 @@ class ProjectViewTests(ViewTestCase):
         response = self.get_request(alice, pk=self.project.pk)
 
         context = response.context_data['project']
-        self.assertSequenceEqual(context.action_list.all(), nc + co)
+        self.assertEqual(context.action_list.count(), len(nc) + len(co))
+        self.assertIn(nc[0], context.action_list.all())
+        self.assertIn(nc[1], context.action_list.all())
+        self.assertIn(co[0], context.action_list.all())
+        self.assertIn(co[1], context.action_list.all())
 
 
 class CreateProjectViewTests(ViewTestCase):

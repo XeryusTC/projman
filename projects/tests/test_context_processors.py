@@ -32,8 +32,11 @@ class ProjectNamesTests(TestCase):
         request = self.factory.get('/')
         request.user = self.alice
 
-        self.assertSequenceEqual(cp.project_list(request)['project_list'],
-            projects)
+        project_list = cp.project_list(request)['project_list']
+        for p in projects:
+            self.assertIn(p, project_list,
+                msg="{} is not found in {}".format(p, project_list))
+        self.assertEqual(len(projects), project_list.count())
 
     def test_project_list_does_not_contain_other_users_projects(self):
         ap = factories.ProjectFactory(user=self.alice)
