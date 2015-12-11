@@ -88,6 +88,29 @@ class ActionlistItemModelTest(TestCase):
         item.save()
         self.assertFalse(item.complete)
 
+    def test_has_project_field(self):
+        project = factories.ProjectFactory(user=u)
+        item = ActionlistItem(text='test', user=u, project=project)
+        item.save()
+
+    def test_project_field_refers_to_no_project_by_default(self):
+        item = factories.ActionlistItemFactory(user=u)
+        item.save()
+        self.assertIsNone(item.project)
+
+    def test_action_user_and_project_user_should_be_equal(self):
+        bob = User.objects.create_user('bob', 'bob@test.org', 'bob')
+        project = factories.ProjectFactory(user=bob)
+
+        item = ActionlistItem(text='test', user=u, project=project)
+        with self.assertRaises(ValidationError):
+            item.full_clean()
+
+    def test_related_field_has_sensible_name(self):
+        project = factories.ProjectFactory(user=u)
+        item = factories.ActionlistItemFactory(user=u, project=project)
+        self.assertSequenceEqual(project.action_list.all(), [item])
+
 
 class ProjectModelTests(TestCase):
     def test_default_name(self):

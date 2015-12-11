@@ -86,6 +86,43 @@ class ActionlistFormSlowTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['text'], [forms.DUPLICATE_ACTION_ERROR])
 
+    def test_form_defaults_save_to_no_project(self):
+        u = User.objects.create_user('alice', 'alice@test.org', 'alice')
+        form = forms.ActionlistForm(data={'text': 'test'})
+        form.instance.user = u
+
+        form.is_valid()
+        item = form.save(u)
+
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+        self.assertIsNone(item.project)
+
+    def test_form_can_save_action_to_project(self):
+        u = User.objects.create_user('alice', 'alice@test.org', 'alice')
+        p = factories.ProjectFactory(user=u)
+        form = forms.ActionlistForm(data={'text': 'test'})
+        form.instance.user = u
+        form.instance.project = p
+
+        form.is_valid()
+        item = form.save()
+
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+        self.assertEquals(item.project, p)
+
+    def test_cannot_save_action_to_project_which_doesnt_belong_to_user(self):
+        alice = User.objects.create_user('alice', 'alice@test.org', 'alice')
+        bob = User.objects.create_user('bob', 'bob@test.org', 'bob')
+        p = factories.ProjectFactory(user=bob)
+
+        form = forms.ActionlistForm(data={'text': 'wrong user'})
+        form.instance.user = alice
+        form.instance.project = p
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[NON_FIELD_ERRORS],
+            [models.INVALID_USER_ERROR])
+
 
 class CompleteActionFormTest(TestCase):
     def test_form_save(self):
