@@ -449,6 +449,92 @@ class ConvertInlistItemToActionItemTest(ViewTestCase):
         self.assertEqual(response.status_code, 403)
 
 
+class ProjectViewTests(ViewTestCase):
+    def setUp(self):
+        self.project = factories.ProjectFactory(user=alice)
+        self.url = reverse('projects:project', kwargs={'pk':self.project.pk})
+        self.view = views.ProjectView.as_view()
+
+    def test_project_url_resolves_to_project_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__, self.view.__name__)
+
+    def test_project_page_uses_correct_templates(self):
+        self.client.login(username='alice', password='alice')
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response, 'projects/project.html')
+
+    def test_login_required(self):
+        response = self.get_request(AnonymousUser())
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
+
+    def test_shows_project_name(self):
+        response = self.get_request(alice, pk=self.project.pk)
+        self.assertContains(response, self.project.name)
+
+    def test_shows_project_description(self):
+        response = self.get_request(alice, pk=self.project.pk)
+        self.assertContains(response, self.project.description)
+
+    def test_uses_actionlist_form(self):
+        response = self.get_request(alice, pk=self.project.pk)
+        self.assertIsInstance(response.context_data['form'],
+            forms.ActionlistForm)
+
+    def test_POST_request_saves_to_project(self):
+        response = self.post_request(alice, {'text': 'dinosaur'},
+            pk=self.project.pk)
+
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+        item = models.ActionlistItem.objects.first()
+        self.assertEqual(item.text, 'dinosaur')
+        self.assertEqual(item.user, alice)
+        self.assertEqual(item.project, self.project)
+        self.assertSequenceEqual(self.project.action_list.all(), [item])
+
+    def test_POST_request_redirects_to_project(self):
+        response = self.post_request(alice, {'text': 'misquito'},
+            pk=self.project.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.url)
+
+    def test_empty_input_saves_nothing_to_db(self):
+        response = self.post_request(alice, {'text': ''}, pk=self.project.pk)
+        self.assertEqual(models.ActionlistItem.objects.count(), 0)
+
+    def test_empty_input_shows_error_on_page(self):
+        response = self.post_request(alice, {'text': ''}, pk=self.project.pk)
+        self.assertContains(response, forms.EMPTY_TEXT_ERROR)
+
+    def test_duplicate_text_saves_nothing_to_db(self):
+        item1 = factories.ActionlistItemFactory(text='dupe', user=alice,
+            project=self.project)
+        response = self.post_request(alice, {'text': 'dupe'},
+            pk=self.project.pk)
+        self.assertEqual(models.ActionlistItem.objects.count(), 1)
+
+    def test_duplicate_text_shows_error_on_page(self):
+        item1 = factories.ActionlistItemFactory(text='dupe', user=alice,
+            project=self.project)
+        response = self.post_request(alice, {'text': 'dupe'},
+            pk=self.project.pk)
+        self.assertContains(response, forms.DUPLICATE_ACTION_ERROR)
+
+    def test_contains_all_actions_in_context_actionlist(self):
+        nc = factories.ActionlistItemFactory.create_batch(2, user=alice,
+            complete=False, project=self.project)
+        co = factories.ActionlistItemFactory.create_batch(2, user=alice,
+            complete=False, project=self.project)
+
+        response = self.get_request(alice, pk=self.project.pk)
+
+        context = response.context_data['project']
+        self.assertSequenceEqual(context.action_list.all(), nc + co)
+
+
 class CreateProjectViewTests(ViewTestCase):
     def setUp(self):
         self.url = reverse('projects:create_project')

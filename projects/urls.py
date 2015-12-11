@@ -19,6 +19,8 @@ urlpatterns = [
         views.ActionCompleteView.as_view(), name='complete_action'),
 
     # Projects
+    url(r'^project/(?P<pk>[0-9]+)/$', views.ProjectView.as_view(),
+        name='project'),
     url(r'^project/create/$', views.CreateProjectView.as_view(),
         name='create_project'),
 ]

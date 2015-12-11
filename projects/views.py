@@ -145,3 +145,7 @@ class CreateProjectView(LoginRequiredMixin, FormView):
             return super(CreateProjectView, self).form_valid(form)
         else:
             return super(CreateProjectView, self).form_invalid(form)
+
+
+class ProjectView(LoginRequiredMixin, TemplateView):
+    template_name = 'projects/project.html'
