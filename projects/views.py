@@ -138,13 +138,15 @@ class InlistItemToActionView(LoginRequiredMixin, FormView):
 class CreateProjectView(LoginRequiredMixin, FormView):
     template_name = 'projects/create_project.html'
     form_class = forms.CreateProjectForm
-    success_url = '/'
+
+    def get_success_url(self):
+        return reverse_lazy('projects:project', kwargs={'pk': self.project.pk})
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.validate_unique()
         if form.is_valid():
-            form.save()
+            self.project = form.save()
             return super(CreateProjectView, self).form_valid(form)
         else:
             return super(CreateProjectView, self).form_invalid(form)

@@ -568,9 +568,12 @@ class CreateProjectViewTests(ViewTestCase):
         self.assertEqual(item.name, 'Watch videos')
         self.assertEqual(item.user, alice)
 
-    @unittest.expectedFailure
     def test_POST_redirects_to_project_page(self):
-        self.fail('Implement')
+        response = self.post_request(alice, {'name': 'Watch videos'})
+        project = models.Project.objects.first()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+            reverse('projects:project', kwargs={'pk':project.pk}))
 
     def test_empty_name_saves_nothing_to_db(self):
         response = self.post_request(alice, {'name': ''})
