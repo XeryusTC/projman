@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
 
@@ -261,17 +262,71 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertNotIn('Find a place where salamanders live',
             project_page.list_text(project_page.thelist))
 
-    @unittest.expectedFailure
     def test_can_toggle_complete_status_of_actions_on_project_page(self):
         # Alice is a user with a project
-        # On the project page there is an action, when she hovers over it
-        # it gets crossed out
-        # She decides to click it, the action is now marked as checked
-        # When she goes to hover over the item again she sees that it is
-        # unmarked
-        # She clicks it and the item is moved back to the incomplete
-        # actions list
-        self.fail('Implement')
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Pet the cats\n')
+
+        # On the project page she creates an action
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.add_box.send_keys('Pet Felix\n')
+        project_page.add_box.send_keys('Pet Garfield\n')
+
+        # The 'Pet Felix' item should be on the page
+        self.assertIn('Pet Felix',
+            project_page.list_text(project_page.thelist))
+        actions = project_page.get_list_rows(project_page.thelist)
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Pet Felix':
+                item = elems
+
+        # She hovers over the 'Pet Felix' action and sees that it gets
+        # crossed out
+        self.assertEqual(item['text'].value_of_css_property('text-decoration'),
+            'none')
+        chain = webdriver.ActionChains(self.browser)
+        chain.move_to_element(item['text'])
+        chain.perform()
+        self.assertEqual(item['text'].value_of_css_property('text-decoration'),
+            'line-through')
+        # Her cursor has changed into a hand
+        self.assertEqual(item['text'].value_of_css_property('cursor'),
+            'pointer')
+
+        # When she clicks it the page reloads and the action is "checked"
+        item['text'].click()
+        self.assertEqual(self.browser.title, 'Pet the cats')
+        self.assertIn('Pet Felix',
+            project_page.list_text(project_page.checked_list))
+
+        ## The item needs to be found again because the page reloaded
+        actions = project_page.get_list_rows(project_page.thelist)
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Pet Felix':
+                item = elems
+
+        ## Move the curser away from where the element was
+        chain = webdriver.ActionChains(self.browser)
+        chain.move_to_element(page.sidebar)
+        chain.perform()
+
+        # When she hovers over the action she sees that it gets uncrossed
+        self.assertEqual(item['text'].value_of_css_property('text-decoration'),
+            'line-through')
+        chain = webdriver.ActionChains(self.browser)
+        chain.move_to_element(item['text'])
+        chain.perform()
+        self.assertEqual(item['text'].value_of_css_property('text-decoration'),
+            'none')
+        self.assertEqual(item['text'].value_of_css_property('cursor'),
+            'pointer')
+
+        # After she clicks it the item is marked as unchecked
+        item['text'].click()
+        self.assertListEqual([], project_page.checked_list)
 
     @unittest.expectedFailure
     def test_different_projects_can_have_duplicate_action_items(self):
