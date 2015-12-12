@@ -31,6 +31,11 @@ a.appbar-correct {
 	text-decoration: line-through;
 }
 
-#checked .action-item {
+#checked .action-item, .checked .action-item {
 	color: #9e9e9e;
+	text-decoration: line-through;
+}
+
+.checked .action-item:hover {
+	text-decoration: none;
 }

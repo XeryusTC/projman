@@ -98,8 +98,14 @@ class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
 
 class ActionCompleteView(LoginRequiredMixin, FormView):
     form_class = forms.CompleteActionForm
-    success_url = reverse_lazy('projects:actionlist')
     template_name = 'projects/actionlistitem_errorform.html'
+
+    def get_success_url(self):
+        item = get_object_or_404(models.ActionlistItem, pk=self.kwargs['pk'])
+        if item.project:
+            return reverse('projects:project', kwargs={'pk': item.project.pk})
+        else:
+            return reverse('projects:actionlist')
 
     def form_valid(self, form):
         form.save(models.ActionlistItem.objects.get(pk=self.kwargs['pk']),
