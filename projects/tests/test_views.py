@@ -293,7 +293,7 @@ class ActionlistItemDeleteViewTests(ViewTestCase):
         self.url = '/en/projects/actions/{}/delete/'.format(self.item.pk)
         self.view = views.ActionlistItemDelete.as_view()
 
-    def test_inlist_item_delete_view_is_delete_view(self):
+    def test_actionlist_item_delete_view_is_delete_view(self):
         found = resolve(self.url)
         self.assertEqual(found.func.__name__,
             views.ActionlistItemDelete.as_view().__name__)
