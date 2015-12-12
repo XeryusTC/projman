@@ -250,13 +250,39 @@ class ProjectsPageTests(FunctionalTestCase):
         # still kept on the second project
         self.fail('Implement')
 
-    @unittest.expectedFailure
     def test_can_logout_from_project_page(self):
         # Alice is a user with a project
-        # When she is on the project's page she sees the logout button on
-        # the top right
-        # She clicks it and she is logged out
-        self.fail('Implement')
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Catch up on tv\n')
+
+        # There is a log out button visible, she clicks it
+        page.logout.click()
+
+        # She lands on the logout confirmation page
+        confirm_page = pages.accounts.LogoutConfirmPage(self.browser)
+        confirm_page.confirm.click()
+
+        # She sees that she is on the landing page
+        self.assertTrue(self.browser.current_url.endswith('/en/'))
+
+    def test_can_logout_from_create_project_page(self):
+        # Alice is a user who goes to the create project page
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+
+        # She sees the log out button and clicks it
+        page.logout.click()
+
+        # She lands on the logout confirmation page
+        confirm_page = pages.accounts.LogoutConfirmPage(self.browser)
+        confirm_page.confirm.click()
+
+        # She sees that she is on the landing page
+        self.assertTrue(self.browser.current_url.endswith('/en/'))
 
     @unittest.expectedFailure
     def test_deleting_other_persons_project_retuns_403(self):
