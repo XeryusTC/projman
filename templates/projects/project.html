@@ -2,6 +2,8 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
+{% block head_title %}{{ project.name }}{% endblock %}
+
 {% block content %}
 <div id="info">
 	<div class="mui-row">
@@ -28,6 +30,7 @@
 					title="{% trans 'Delete' %}">
 					<span class="fa fa-times fa-2x"></span>
 				</a>
+			</div>
 		</div>
 	{% endfor %}
 </div>

@@ -27,6 +27,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # The new page shows the title and the description
         project_page = pages.projects.ProjectPage(self.browser)
+        self.assertEqual(self.browser.title, 'Save the city')
         self.assertIn('Save the city', project_page.info.text)
         self.assertIn('Stop the super humans', project_page.info.text)
 
@@ -53,6 +54,7 @@ class ProjectsPageTests(FunctionalTestCase):
         create_page.name_box.send_keys(Keys.RETURN)
 
         # She ends up on the new project's page
+        self.assertEqual(self.browser.title, 'Get rich')
         self.assertIn('Get rich', project_page.info.text)
         self.assertIn('Become a millionaire', project_page.info.text)
         # The action she added is not on this page
@@ -63,6 +65,7 @@ class ProjectsPageTests(FunctionalTestCase):
         page.project_link('Save the city').click()
 
         # She ends up on that project's page
+        self.assertEqual(self.browser.title, 'Save the city')
         self.assertIn('Save the city', project_page.info.text)
         self.assertIn('Stop the super humans', project_page.info.text)
 
