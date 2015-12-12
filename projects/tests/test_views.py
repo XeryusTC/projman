@@ -286,6 +286,19 @@ class ActionlistViewTests(ViewTestCase):
         self.assertIn(co[0], context)
         self.assertIn(co[1], context)
 
+    def test_only_show_action_items_without_project(self):
+        project = factories.ProjectFactory(user=alice)
+        item1 = factories.ActionlistItemFactory(user=alice)
+        item2 = factories.ActionlistItemFactory(user=alice, project=project)
+
+        response = self.get_request(alice)
+
+        actionlist = response.context_data['actionlist_items']
+        self.assertIn(item1, actionlist)
+        self.assertNotIn(item2, actionlist)
+        self.assertSequenceEqual([],
+            response.context_data['actionlist_complete'])
+
 
 class ActionlistItemDeleteViewTests(ViewTestCase):
     def setUp(self):

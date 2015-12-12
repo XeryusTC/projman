@@ -385,3 +385,31 @@ class ProjectsPageTests(FunctionalTestCase):
         # Trudy enters the change project details url for Alice's project
         # She is greeted with a 403 Forbidden message
         self.fail('Implement')
+
+    def test_project_action_items_do_not_show_on_action_list(self):
+        # Alice is a user who creates a project
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Plan holiday\n')
+
+        # On the project page she creates an action
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.add_box.send_keys('Save money\n')
+        project_page.add_box.send_keys('Figure out where to go\n')
+
+        # The items appear on the page
+        self.assertIn('Save money',
+            project_page.list_text(project_page.thelist))
+        self.assertIn('Figure out where to go',
+            project_page.list_text(project_page.thelist))
+
+        # She goes to the action list page
+        page.action_link(page.sidebar).click()
+
+        # The items are not on this page
+        self.assertNotIn('Save money',
+            project_page.list_text(project_page.thelist))
+        self.assertNotIn('Figure out where to go',
+            project_page.list_text(project_page.thelist))
