@@ -1,5 +1,6 @@
 {% extends 'projects/base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block content %}
 <div id="info">
@@ -21,6 +22,12 @@
 			<div class="mui-col-xs-12 mui-col-md-6 action-item">
 				{{ item.text }}
 			</div>
+			<div class="mui-col-xs-4">
+				<a class="mui-btn mui-btn--danger mui-btn--fab action-delete"
+					href="{% url 'projects:delete_actionlist' item.pk %}"
+					title="{% trans 'Delete' %}">
+					<span class="fa fa-times fa-2x"></span>
+				</a>
 		</div>
 	{% endfor %}
 </div>

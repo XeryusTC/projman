@@ -315,10 +315,18 @@ class ActionlistItemDeleteViewTests(ViewTestCase):
         response = self.get_request(alice, pk=self.item.pk)
         self.assertContains(response, self.item.text)
 
-    def test_POST_redirects_to_action_list(self):
+    def test_POST_redirects_to_action_list_for_non_project_actions(self):
         response = self.post_request(alice, pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('projects:actionlist'))
+
+    def test_POST_redirects_to_project_page_for_project_actions(self):
+        project = factories.ProjectFactory(user=alice)
+        item = factories.ActionlistItemFactory(user=alice, project=project)
+        response = self.post_request(alice, pk=item.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('projects:project',
+            kwargs={'pk': project.pk}))
 
     def test_GET_from_different_user_shows_403_Forbidden(self):
         response = self.get_request(bob, pk=self.item.pk)

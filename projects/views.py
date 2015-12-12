@@ -2,7 +2,7 @@
 from braces.views import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -80,7 +80,13 @@ class ActionlistView(LoginRequiredMixin, FormView):
 
 class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
     model = models.ActionlistItem
-    success_url = reverse_lazy('projects:actionlist')
+
+    def get_success_url(self):
+        if self.object.project:
+            return reverse('projects:project',
+                kwargs={'pk': self.object.project.pk})
+        else:
+            return reverse('projects:actionlist')
 
     def dispatch(self, request, *args, **kwargs):
         item = get_object_or_404(models.ActionlistItem, pk=self.kwargs['pk'])

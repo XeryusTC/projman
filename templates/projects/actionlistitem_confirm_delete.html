@@ -4,8 +4,14 @@
 {% block head_title %}{% trans 'Delete action' %}{% endblock %}
 
 {% block content %}
-{% blocktrans %}Are you sure you want to remove the action
-"{{ actionlistitem }}" from your action list?{% endblocktrans %}
+{% if actionlistitem.project %}
+	{% blocktrans with project_name=actionlistitem.project.name %}Are you sure
+	you want to remove the action "{{ actionlistitem }}" from the project
+	{{ project_name }}{% endblocktrans %}
+{% else %}
+	{% blocktrans %}Are you sure you want to remove the action
+	"{{ actionlistitem }}" from your action list?{% endblocktrans %}
+{% endif %}
 <form method="post" action="">
 	{% csrf_token %}
 	<input class="mui-btn mui-btn--primary" type="submit"
