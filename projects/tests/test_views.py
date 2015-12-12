@@ -383,6 +383,19 @@ class ActionCompleteViewTest(ViewTestCase):
         response = self.post_request(bob, pk=self.item.pk)
         self.assertContains(response, forms.ILLEGAL_ACTION_ERROR)
 
+    def test_redirects_to_action_list_when_project_not_set_on_action(self):
+        response = self.post_request(alice, pk=self.item.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('projects:actionlist'))
+
+    def test_redirects_to_project_page_when_action_has_project(self):
+        project = factories.ProjectFactory(user=alice)
+        item = factories.ActionlistItemFactory(user=alice, project=project)
+        response = self.post_request(alice, pk=item.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+            reverse('projects:project', kwargs={'pk': project.pk}))
+
 
 class ConvertInlistItemToActionItemTest(ViewTestCase):
     def setUp(self):
