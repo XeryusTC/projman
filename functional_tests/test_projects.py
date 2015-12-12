@@ -217,16 +217,46 @@ class ProjectsPageTests(FunctionalTestCase):
         # She is greeted with a duplicate action error
         self.fail('Implement')
 
-    @unittest.expectedFailure
     def test_can_delete_action_from_project_page(self):
         # Alice is a user with a project
-        # On the project there is a action, with a delete button next to
-        # it, she clicks it
-        # She is greeted with a confirmation page, she clicks the confirm
-        # button
-        # She is returned to the project page, the action is not on that
-        # page anymore
-        self.fail('Implement')
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Catch some salamanders\n')
+
+        # On the project page she creates an action
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.add_box.send_keys('Find a place where salamanders live')
+        project_page.add_button.click()
+        project_page.add_box.send_keys('Buy some boxes\n')
+
+        # She realises that she already knows where they live, so she
+        # removes the action
+        actions = project_page.get_list_rows(project_page.thelist)
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Find a place where salamanders live':
+                elems['delete'].click()
+                break
+
+        # She ends up on a confirmation page that asks here if she is sure
+        # that she wants to remove this item. The page names the action
+        # and the action it belongs to
+        self.assertEqual(self.browser.title, 'Delete action')
+        confirm_page = pages.projects.ActionDeletePage(self.browser)
+        self.assertIn('Find a place where salamanders live',
+            confirm_page.content.text)
+        self.assertIn('Catch some salamanders', confirm_page.content.text)
+        # She clicks the button on the page
+        confirm_page.confirm.click()
+
+        # She is redirected to the project page, where she finds that
+        # there is only one action left
+        self.assertIn('Catch some salamanders', project_page.info.text)
+        self.assertIn('Buy some boxes',
+            project_page.list_text(project_page.thelist))
+        self.assertNotIn('Find a place where salamanders live',
+            project_page.list_text(project_page.thelist))
 
     @unittest.expectedFailure
     def test_can_toggle_complete_status_of_actions_on_project_page(self):

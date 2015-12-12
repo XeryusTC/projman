@@ -76,11 +76,20 @@ class CreateProjectPage(PageObject):
 
 
 class ProjectPage(PageObject):
-    info = PageElement(id_='info')
-    add_box = PageElement(name='text')
-    thelist = MultiPageElement(css='#list .mui-row')
+    info       = PageElement(id_='info')
+    add_box    = PageElement(name='text')
+    add_button = PageElement(xpath="//form//input[@name='submit']")
+    thelist    = MultiPageElement(css='#list .mui-row')
 
-    _list_text = PageElement(css='.action-item', context=True)
+    _list_text   = PageElement(css='.action-item', context=True)
+    _delete_item = PageElement(class_name='action-delete', context=True)
 
     def list_text(self, context):
         return [self._list_text(row).text for row in context]
+
+    def get_list_rows(self, context):
+        res = {}
+        for i in range(len(context)):
+            res[i] = {'text': self._list_text(context[i]),
+                'delete': self._delete_item(context[i])}
+        return res
