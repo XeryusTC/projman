@@ -328,15 +328,55 @@ class ProjectsPageTests(FunctionalTestCase):
         item['text'].click()
         self.assertListEqual([], project_page.checked_list)
 
-    @unittest.expectedFailure
     def test_different_projects_can_have_duplicate_action_items(self):
-        # Alice is a user with two projects
-        # She goes to add an item on the first project
-        # She also adds the same item on the second project, she does not
-        # get an error
-        # When she goes to delete the action on the first project it is
-        # still kept on the second project
-        self.fail('Implement')
+        # Alice is a user who goes to create a project
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Plan a holiday\n')
+
+        # She adds an action on the page
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.add_box.send_keys('Save money\n')
+        # The item ends up on the page
+        self.assertIn('Save money',
+            project_page.list_text(project_page.thelist))
+
+        # She goes to create another project
+        page.create_project_link(page.sidebar).click()
+        create_page.name_box.send_keys('Buy a new car\n')
+        # There is no action item here yet
+        self.assertEqual([], project_page.thelist)
+        # She creates an identical action for this project
+        project_page.add_box.send_keys('Save money\n')
+        # The item got added without error
+        self.assertEqual([], project_page.error_lists)
+        self.assertIn('Save money',
+            project_page.list_text(project_page.thelist))
+
+        # Alice goes back to the first project she created
+        page.project_link('Plan a holiday').click()
+        # She goes to delete the save money item for this project
+        actions = project_page.get_list_rows(project_page.thelist)
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Save money':
+                elems['delete'].click()
+                break
+        # She confirms that she wants to delete the action
+        confirm_page = pages.projects.ActionDeletePage(self.browser)
+        confirm_page.confirm.click()
+
+        # She is returned to the project and the action is gone
+        self.assertEqual(self.browser.title, 'Plan a holiday')
+        self.assertNotIn('Save money',
+            project_page.list_text(project_page.thelist))
+
+        # When she goes to the other project the action is still there
+        page.project_link('Buy a new car').click()
+        self.assertEqual(self.browser.title, 'Buy a new car')
+        self.assertIn('Save money',
+            project_page.list_text(project_page.thelist))
 
     def test_can_logout_from_project_page(self):
         # Alice is a user with a project
