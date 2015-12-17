@@ -22,3 +22,9 @@ def create_user(user, password, email):
 def get_sitename():
     name = run('{manage} get_sitename'.format(manage=_get_manage_py(env.host)))
     print name
+
+def create_project(user, name, description=''):
+    project = run('{manage} create_project {user} {name} --description {desc}'
+        .format(manage=_get_manage_py(env.host), user=user, name=name,
+            desc=description))
+    print project

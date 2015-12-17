@@ -18,3 +18,8 @@ def get_sitename(host):
     return subprocess.check_output(['fab', 'get_sitename',
         '--host={}'.format(host), '--hide=everything,status'],
         cwd=THIS_FOLDER).decode().strip()
+
+def create_project(host, user, name, description=''):
+    return subprocess.check_output(['fab',
+        'create_user:user={},name={},description={}'.format(user, name,
+            description), '--host={}'.format(host)], cwd=THIS_FOLDER)
