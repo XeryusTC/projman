@@ -71,8 +71,9 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         # Create the user first
         if self.against_staging:
             remote.create_user(self.server_host, username, email, password)
+            user = username
         else:
-            User.objects.create_user(username, email, password)
+            user = User.objects.create_user(username, email, password)
         # Log in via the normal workflow
         self.browser.get(self.server_url)
         landingpage = pages.landingpage.LandingPage(self.browser)
@@ -81,6 +82,7 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         loginpage.username.send_keys(username)
         loginpage.password.send_keys(password)
         loginpage.signin.click()
+        return user
 
     def is_logged_in(self):
         self.assertTrue(self.browser.current_url.endswith('/projects/'))

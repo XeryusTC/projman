@@ -5,6 +5,8 @@ import unittest
 
 from .base import FunctionalTestCase
 from . import pages
+from . import remote
+from projects import factories
 
 class ProjectsPageTests(FunctionalTestCase):
     def test_projects_can_be_created_from_scratch(self):
@@ -107,15 +109,46 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertIsNone(page.project_link('Destroy all humans'))
         self.assertIsNone(page.project_link('Buy an aquarium'))
 
-    @unittest.expectedFailure
     def test_can_change_name_and_description_of_project(self):
         # Alice is a user who has a project
-        # On the project page is a edit button (pencil), clicking it
-        # sends her to a form where she can edit the title and
-        # description of the project
-        # When she submits the form she sees that the sidebar is updated
-        # and so is the project page
-        self.fail('Implement')
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project('alice', 'Build a website',
+                'Make a website that is better than all others')
+        else:
+            factories.ProjectFactory(user=user, name='Build a website',
+                description='Make a website that is better than all others')
+        self.browser.refresh()
+
+        # She navigates to the project
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Build a website').click()
+
+        # On the project page is an edit button, she clicks it
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.edit.click()
+
+        # She ends up on a page with a form that has the projects name and
+        # description on it
+        edit_page = pages.projects.EditPage(self.browser)
+        self.assertEquals(edit_page.name.get_attribute('value'),
+            'Build a website')
+        self.assertEquals(edit_page.description.get_attribute('value'),
+            'Make a website that is better than all others')
+
+        # She changes both texts
+        edit_page.name.clear()
+        edit_page.name.send_keys('Build the best website')
+        edit_page.description.clear()
+        edit_page.description.send_keys('There should be no better site')
+
+        # When completing the form she is returned to the project page
+        edit_page.confirm.click()
+        self.assertIn('Build the best website', project_page.info.text)
+        self.assertIn('There should be no better site', project_page.info.text)
+        # The name of the project is also in the sidebar
+        self.assertIsNone(page.project_link('Build a website'))
+        self.assertIsNotNone(page.project_link('Build the best website'))
 
     def test_cannot_create_project_with_empty_name(self):
         # Alice is a user who goes to the project creation page
