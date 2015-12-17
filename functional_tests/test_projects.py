@@ -70,14 +70,42 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertIn('Save the city', project_page.info.text)
         self.assertIn('Stop the super humans', project_page.info.text)
 
-    @unittest.expectedFailure
     def test_can_only_see_own_projects(self):
         # Alice is a user who creates some projects
-        # Bob is a different user who logs in, but doesn't see Alice's
-        # projects in the sidebar
-        # Bob can create his own projects, those do show up in the
-        # sidebar, but Alice's are still not visible
-        self.fail('Implement')
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        create_page.name_box.send_keys('Destroy all humans\n')
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.assertIn('Destroy all humans', project_page.info.text)
+
+        page.create_project_link(page.sidebar).click()
+        create_page.name_box.send_keys('Buy an aquarium\n')
+        self.assertIn('Buy an aquarium', project_page.info.text)
+
+        # Bob is a different user who logs in
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        page = pages.projects.BaseProjectPage(self.browser)
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.create_and_login_user('bob', 'bob@test.org', 'bob')
+
+        # Bob doesn't see any of Alice's projects in the sidebar
+        self.assertIsNone(page.project_link('Destroy all humans'))
+        self.assertIsNone(page.project_link('Buy an aquarium'))
+
+        # When Bob creates his own project page it shows up in the sidebar
+        page.create_project_link(page.sidebar).click()
+        create_page.name_box.send_keys('Buy a new car\n')
+        self.assertIn('Buy a new car', project_page.info.text)
+
+        # He sees that his project is in the sidebar, but Alice's are not
+        self.assertIsNotNone(page.project_link('Buy a new car'))
+        self.assertIsNone(page.project_link('Destroy all humans'))
+        self.assertIsNone(page.project_link('Buy an aquarium'))
 
     @unittest.expectedFailure
     def test_can_change_name_and_description_of_project(self):
