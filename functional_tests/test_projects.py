@@ -545,19 +545,71 @@ class ProjectsPageTests(FunctionalTestCase):
         # She sees that she is on the landing page
         self.assertTrue(self.browser.current_url.endswith('/en/'))
 
-    @unittest.expectedFailure
-    def test_deleting_other_persons_project_retuns_403(self):
+    def test_deleting_other_persons_project_returns_403(self):
         # Alice is a user with a project
-        # Trudy enters the delete project url for Alice's project
-        # She is greeted with a 403 Forbidden message
-        self.fail('Implement')
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Secure the site',
+                'Test the site security')
+        else:
+            factories.ProjectFactory(user=user, name='Secure the site',
+                description='Test the site security')
+        self.browser.refresh()
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Secure the site').click()
+        # She goes to delete project page
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.delete.click()
+        ## Copy the url so Trudy can use it
+        self.wait_for(lambda: self.assertIn('/delete/',
+            self.browser.current_url))
+        delete_url = self.browser.current_url
 
-    @unittest.expectedFailure
+        # Trudy is a different user who tries to delete Alice's project
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
+
+        # Trudy enters the delete project url for Alice's project
+        self.browser.get(delete_url)
+
+        # She is greeted with a 403 Forbidden message
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('403', body_text)
+        self.assertIn('Forbidden', body_text)
+
     def test_changing_other_persons_project_details_returns_403(self):
         # Alice is a user with a project
-        # Trudy enters the change project details url for Alice's project
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Secure the site',
+                'Test the site security')
+        else:
+            factories.ProjectFactory(user=user, name='Secure the site',
+                description='Test the site security')
+        self.browser.refresh()
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Secure the site').click()
+        # She goes to edit project page
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.edit.click()
+        ## Copy the url so Trudy can use it
+        self.wait_for(lambda: self.assertIn('/edit/',
+            self.browser.current_url))
+        delete_url = self.browser.current_url
+
+        # Trudy is a different user who tries to delete Alice's project
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
+
+        # Trudy enters the delete project url for Alice's project
+        self.browser.get(delete_url)
+
         # She is greeted with a 403 Forbidden message
-        self.fail('Implement')
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('403', body_text)
+        self.assertIn('Forbidden', body_text)
 
     def test_project_action_items_do_not_show_on_action_list(self):
         # Alice is a user who creates a project

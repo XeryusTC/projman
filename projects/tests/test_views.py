@@ -664,7 +664,7 @@ class EditProjectViewTests(ViewTestCase):
         self.assertTemplateUsed(response, 'projects/project_edit.html')
 
     def test_login_required(self):
-        response = self.get_request(AnonymousUser())
+        response = self.get_request(AnonymousUser(), pk=self.project.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
 
@@ -715,6 +715,14 @@ class EditProjectViewTests(ViewTestCase):
         response = self.post_request(alice, {'name': 'dupe'},
             pk=self.project.pk)
         self.assertContains(response, forms.DUPLICATE_PROJECT_ERROR)
+
+    def test_returns_403_when_wrong_user_requests_page_with_get(self):
+        response = self.get_request(bob, pk=self.project.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_returns_403_when_wrong_user_requests_page_with_post(self):
+        response = self.get_request(bob, pk=self.project.pk)
+        self.assertEqual(response.status_code, 403)
 
 
 class DeleteProjectViewTests(ViewTestCase):
