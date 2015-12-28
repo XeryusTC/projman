@@ -630,3 +630,75 @@ class CreateProjectViewTests(ViewTestCase):
         factories.ProjectFactory(name='dupe', user=alice)
         response = self.post_request(alice, {'name': 'dupe'})
         self.assertContains(response, escape(forms.DUPLICATE_PROJECT_ERROR))
+
+
+class EditProjectViewTests(ViewTestCase):
+    def setUp(self):
+        self.project = factories.ProjectFactory(user=alice)
+        self.url = reverse('projects:edit_project',
+            kwargs={'pk': self.project.pk})
+        self.view = views.EditProjectView.as_view()
+
+    def test_edit_project_url_resovles_to_edit_project_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__, self.view.__name__)
+
+    def test_edit_project_page_uses_correct_templates(self):
+        self.client.login(username='alice', password='alice')
+        response = self.client.get(self.url, kwargs={'pk': self.project.pk})
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response, 'projects/project_edit.html')
+
+    def test_login_required(self):
+        response = self.get_request(AnonymousUser())
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
+
+    def test_uses_edit_project_form(self):
+        response = self.get_request(alice, pk=self.project.pk)
+        self.assertIsInstance(response.context_data['form'],
+            forms.EditProjectForm)
+
+    def test_POST_request_edits_original_project(self):
+        self.assertEqual(models.Project.objects.count(), 1)
+        self.post_request(alice, {'name': 'updated', 'description': 'desc'},
+            pk=self.project.pk)
+        self.project.refresh_from_db()
+
+        self.assertEqual(models.Project.objects.count(), 1)
+        self.assertEqual(self.project.name, 'updated')
+        self.assertEqual(self.project.description, 'desc')
+
+    def test_POST_redirects_to_project_page(self):
+        response = self.post_request(alice, pk=self.project.pk,
+            data={'name': self.project.name,
+                'description': self.project.description})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+            reverse('projects:project', kwargs={'pk': self.project.pk}))
+
+    def test_empty_name_saves_nothing_to_db(self):
+        name = self.project.name
+        self.post_request(alice, {'name': ''}, pk=self.project.pk)
+        self.project.refresh_from_db()
+        self.assertEqual(self.project.name, name)
+
+    def test_empty_name_shows_error_on_page(self):
+        response = self.post_request(alice, {'name': ''}, pk=self.project.pk)
+        self.assertContains(response, forms.EMPTY_PROJECT_NAME_ERROR)
+
+    def test_duplicate_name_saves_nothing_to_db(self):
+        name = self.project.name
+        p = factories.ProjectFactory(user=alice, name='dupe')
+
+        self.post_request(alice, {'name': 'dupe'}, pk=self.project.pk)
+        self.project.refresh_from_db()
+
+        self.assertEqual(self.project.name, name)
+
+    def test_duplicate_name_shows_error(self):
+        p = factories.ProjectFactory(user=alice, name='dupe')
+        response = self.post_request(alice, {'name': 'dupe'},
+            pk=self.project.pk)
+        self.assertContains(response, forms.DUPLICATE_PROJECT_ERROR)
