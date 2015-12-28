@@ -229,3 +229,7 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
         if request.user != project.user and request.user != AnonymousUser():
             return permission_denied(request)
         return super(DeleteProjectView, self).dispatch(request, *args, **kwargs)
+
+
+class MoveActionView(LoginRequiredMixin, TemplateView):
+    template_name = 'projects/move_action.html'

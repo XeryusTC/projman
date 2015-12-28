@@ -19,6 +19,8 @@ urlpatterns = [
         views.ActionlistItemDelete.as_view(), name='delete_actionlist'),
     url(r'^actions/(?P<pk>[0-9]+)/complete/$',
         views.ActionCompleteView.as_view(), name='complete_action'),
+    url(r'^actions/(?P<pk>[0-9]+)/move/$', views.MoveActionView.as_view(),
+        name='move_action'),
 
     # Projects
     url(r'^project/(?P<pk>[0-9]+)/$', views.ProjectView.as_view(),

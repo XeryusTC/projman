@@ -44,8 +44,9 @@ class ActionlistPage(PageObject):
     thelist     = MultiPageElement(css='#list .mui-row')
     checked_list = MultiPageElement(css='#checked .mui-row')
 
-    _list_text  = PageElement(css='.full-height', context=True)
+    _list_text   = PageElement(css='.full-height', context=True)
     _delete_item = PageElement(class_name='action-delete', context=True)
+    _move_item   = PageElement(class_name='action-move', context=True)
 
     def list_text(self, context):
         text = [self._list_text(row).text for row in context]
@@ -54,8 +55,10 @@ class ActionlistPage(PageObject):
     def get_list_rows(self, context):
         res = {}
         for i in range(len(context)):
-            res[i] = {'text': self._list_text(context[i]),
-                'delete': self._delete_item(context[i])}
+            res[i] = {
+                'text':   self._list_text(context[i]),
+                'delete': self._delete_item(context[i]),
+                'move':   self._move_item(context[i])}
         return res
 
 
@@ -88,6 +91,7 @@ class ProjectPage(PageObject):
 
     _list_text   = PageElement(css='.action-item', context=True)
     _delete_item = PageElement(class_name='action-delete', context=True)
+    _move_item   = PageElement(class_name='action-move', context=True)
 
     def list_text(self, context):
         return [self._list_text(row).text for row in context]
@@ -95,8 +99,11 @@ class ProjectPage(PageObject):
     def get_list_rows(self, context):
         res = {}
         for i in range(len(context)):
-            res[i] = {'text': self._list_text(context[i]),
-                'delete': self._delete_item(context[i])}
+            res[i] = {
+                'text':   self._list_text(context[i]),
+                'delete': self._delete_item(context[i]),
+                'move':   self._move_item(context[i]),
+            }
         return res
 
 
@@ -109,3 +116,7 @@ class EditPage(PageObject):
 class ProjectDeletePage(PageObject):
     content = PageElement(id_='content')
     confirm = PageElement(xpath="//input[@value='Confirm']")
+
+
+class MoveActionPage(PageObject):
+    content = PageElement(id_='content')

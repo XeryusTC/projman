@@ -731,11 +731,11 @@ class DeleteProjectViewTests(ViewTestCase):
         self.url = reverse('projects:delete', kwargs={'pk': self.project.pk})
         self.view = views.DeleteProjectView.as_view()
 
-    def test_inlist_item_delete_url_resolves_to_correct_delete_view(self):
+    def test_project_delete_url_resolves_to_correct_delete_view(self):
         found = resolve(self.url)
         self.assertEqual(found.func.__name__, self.view.__name__)
 
-    def test_inlist_item_delete_view_uses_correct_templates(self):
+    def test_project_delete_view_uses_correct_templates(self):
         self.client.login(username='alice', password='alice')
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'html.html')
@@ -759,3 +759,26 @@ class DeleteProjectViewTests(ViewTestCase):
     def test_returns_403_when_wrong_user_requests_page_with_post(self):
         response = self.post_request(bob, pk=self.project.pk)
         self.assertEqual(response.status_code, 403)
+
+
+class MoveActionViewTests(ViewTestCase):
+    def setUp(self):
+        self.action = factories.ActionlistItemFactory(user=alice)
+        self.url = reverse('projects:move_action', kwargs={'pk': self.action.pk})
+        self.view = views.MoveActionView.as_view()
+
+    def test_move_action_url_resolves_to_move_action_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__, self.view.__name__)
+
+    def test_move_action_view_uses_correct_templates(self):
+        self.client.login(username='alice', password='alice')
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'html.html')
+        self.assertTemplateUsed(response, 'projects/base.html')
+        self.assertTemplateUsed(response, 'projects/move_action.html')
+
+    def test_login_required(self):
+        response = self.get_request(AnonymousUser(), pk=self.action.pk)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
