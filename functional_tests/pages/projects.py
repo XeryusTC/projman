@@ -80,6 +80,7 @@ class ProjectPage(PageObject):
     add_box    = PageElement(name='text')
     add_button = PageElement(xpath="//form//input[@name='submit']")
     edit       = PageElement(css='.action-edit')
+    delete     = PageElement(class_name='delete-project')
     thelist    = MultiPageElement(css='#list .mui-row')
     checked_list = MultiPageElement(css='#list .mui-row.checked')
     error_lists  = MultiPageElement(css='.errorlist')
@@ -102,3 +103,9 @@ class EditPage(PageObject):
     name        = PageElement(name='name')
     description = PageElement(name='description')
     confirm     = PageElement(name='update')
+
+
+#ProjectDeletePage = ActionDeletePage
+class ProjectDeletePage(PageObject):
+    content = PageElement(id_='content')
+    confirm = PageElement(xpath="//input[@value='Confirm']")

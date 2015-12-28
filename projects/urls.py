@@ -25,4 +25,6 @@ urlpatterns = [
         name='create_project'),
     url(r'project/(?P<pk>[0-9]+)/edit/$', views.EditProjectView.as_view(),
         name='edit_project'),
+    url(r'project/(?P<pk>[0-9]+)/delete/$', views.DeleteProjectView.as_view(),
+        name='delete'),
 ]

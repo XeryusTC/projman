@@ -16,10 +16,14 @@
 		<div class="mui-col-xs-12 mui-col-md-6">
 			<h1>{{ project.name }}</h1>
 		</div>
-		<div class="mui-col-md-6">
+		<div class="mui-col-xs-12 mui-col-md-6">
 			<a class="action-edit mui-btn mui-btn--fab"
 				href="{% url 'projects:edit_project' project.pk %}">
 				<span class="fa fa-pencil fa-2x"></span>
+			</a>
+			<a class="delete-project mui-btn mui-btn--fab mui-btn--danger"
+				href="{% url 'projects:delete' project.pk %}">
+				<span class="fa fa-trash fa-2x"></span>
 			</a>
 		</div>
 	</div>

@@ -200,3 +200,15 @@ class EditProjectView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('projects:project', kwargs={'pk': self.object.pk})
+
+
+class DeleteProjectView(LoginRequiredMixin, DeleteView):
+    model = models.Project
+    success_url = reverse_lazy('projects:main')
+
+    def dispatch(self, request, *args, **kwargs):
+        project = get_object_or_404(models.Project, pk=self.kwargs['pk'])
+        # Need to check against AnonymousUser to not break LoginRequiredMixin
+        if request.user != project.user and request.user != AnonymousUser():
+            return permission_denied(request)
+        return super(DeleteProjectView, self).dispatch(request, *args, **kwargs)
