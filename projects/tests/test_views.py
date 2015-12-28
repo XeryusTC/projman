@@ -638,6 +638,12 @@ class CreateProjectViewTests(ViewTestCase):
         self.assertEqual(response.context_data['form'].initial['name'],
             item)
 
+    def test_deletes_inlist_item_when_given_inlist_pk(self):
+        item = factories.InlistItemFactory(user=alice)
+        response = self.post_request(alice, {'name': item.text},
+            inlistitem=item.pk)
+        self.assertEqual(models.InlistItem.objects.count(), 0)
+
 
 class EditProjectViewTests(ViewTestCase):
     def setUp(self):

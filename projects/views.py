@@ -166,6 +166,9 @@ class CreateProjectView(LoginRequiredMixin, FormView):
         form.validate_unique()
         if form.is_valid():
             self.project = form.save()
+            if 'inlistitem' in self.kwargs.keys():
+                models.InlistItem.objects.get(pk=self.kwargs['inlistitem']). \
+                    delete()
             return super(CreateProjectView, self).form_valid(form)
         else:
             return super(CreateProjectView, self).form_invalid(form)
