@@ -66,7 +66,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'projman.urls'
 
-_context_processors = [
+context_processors = [
     'django.template.context_processors.request',
     'django.template.context_processors.i18n',
     'django.contrib.auth.context_processors.auth',
@@ -82,7 +82,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-            ] + _context_processors,
+            ] + context_processors,
         },
     },
 ]

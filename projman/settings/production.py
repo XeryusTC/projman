@@ -27,7 +27,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR.child('templates'),],
         'OPTIONS': {
-            'context_processors': _context_processors,
+            'context_processors': context_processors,
             'loaders': [
                 ('django.template.loaders.cached.Loader', [
                     'django.template.loaders.filesystem.Loader',
