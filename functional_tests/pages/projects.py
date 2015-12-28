@@ -29,6 +29,7 @@ class InlistPage(PageObject):
     error_lists = MultiPageElement(css='.errorlist')
     delete_item = PageElement(class_name='action-delete', context=True)
     convert_action = PageElement(class_name='action-convert', context=True)
+    convert_project = PageElement(class_name='action-project', context=True)
 
 
 class InlistDeletePage(PageObject):
@@ -105,7 +106,6 @@ class EditPage(PageObject):
     confirm     = PageElement(name='update')
 
 
-#ProjectDeletePage = ActionDeletePage
 class ProjectDeletePage(PageObject):
     content = PageElement(id_='content')
     confirm = PageElement(xpath="//input[@value='Confirm']")

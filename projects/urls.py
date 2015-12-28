@@ -10,6 +10,8 @@ urlpatterns = [
         name='delete_inlist'),
     url(r'^inlist/(?P<pk>[0-9]+)/convert/action/$',
         views.InlistItemToActionView.as_view(), name='convert_inlist_action'),
+    url(r'^inlist/(?P<inlistitem>[0-9]+)/convert/project/$',
+        views.CreateProjectView.as_view(), name='convert_inlist_project'),
 
     # Actions
     url(r'^actions/$', views.ActionlistView.as_view(), name='actionlist'),

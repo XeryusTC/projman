@@ -631,6 +631,13 @@ class CreateProjectViewTests(ViewTestCase):
         response = self.post_request(alice, {'name': 'dupe'})
         self.assertContains(response, escape(forms.DUPLICATE_PROJECT_ERROR))
 
+    def test_name_contains_inlist_text_when_given_inlist_pk(self):
+        item = factories.InlistItemFactory(user=alice)
+        response = self.get_request(alice, inlistitem=item.pk)
+        self.assertContains(response, item.text)
+        self.assertEqual(response.context_data['form'].initial['name'],
+            item)
+
 
 class EditProjectViewTests(ViewTestCase):
     def setUp(self):

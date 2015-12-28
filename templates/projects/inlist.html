@@ -23,6 +23,11 @@
 				title="{% trans 'Convert to action' %}">
 				<span class="fa fa-gavel fa-2x"></span>
 			</a>
+			<a class="mui-btn mui-btn--fab action-project"
+				href="{% url 'projects:convert_inlist_project' item.pk %}"
+				title="{% trans 'Convert to project' %}">
+				<span class="fa fa-chevron-right fa-2x"></span>
+			</a>
 		</div>
 	</div>
 {% endfor %}

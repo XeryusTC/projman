@@ -151,6 +151,13 @@ class CreateProjectView(LoginRequiredMixin, FormView):
     template_name = 'projects/create_project.html'
     form_class = forms.CreateProjectForm
 
+    def get_initial(self, *args, **kwargs):
+        initial = super(CreateProjectView, self).get_initial(*args, **kwargs)
+        if 'inlistitem' in self.kwargs.keys():
+            initial['name'] = models.InlistItem.objects.get(
+                pk=self.kwargs['inlistitem'])
+        return initial
+
     def get_success_url(self):
         return reverse_lazy('projects:project', kwargs={'pk': self.project.pk})
 
