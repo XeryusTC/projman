@@ -280,13 +280,37 @@ class ProjectsPageTests(FunctionalTestCase):
         # removed from the sidebar
         self.assertIsNone(page.project_link('Delete this project'))
 
-    @unittest.expectedFailure
     def test_can_add_action_item_to_project(self):
         # Alice is a user with a project, she navigates to that page
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Make a game',
+                'Build the best game ever!')
+        else:
+            factories.ProjectFactory(user=user, name='Make a game',
+                description='Build the best game ever!')
+        self.browser.refresh()
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Make a game').click()
+
         # She sees a text box on the page with an add button next to it
         # She enters some text and clicks the button
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.add_box.send_keys('Find a game engine')
+        project_page.add_button.click()
+
         # The page reloads and the text is now an action item on the page
-        self.fail('Implement')
+        self.assertIn('Find a game engine',
+            project_page.list_text(project_page.thelist))
+        self.assertEqual(len(project_page.thelist), 1)
+
+        # She adds another item which also appears on the page
+        project_page.add_box.send_keys('Think of the mechanics\n')
+        self.assertEqual(len(project_page.thelist), 2)
+        self.assertIn('Find a game engine',
+            project_page.list_text(project_page.thelist))
+        self.assertIn('Think of the mechanics',
+            project_page.list_text(project_page.thelist))
 
     @unittest.expectedFailure
     def test_action_items_can_be_moved_from_action_list_to_projects(self):
