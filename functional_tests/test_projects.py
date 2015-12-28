@@ -221,16 +221,38 @@ class ProjectsPageTests(FunctionalTestCase):
         # been removed
         self.fail('Implement')
 
-    @unittest.expectedFailure
     def test_can_delete_project(self):
         # Alice is a user with a project
-        # When she goes to the project page she sees a delete button
-        # She clicks it
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project('alice', 'Delete this project',
+                'Testing deletion of a project')
+        else:
+            factories.ProjectFactory(user=user, name='Delete this project',
+                description='Testing deletion of a project')
+        self.browser.refresh()
+
+        # She navigates to the project
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Delete this project').click()
+
+        # On the project page is a delete button, she clicks it
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.delete.click()
+
         # She is greeted with a confirmation page, which has the project
         # name on it
-        # She clicks the confirmation button
-        # The project has been removed from the sidebar
-        self.fail('Implement')
+        confirm_page = pages.projects.ProjectDeletePage(self.browser)
+        self.assertIn('Delete this project', confirm_page.content.text)
+        # The project name is also in the title
+        self.assertIn('Delete this project', self.browser.title)
+
+        # She clicks the the confirm button
+        confirm_page.confirm.click()
+
+        # She is returned to a different page and the project has been
+        # removed from the sidebar
+        self.assertIsNone(page.project_link('Delete this project'))
 
     @unittest.expectedFailure
     def test_can_add_action_item_to_project(self):
