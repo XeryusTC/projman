@@ -312,28 +312,95 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertIn('Think of the mechanics',
             project_page.list_text(project_page.thelist))
 
-    @unittest.expectedFailure
     def test_action_items_can_be_moved_from_action_list_to_projects(self):
         # Alice is a user with a project
-        # Alice creates an action on the action list
-        # She sees a move action button next to the new action
-        # She clicks it and is greeted with a page where she can select
-        # a project (or the action list) to move to
-        # She selects the project and clicks send
-        # She is send to the action list, where the item has disapeared
-        # When she goes to the project page she sees the item there
-        self.fail('Implement')
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Make a game',
+                'Build the best game ever')
+        else:
+            factories.ProjectFactory(user=user, name='Make a game',
+                description='Build the best game ever')
+        self.browser.refresh()
 
-    @unittest.expectedFailure
+        # Alice creates an action on the action list
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Look at game engine\n')
+        self.assertIn('Look at game engine',
+            action_page.list_text(action_page.thelist))
+
+        # She sees a move action button next to the new action and clicks it
+        item = action_page.get_list_rows(action_page.thelist)[0]
+        self.assertEqual(item['text'].text, 'Look at game engine')
+        item['move'].click()
+
+        # She is greeted with a page that lists the action and says it is
+        # in the action list
+        move_page = pages.projects.MoveActionPage(self.browser)
+        self.assertIn('Move Look at game engine', self.browser.title)
+        self.assertIn('Look at game engine', move_page.content.text)
+        self.assertIn('action list', move_page.content.text)
+
+        # There is also a select box where she can move the action to,
+        # she selects the project and clicks the confirm button
+        move_page.select.select_by_visible_text('Make a game')
+        move_page.confirm.click()
+
+        # She arrives on the action list, where the item has disapeared
+        self.assertNotIn('Look at game engine',
+            action_page.list_text(action_page.thelist))
+
+        # When she goes to the project page she sees that the item is there
+        page.project_link('Make a game').click()
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.assertIn('Look at game engine',
+            project_page.list_text(project_page.thelist))
+
     def test_action_items_can_be_moved_from_projects_to_action_list(self):
         # Alice is a user with a project with some actions on it
-        # She clicks the move action button next to one of the actions
-        # She is greeted with the move page where she selects the action
-        # list page and clicks the confirm button
-        # She is send back to the project page, where the other actions
-        # still are present
-        # She navigates to the action list where she finds the action
-        self.fail('Implement')
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_hust, 'alice',
+                'Make a top 3 list', 'Find the best things ever')
+        else:
+            factories.ProjectFactory(user=user, name='Make a top 3 list',
+                description='Find the best things ever')
+        self.browser.refresh()
+
+        # Alice creates an action for the project
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+        project_page = pages.projects.ProjectPage(self.browser)
+        for i in range(3):
+            project_page.add_box.send_keys('Find #{}\n'.format(i+1))
+
+        # She sees a move action button next to the new action and clisk it
+        actions = project_page.get_list_rows(project_page.thelist)
+        for idx, elems in actions.items():
+            if elems['text'].text == 'Find #1':
+                elems['move'].click()
+                break
+
+        # She lands on a page that lists the action and says it is in the
+        # project
+        move_page = pages.projects.MoveActionPage(self.browser)
+        self.assertIn('Find #1', move_page.content.text)
+        self.assertIn('Make a top 3 list', move_page.content.text)
+        self.assertNotIn('action list', move_page.content.text)
+
+        # In the select box she selects the action list
+        move_page.select.select_by_value(0)
+        move_page.confirm.click()
+
+        # Alice is send back to the project page
+        self.assertIn('Make a top 3 list', project_page.info.text)
+        # The other items are also still there
+        for i in range(1, 3):
+            self.assertIn('Find #{}'.format(i+1),
+                project_page.list_text(project_page.thelist),
+                'Item #{} not found in the list'.format(i+1))
 
     @unittest.expectedFailure
     def test_action_items_can_be_moved_between_projects(self):
