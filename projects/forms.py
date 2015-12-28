@@ -141,6 +141,7 @@ class EditProjectForm(forms.ModelForm):
         super(EditProjectForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('update', _('Update project')))
 
     def validate_unique(self):
         try:

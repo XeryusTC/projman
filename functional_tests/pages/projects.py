@@ -96,3 +96,9 @@ class ProjectPage(PageObject):
             res[i] = {'text': self._list_text(context[i]),
                 'delete': self._delete_item(context[i])}
         return res
+
+
+class EditPage(PageObject):
+    name        = PageElement(name='name')
+    description = PageElement(name='description')
+    confirm     = PageElement(name='update')
