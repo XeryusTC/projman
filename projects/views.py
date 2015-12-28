@@ -191,3 +191,12 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+
+class EditProjectView(LoginRequiredMixin, UpdateView):
+    form_class = forms.EditProjectForm
+    model = models.Project
+    template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        return reverse('projects:project', kwargs={'pk': self.object.pk})

@@ -134,3 +134,24 @@ class CreateProjectForm(forms.ModelForm):
         error_messages = {
             'name': {'required': EMPTY_PROJECT_NAME_ERROR},
         }
+
+
+class EditProjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditProjectForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+
+    def validate_unique(self):
+        try:
+            self.instance.validate_unique()
+        except ValidationError as e:
+            e.error_dict = {'name': [DUPLICATE_PROJECT_ERROR]}
+            self._update_errors(e)
+
+    class Meta:
+        model = models.Project
+        fields = ('name', 'description')
+        error_messages = {
+            'name': {'required': EMPTY_PROJECT_NAME_ERROR},
+        }
