@@ -209,17 +209,43 @@ class ProjectsPageTests(FunctionalTestCase):
             project_page.info.text)
         self.assertIn('I like turtles', project_page.info.text)
 
-    @unittest.expectedFailure
     def test_can_convert_inlist_item_into_project(self):
         # Alice is a user who logs in and creates an inlist item
-        # Next to the inlist item is a conver to project page
-        # She ends up on the create a project page where the title is
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.inlist_link(page.sidebar).click()
+        inlist_page = pages.projects.InlistPage(self.browser)
+        inlist_page.add_box.send_keys('Convert to project\n')
+
+        # She sees a new button next to the inlist item, the convert to
+        # action button, she clicks it
+        item = inlist_page.listrows[0]
+        self.assertIn('Convert to project', item.text)
+        inlist_page.convert_project(item).click()
+
+        # She ends up on the create project page where the title is
         # already set to the inlist item text
-        # When she clicks create she is send to the project page with
-        # the relevant details
-        # Alice goes back to the inlist, she finds that the item has
-        # been removed
-        self.fail('Implement')
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        self.assertEqual(create_page.name_box.get_attribute('value'),
+            'Convert to project')
+
+        # She decides to add a description and finish the form
+        create_page.description_box.send_keys(
+            'Test conversion of inlist items to projects')
+        create_page.create_button.click()
+
+        # She lands on the project page with the just filled in details
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.assertIn('Convert to project', project_page.info.text)
+        self.assertIn('Test conversion of inlist items to projects',
+            project_page.info.text)
+        # The project is also in the sidebar
+        self.assertIsNotNone(page.project_link('Convert to project'))
+
+        # When Alice returns to the inlist she sees that the inlist item
+        # has been removed
+        page.inlist_link(page.sidebar).click()
+        self.assertEqual(len(inlist_page.thelist), 0)
 
     def test_can_delete_project(self):
         # Alice is a user with a project
