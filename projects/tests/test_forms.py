@@ -256,3 +256,47 @@ class CreateProjectFormTest(TestCase):
         form.instance.user = alice
 
         self.assertTrue(form.is_valid())
+
+
+class EditProjectFormTest(TestCase):
+    def setUp(self):
+        self.project = factories.ProjectFactory(user=alice)
+
+    def test_crispy_helper_is_set(self):
+        form = forms.EditProjectForm()
+        self.assertIsInstance(form.helper, FormHelper)
+
+    def test_form_save(self):
+        self.assertEqual(models.Project.objects.count(), 1)
+        form = forms.EditProjectForm(data={'name': 'test',
+            'description': 'test description'})
+        form.instance = self.project
+
+        form.is_valid()
+        saved = form.save()
+
+        self.assertEqual(models.Project.objects.count(), 1)
+        self.assertEqual(saved.pk, self.project.pk)
+        self.assertEqual(saved.name, 'test')
+        self.assertEqual(saved.description, 'test description')
+
+    def test_form_validation_for_empty_name(self):
+        form = forms.EditProjectForm(data={'name': ''})
+        form.instance = self.project
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['name'], [forms.EMPTY_PROJECT_NAME_ERROR])
+
+    def test_form_validation_for_duplicate_projects(self):
+        dupe = factories.ProjectFactory(name='dupe', user=alice)
+        form = forms.EditProjectForm(data={'name': 'dupe'})
+        form.instance = self.project
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['name'], [forms.DUPLICATE_PROJECT_ERROR])
+
+    def test_form_validation_for_duplicate_projects_from_different_users(self):
+        factories.ProjectFactory(name='dupe', user=bob)
+        form = forms.EditProjectForm(data={'name': 'dupe'})
+        form.instance = self.project
+        self.assertTrue(form.is_valid())
