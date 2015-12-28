@@ -21,5 +21,5 @@ def get_sitename(host):
 
 def create_project(host, user, name, description=''):
     return subprocess.check_output(['fab',
-        'create_user:user={},name={},description={}'.format(user, name,
+        'create_project:user={},name={},description={}'.format(user, name,
             description), '--host={}'.format(host)], cwd=THIS_FOLDER)

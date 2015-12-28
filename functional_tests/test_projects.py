@@ -113,7 +113,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # Alice is a user who has a project
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
-            remote.create_project('alice', 'Build a website',
+            remote.create_project(self.server_host, 'alice', 'Build a website',
                 'Make a website that is better than all others')
         else:
             factories.ProjectFactory(user=user, name='Build a website',
@@ -225,8 +225,8 @@ class ProjectsPageTests(FunctionalTestCase):
         # Alice is a user with a project
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
-            remote.create_project('alice', 'Delete this project',
-                'Testing deletion of a project')
+            remote.create_project(self.server_host, 'alice',
+                'Delete this project', 'Testing deletion of a project')
         else:
             factories.ProjectFactory(user=user, name='Delete this project',
                 description='Testing deletion of a project')
