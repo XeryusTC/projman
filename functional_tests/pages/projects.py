@@ -79,6 +79,7 @@ class ProjectPage(PageObject):
     info       = PageElement(id_='info')
     add_box    = PageElement(name='text')
     add_button = PageElement(xpath="//form//input[@name='submit']")
+    edit       = PageElement(css='.action-edit')
     thelist    = MultiPageElement(css='#list .mui-row')
     checked_list = MultiPageElement(css='#list .mui-row.checked')
     error_lists  = MultiPageElement(css='.errorlist')
