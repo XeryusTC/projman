@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from page_objects import PageObject, PageElement, MultiPageElement
+from selenium.webdriver.support.ui import Select
 
 class BaseProjectPage(PageObject):
     body    = PageElement(tag_name='body')
@@ -120,3 +121,9 @@ class ProjectDeletePage(PageObject):
 
 class MoveActionPage(PageObject):
     content = PageElement(id_='content')
+    confirm = PageElement(name='move')
+
+    _select = PageElement(tag_name='select')
+    @property
+    def select(self):
+        return Select(self._select)

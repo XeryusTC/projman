@@ -371,7 +371,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # Alice creates an action for the project
         page = pages.projects.BaseProjectPage(self.browser)
-        page.action_link(page.sidebar).click()
+        page.project_link('Make a top 3 list').click()
         project_page = pages.projects.ProjectPage(self.browser)
         for i in range(3):
             project_page.add_box.send_keys('Find #{}\n'.format(i+1))
@@ -391,7 +391,7 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertNotIn('action list', move_page.content.text)
 
         # In the select box she selects the action list
-        move_page.select.select_by_value(0)
+        move_page.select.select_by_value('')
         move_page.confirm.click()
 
         # Alice is send back to the project page

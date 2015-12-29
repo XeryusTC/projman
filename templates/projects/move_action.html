@@ -1,1 +1,20 @@
 {% extends 'projects/base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+{% blocktrans with name=action.text %}Move {{ name }}{% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+{% if action.project %}
+	{% blocktrans with name=action.text project=action.project.name %}
+	{{ name }} is currently in the project {{ project }}, where do you want to
+	move it to?{% endblocktrans %}
+{% else %}
+	{% blocktrans with name=action.text %}{{ name }} is currently on your
+	action list, where do you want to move it to?{% endblocktrans %}
+{% endif %}
+
+{% crispy form %}
+{% endblock %}

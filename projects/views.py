@@ -235,6 +235,7 @@ class MoveActionView(LoginRequiredMixin, UpdateView):
     template_name = 'projects/move_action.html'
     model = models.ActionlistItem
     form_class = forms.MoveActionForm
+    context_object_name = 'action'
 
     def get_success_url(self):
         if self.old_project == None:
