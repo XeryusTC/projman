@@ -349,3 +349,7 @@ class MoveActionFormTest(TestCase):
         self.assertIn(projects[2].pk, choices)
         self.assertIn('', choices) # Action list is also present
         self.assertEqual(len(choices), 4)
+
+    def test_empty_label_is_actionlist(self):
+        form = forms.MoveActionForm(instance=self.action)
+        self.assertIn(('', 'Actions'), form.fields['project'].choices)

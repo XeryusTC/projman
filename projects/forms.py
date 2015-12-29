@@ -167,10 +167,8 @@ class MoveActionForm(forms.ModelForm):
 
         self.fields['project'].queryset = models.Project.objects.filter(
             user=self.instance.user)
+        self.fields['project'].empty_label = _('Actions')
 
     class Meta:
         model = models.ActionlistItem
         fields = ('project',)
-        widgets = {
-            'name': forms.ModelChoiceField(queryset=None),
-        }
