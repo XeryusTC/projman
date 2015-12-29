@@ -362,7 +362,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # Alice is a user with a project with some actions on it
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
-            remote.create_project(self.server_hust, 'alice',
+            remote.create_project(self.server_host, 'alice',
                 'Make a top 3 list', 'Find the best things ever')
         else:
             factories.ProjectFactory(user=user, name='Make a top 3 list',
@@ -402,16 +402,42 @@ class ProjectsPageTests(FunctionalTestCase):
                 project_page.list_text(project_page.thelist),
                 'Item #{} not found in the list'.format(i+1))
 
-    @unittest.expectedFailure
     def test_action_items_can_be_moved_between_projects(self):
-        # Alice is a user with two projects, both with actions in them
-        # She navigates to the first project, selects an action to move
-        # She selects the other project from the move page and clicks the
-        # confirm button
-        # She is send back to the original project, where the action has
-        # disapeared
-        # She goes to the other project page where she finds the action
-        self.fail('Implement')
+        # Alice is a user with two projects
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Feed me', '')
+            remote.create_project(self.server_host, 'alice', 'Buy wine', '')
+        else:
+            factories.ProjectFactory(user=user, name='Feed me')
+            factories.ProjectFactory(user=user, name='Buy wine')
+        self.browser.refresh()
+
+        # Alice creates an action on the first project
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Feed me').click()
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.add_box.send_keys('Find a wine store\n')
+
+        # Noticing that she created the action for the wrong project she
+        # goes to the move page
+        item = project_page.get_list_rows(project_page.thelist)[0]['move']\
+            .click()
+
+        # She selects the other project from the move page
+        move_page = pages.projects.MoveActionPage(self.browser)
+        move_page.select.select_by_visible_text('Buy wine')
+        move_page.confirm.click()
+
+        # She returns to the first project's page, where there is no action
+        self.assertIn('Feed me', project_page.info.text)
+        self.assertEqual(len(project_page.thelist), 0)
+
+        # When she goes to the second project's page she sees the action there
+        page.project_link('Buy wine').click()
+        self.assertEqual(len(project_page.thelist), 1)
+        self.assertSequenceEqual(project_page.list_text(project_page.thelist),
+            ['Find a wine store'])
 
     @unittest.expectedFailure
     def test_cannot_move_actions_when_actions_are_duplicate(self):
