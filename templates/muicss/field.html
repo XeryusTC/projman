@@ -16,6 +16,8 @@
 				<div class="mui-checkbox">
 			{% elif field|is_radioselect %}
 				<div class="mui-radio">
+			{% elif field|is_select %}
+				<div class="mui-select">
 			{% else %}
 				{% if field.field.widget.attrs.placeholder != field.label %}
 					<div class="mui-textfield">
