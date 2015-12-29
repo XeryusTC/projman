@@ -125,6 +125,15 @@ class ActionlistFormTest(TestCase):
         self.assertEqual(form.errors[NON_FIELD_ERRORS],
             [models.INVALID_USER_ERROR])
 
+    def test_can_save_to_actionlist_when_project_has_duplicate(self):
+        p = factories.ProjectFactory(user=alice)
+        a = factories.ActionlistItemFactory(user=alice, project=p, text='dupe')
+
+        form = forms.ActionlistForm(data={'text': 'dupe'})
+        form.instance.user = alice
+
+        self.assertTrue(form.is_valid())
+
 
 class CompleteActionFormTest(TestCase):
     def test_form_save(self):

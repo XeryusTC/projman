@@ -32,10 +32,10 @@ class ActionlistItem(models.Model):
         if self.project != None and self.user != self.project.user:
             raise ValidationError(INVALID_USER_ERROR)
 
-        # Validate that two items on the action list are not the same
+        # Validate that two items on the list are not the same
         queryset = ActionlistItem.objects.exclude(pk=self.pk).filter(
-            text=self.text, user=self.user)
-        if self.project is None and queryset.exists():
+            text=self.text, user=self.user, project=self.project)
+        if queryset.exists():
             raise ValidationError(DUPLICATE_ACTION_ERROR)
 
     def __str__(self):
