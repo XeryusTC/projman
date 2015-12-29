@@ -421,8 +421,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # Noticing that she created the action for the wrong project she
         # goes to the move page
-        item = project_page.get_list_rows(project_page.thelist)[0]['move']\
-            .click()
+        project_page.get_list_rows(project_page.thelist)[0]['move'].click()
 
         # She selects the other project from the move page
         move_page = pages.projects.MoveActionPage(self.browser)
@@ -439,13 +438,34 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertSequenceEqual(project_page.list_text(project_page.thelist),
             ['Find a wine store'])
 
-    @unittest.expectedFailure
     def test_cannot_move_actions_when_actions_are_duplicate(self):
         # Alice is a user with a project with an action on it
-        # On the action list is an action with the same text
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Cook diner', '')
+        else:
+            factories.ProjectFactory(user=user, name='Cook dinner')
+        self.browser.refresh()
+
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Cook dinner').click()
+        project_page = pages.projects.ProjectPage(self.browser)
+        project_page.add_box.send_keys('Go to the grocery store\n')
+
+        # She goes to the action list and adds the same action
+        page.action_link(page.sidebar).click()
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action_page.add_box.send_keys('Go to the grocery store\n')
+
         # She tries to move the action to the project
-        # She is greeted with a duplicate action error
-        self.fail('Implement')
+        action_page.get_list_rows(action_page.thelist)[0]['move'].click()
+        move_page = pages.projects.MoveActionPage(self.browser)
+        move_page.select.select_by_visible_text('Cook dinner')
+        move_page.confirm.click()
+
+        # She sees a duplicate action error
+        self.assertIn('This is already planned for that project',
+            move_page.content.text)
 
     def test_can_delete_action_from_project_page(self):
         # Alice is a user with a project
