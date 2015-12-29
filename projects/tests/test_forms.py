@@ -300,3 +300,30 @@ class EditProjectFormTest(TestCase):
         form = forms.EditProjectForm(data={'name': 'dupe'})
         form.instance = self.project
         self.assertTrue(form.is_valid())
+
+
+class MoveActionFormTest(TestCase):
+    def test_cripsy_helper_is_set(self):
+        form = forms.MoveActionForm()
+        self.assertIsInstance(form.helper, FormHelper)
+
+    def test_changes_action_to_project(self):
+        project = factories.ProjectFactory(user=alice)
+        action = factories.ActionlistItemFactory(user=alice)
+        form = forms.MoveActionForm(data={'project': project.pk},
+            instance=action)
+
+        form.is_valid()
+        saved = form.save()
+
+        self.assertEqual(saved.project, project)
+
+    def test_changes_action_to_action_list(self):
+        project = factories.ProjectFactory(user=alice)
+        action = factories.ActionlistItemFactory(user=alice, project=project)
+        form = forms.MoveActionForm(data={'project': ''}, instance=action)
+
+        self.assertTrue(form.is_valid())
+        saved = form.save()
+
+        self.assertIsNone(saved.project)

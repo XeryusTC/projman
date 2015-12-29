@@ -156,3 +156,15 @@ class EditProjectForm(forms.ModelForm):
         error_messages = {
             'name': {'required': EMPTY_PROJECT_NAME_ERROR},
         }
+
+
+class MoveActionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(MoveActionForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('move', _('Move action')))
+
+    class Meta:
+        model = models.ActionlistItem
+        fields = ('project',)

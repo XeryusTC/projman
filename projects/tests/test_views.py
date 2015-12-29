@@ -764,6 +764,7 @@ class DeleteProjectViewTests(ViewTestCase):
 class MoveActionViewTests(ViewTestCase):
     def setUp(self):
         self.action = factories.ActionlistItemFactory(user=alice)
+        self.project = factories.ProjectFactory(user=alice)
         self.url = reverse('projects:move_action', kwargs={'pk': self.action.pk})
         self.view = views.MoveActionView.as_view()
 
@@ -782,3 +783,39 @@ class MoveActionViewTests(ViewTestCase):
         response = self.get_request(AnonymousUser(), pk=self.action.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
+
+    def test_uses_move_project_form(self):
+        response = self.get_request(alice, pk=self.action.pk)
+        self.assertIsInstance(response.context_data['form'],
+            forms.MoveActionForm)
+
+    def test_POST_request_updates_action(self):
+        response = self.post_request(alice, {'project': self.project.pk},
+            pk=self.action.pk)
+        self.action.refresh_from_db()
+        self.assertEqual(self.action.project, self.project)
+
+    def test_POST_request_can_remove_project(self):
+        self.action.project = self.project
+        self.action.save()
+        self.assertIsNotNone(self.action.project)
+
+        response = self.post_request(alice, {'project': ''}, pk=self.action.pk)
+
+        self.action.refresh_from_db()
+        self.assertEqual(self.action.project, None)
+
+    def test_POST_that_moves_from_actionlist_returns_to_actionlist(self):
+        self.assertIsNone(self.action.project)
+        response = self.post_request(alice, {'project': self.project.pk},
+            pk=self.action.pk)
+        self.assertEqual(response.url, reverse('projects:actionlist'))
+
+    def test_POST_that_moves_from_project_returns_to_same_project(self):
+        self.action.project = self.project
+        self.action.save()
+
+        response = self.post_request(alice, {'project': ''}, pk=self.action.pk)
+
+        self.assertEqual(response.url, reverse('projects:project',
+            kwargs={'pk': self.project.pk}))

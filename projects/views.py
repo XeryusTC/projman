@@ -231,5 +231,18 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
         return super(DeleteProjectView, self).dispatch(request, *args, **kwargs)
 
 
-class MoveActionView(LoginRequiredMixin, TemplateView):
+class MoveActionView(LoginRequiredMixin, UpdateView):
     template_name = 'projects/move_action.html'
+    model = models.ActionlistItem
+    form_class = forms.MoveActionForm
+
+    def get_success_url(self):
+        if self.old_project == None:
+            return reverse('projects:actionlist')
+        return reverse('projects:project', kwargs={'pk': self.old_project.pk})
+
+    def post(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.old_project = self.object.project
+
+        return super(MoveActionView, self).post(*args, **kwargs)
