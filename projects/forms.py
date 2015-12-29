@@ -165,6 +165,12 @@ class MoveActionForm(forms.ModelForm):
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('move', _('Move action')))
 
+        self.fields['project'].queryset = models.Project.objects.filter(
+            user=self.instance.user)
+
     class Meta:
         model = models.ActionlistItem
         fields = ('project',)
+        widgets = {
+            'name': forms.ModelChoiceField(queryset=None),
+        }

@@ -303,15 +303,17 @@ class EditProjectFormTest(TestCase):
 
 
 class MoveActionFormTest(TestCase):
+    def setUp(self):
+        self.action = factories.ActionlistItemFactory(user=alice)
+
     def test_cripsy_helper_is_set(self):
-        form = forms.MoveActionForm()
+        form = forms.MoveActionForm(instance=self.action)
         self.assertIsInstance(form.helper, FormHelper)
 
     def test_changes_action_to_project(self):
         project = factories.ProjectFactory(user=alice)
-        action = factories.ActionlistItemFactory(user=alice)
         form = forms.MoveActionForm(data={'project': project.pk},
-            instance=action)
+            instance=self.action)
 
         form.is_valid()
         saved = form.save()
@@ -320,10 +322,30 @@ class MoveActionFormTest(TestCase):
 
     def test_changes_action_to_action_list(self):
         project = factories.ProjectFactory(user=alice)
-        action = factories.ActionlistItemFactory(user=alice, project=project)
-        form = forms.MoveActionForm(data={'project': ''}, instance=action)
+        self.action.project = project
+        self.action.save()
+        form = forms.MoveActionForm(data={'project': ''}, instance=self.action)
 
         self.assertTrue(form.is_valid())
         saved = form.save()
 
         self.assertIsNone(saved.project)
+
+    def test_cannot_move_to_project_of_different_user(self):
+        project = factories.ProjectFactory(user=bob)
+        form = forms.MoveActionForm(data={'project': project.pk},
+            instance=self.action)
+        self.assertFalse(form.is_valid())
+
+    def test_only_shows_projects_belonging_to_user(self):
+        factories.ProjectFactory.create_batch(2, user=bob)
+        projects = factories.ProjectFactory.create_batch(3, user=alice)
+
+        form = forms.MoveActionForm(instance=self.action)
+
+        choices = [pk for (pk, text) in form.fields['project'].choices]
+        self.assertIn(projects[0].pk, choices)
+        self.assertIn(projects[1].pk, choices)
+        self.assertIn(projects[2].pk, choices)
+        self.assertIn('', choices) # Action list is also present
+        self.assertEqual(len(choices), 4)
