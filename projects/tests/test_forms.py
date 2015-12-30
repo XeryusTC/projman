@@ -134,6 +134,19 @@ class ActionlistFormTest(TestCase):
 
         self.assertTrue(form.is_valid())
 
+    def test_shows_only_one_error_when_duplicate_action_on_project(self):
+        p = factories.ProjectFactory(user=alice)
+        a = factories.ActionlistItemFactory(user=alice, project=p, text='dupe')
+
+        form = forms.ActionlistForm(data={'text': 'dupe'})
+        form.instance.user = alice
+        form.instance.project = p
+
+        self.assertFalse(form.is_valid())
+        self.assertSequenceEqual(form.errors[NON_FIELD_ERRORS],
+            [forms.DUPLICATE_ACTION_ERROR])
+        self.assertSequenceEqual(list(form.errors.keys()), [NON_FIELD_ERRORS])
+
 
 class CompleteActionFormTest(TestCase):
     def test_form_save(self):
