@@ -442,7 +442,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # Alice is a user with a project with an action on it
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
-            remote.create_project(self.server_host, 'alice', 'Cook diner', '')
+            remote.create_project(self.server_host, 'alice', 'Cook dinner', '')
         else:
             factories.ProjectFactory(user=user, name='Cook dinner')
         self.browser.refresh()
