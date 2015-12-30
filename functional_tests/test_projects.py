@@ -466,6 +466,8 @@ class ProjectsPageTests(FunctionalTestCase):
         # She sees a duplicate action error
         self.assertIn('This is already planned for that project',
             move_page.content.text)
+        self.assertNotIn('You already planned to do this',
+            move_page.content.text)
 
     def test_can_delete_action_from_project_page(self):
         # Alice is a user with a project

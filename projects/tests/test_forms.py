@@ -362,3 +362,15 @@ class MoveActionFormTest(TestCase):
     def test_empty_label_is_actionlist(self):
         form = forms.MoveActionForm(instance=self.action)
         self.assertIn(('', 'Actions'), form.fields['project'].choices)
+
+    def test_move_causes_duplication_shows_correct_error(self):
+        project = factories.ProjectFactory(user=alice)
+        action2 = factories.ActionlistItemFactory(user=alice, project=project,
+            text=self.action.text)
+
+        form = forms.MoveActionForm(data={'project': project.pk},
+            instance=self.action)
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[NON_FIELD_ERRORS],
+            [forms.DUPLICATE_MOVE_ERROR])

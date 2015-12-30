@@ -12,6 +12,7 @@ EMPTY_TEXT_ERROR = _('You cannot add empty items')
 EMPTY_PROJECT_NAME_ERROR = _('You cannot create a project without a name')
 DUPLICATE_ITEM_ERROR = _("You've already got this on your list")
 DUPLICATE_PROJECT_ERROR = ('You already have this project')
+DUPLICATE_MOVE_ERROR = _("This is already planned for that project")
 ILLEGAL_ACTION_ERROR = _("You are not allowed to do this")
 
 class InlistForm(forms.ModelForm):
@@ -168,6 +169,13 @@ class MoveActionForm(forms.ModelForm):
         self.fields['project'].queryset = models.Project.objects.filter(
             user=self.instance.user)
         self.fields['project'].empty_label = _('Actions')
+
+    def validate_unique(self):
+        try:
+            self.instance.validate_unique()
+        except ValidationError as e:
+            self.errors[NON_FIELD_ERRORS].clear()
+            self.add_error(NON_FIELD_ERRORS, DUPLICATE_MOVE_ERROR)
 
     class Meta:
         model = models.ActionlistItem
