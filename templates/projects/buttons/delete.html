@@ -1,0 +1,5 @@
+{% load i18n %}
+<a class="mui-btn mui-btn--danger mui-btn--fab {% firstof action "action-delete" %}"
+   href="{{ url }}"	title="{% trans 'Delete' %}">
+	<span class="fa fa-trash fa-2x"></span>
+</a>

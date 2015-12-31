@@ -13,11 +13,8 @@
 			{{ item.text }}
 		</div>
 		<div class="mui-col-xs-12 mui-col-md-6">
-			<a class="mui-btn mui-btn--fab mui-btn--danger action-delete"
-				href="{% url 'projects:delete_inlist' item.pk %}"
-				title="{% trans 'Delete' %}">
-				<span class="fa fa-times fa-2x"></span>
-			</a>
+			{% url 'projects:delete_inlist' item.pk as delete_url %}
+			{% include 'projects/buttons/delete.html' with url=delete_url only %}
 			<a class="mui-btn mui-btn--fab action-convert"
 				href="{% url 'projects:convert_inlist_action' item.pk %}"
 				title="{% trans 'Convert to action' %}">
