@@ -101,3 +101,14 @@
 	background-color: #eee;
 	text-decoration: none;
 }
+
+#sidebar .sidebar-projectlink {
+	display: block;
+	padding: 6px 22px;
+	cursor: pointer;
+}
+
+#sidebar .sidebar-projectlink:hover {
+	background-color: #eee;
+	text-decoration: none;
+}
