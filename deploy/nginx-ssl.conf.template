@@ -1,0 +1,27 @@
+server {
+	listen 80;
+	server_name SITENAME www.SITENAME;
+	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 ssl spdy;
+	server_name SITENAME www.SITENAME;
+
+	include snippets/ssl.conf;
+
+	# Ignore the missing favicon
+	location = /favicon.ico { access_log off; log_not_found off; }
+	
+	location /static {
+		alias /var/www/sites/SITENAME/static;
+	}
+
+	location / {
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_pass http://unix:/tmp/SITENAME.socket;
+	}
+}
