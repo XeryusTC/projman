@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-09 23:23+0000\n"
+"POT-Creation-Date: 2016-01-01 20:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,47 +18,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: projects/forms.py:10
+#: projects/forms.py:11
 msgid "You cannot add empty items"
 msgstr "Je kunt geen lege items toevoegen"
 
-#: projects/forms.py:11
+#: projects/forms.py:12
+msgid "You cannot create a project without a name"
+msgstr "Je kunt geen projecten zonder naam maken"
+
+#: projects/forms.py:13
 msgid "You've already got this on your list"
 msgstr "Je hebt dit al op je lijst staan"
 
-#: projects/forms.py:12
+#: projects/forms.py:15
 #, fuzzy
 #| msgid "You've already got this on your list"
-msgid "You already planned to do this"
+msgid "This is already planned for that project"
 msgstr "Je hebt dit al op je lijst staan"
 
-#: projects/forms.py:13
+#: projects/forms.py:16
 msgid "You are not allowed to do this"
 msgstr "Je hebt geen toestemming om dit te doen"
 
-#: projects/forms.py:23 projects/forms.py:54
+#: projects/forms.py:26 projects/forms.py:57
 msgid "Add"
 msgstr "Toevoegen"
 
-#: projects/forms.py:39
+#: projects/forms.py:42
 msgid "What needs to be done?"
 msgstr "Wat moet er gebeuren?"
 
-#: projects/forms.py:70
+#: projects/forms.py:73
 #, fuzzy
 #| msgid "What needs to be done?"
 msgid "What do you need to do?"
 msgstr "Wat moet er gebeuren?"
 
-#: projects/forms.py:95
+#: projects/forms.py:98
 msgid "Convert"
 msgstr "Converteren"
 
-#: projman/settings/base.py:117
+#: projects/forms.py:123 templates/projects/base.html:28
+#: templates/projects/create_project.html:5
+#: templates/projects/create_project.html:8
+msgid "Create project"
+msgstr "Nieuw project"
+
+#: projects/forms.py:145
+msgid "Update project"
+msgstr "Project bijwerken"
+
+#: projects/forms.py:167
+#, fuzzy
+#| msgid "Convert to action"
+msgid "Move action"
+msgstr "Converteer naar actie"
+
+#: projects/forms.py:171 templates/projects/base.html:23
+msgid "Actions"
+msgstr "Acties"
+
+#: projects/models.py:7
+#, fuzzy
+#| msgid "You've already got this on your list"
+msgid "You already planned to do this"
+msgstr "Je hebt dit al op je lijst staan"
+
+#: projects/models.py:8
+msgid "Actions and projects must belong to the same user."
+msgstr "De eigenaar van acties en projecten moeten hetzelfde zijn."
+
+#: projman/settings/base.py:120
 msgid "English"
 msgstr "Engels"
 
-#: projman/settings/base.py:118
+#: projman/settings/base.py:121
 msgid "Dutch"
 msgstr "Nederlands"
 
@@ -79,8 +113,9 @@ msgstr ""
 "adres is voor gebruiker %(user_display)s."
 
 #: templates/account/email_confirm.html:27
-#: templates/projects/actionlistitem_confirm_delete.html:12
+#: templates/projects/actionlistitem_confirm_delete.html:18
 #: templates/projects/inlistitem_confirm_delete.html:11
+#: templates/projects/project_confirm_delete.html:13
 msgid "Confirm"
 msgstr "Bevestig"
 
@@ -220,10 +255,8 @@ msgstr ""
 
 #: templates/account/signup.html:6 templates/account/signup.html.py:9
 #: templates/account/signup.html:28
-#, fuzzy
-#| msgid "Sign in"
 msgid "Sign Up"
-msgstr "Inloggen"
+msgstr "Aanmelden"
 
 #: templates/account/signup.html:15
 #, python-format
@@ -264,44 +297,62 @@ msgstr ""
 msgid "Action list"
 msgstr "Actie lijst"
 
-#: templates/projects/actionlist.html:29 templates/projects/actionlist.html:50
-#: templates/projects/inlist.html:18
-msgid "Delete"
-msgstr "Verwijderen"
-
 #: templates/projects/actionlistitem_confirm_delete.html:4
 msgid "Delete action"
 msgstr "Verwijder actie"
 
-#: templates/projects/actionlistitem_confirm_delete.html:7
-#, python-format
+#: templates/projects/actionlistitem_confirm_delete.html:8
+#, fuzzy, python-format
+#| msgid ""
+#| "Are you sure you want to remove the action\n"
+#| "\"%(actionlistitem)s\" from your action list?"
+msgid ""
+"Are you sure\n"
+"\tyou want to remove the action \"%(actionlistitem)s\" from the project\n"
+"\t%(project_name)s"
+msgstr ""
+"Weet je zeker dat je de actie \"%(actionlistitem)s\" wil verwijderen vanje "
+"actie lijst?"
+
+#: templates/projects/actionlistitem_confirm_delete.html:12
+#, fuzzy, python-format
+#| msgid ""
+#| "Are you sure you want to remove the action\n"
+#| "\"%(actionlistitem)s\" from your action list?"
 msgid ""
 "Are you sure you want to remove the action\n"
-"\"%(actionlistitem)s\" from your action list?"
+"\t\"%(actionlistitem)s\" from your action list?"
 msgstr ""
-"Weet je zeker dat je de actie \"%(actionlistitem)s\" wil verwijderen van"
-"je actie lijst?"
-
+"Weet je zeker dat je de actie \"%(actionlistitem)s\" wil verwijderen vanje "
+"actie lijst?"
 
 #: templates/projects/base.html:19 templates/projects/inlist.html:5
 msgid "In list"
 msgstr "In lijst"
 
-#: templates/projects/base.html:23
-msgid "Actions"
-msgstr "Acties"
-
-#: templates/projects/base.html:46
+#: templates/projects/base.html:60
 msgid "Log out"
 msgstr "Afmelden"
+
+#: templates/projects/buttons/delete.html:3
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: templates/projects/buttons/move.html:3
+msgid "Move"
+msgstr "Verplaatsen"
 
 #: templates/projects/convert_inlist_to_action.html:5
 msgid "Convert in item to action"
 msgstr "Converteer een item naar een actie"
 
-#: templates/projects/inlist.html:23
+#: templates/projects/inlist.html:20
 msgid "Convert to action"
 msgstr "Converteer naar actie"
+
+#: templates/projects/inlist.html:25
+msgid "Convert to project"
+msgstr "Converteer naar project"
 
 #: templates/projects/inlistitem_confirm_delete.html:4
 msgid "Delete in list item"
@@ -313,5 +364,45 @@ msgid ""
 "Are you sure you want to remove the item \"%(inlistitem)s\"\n"
 "from your in list?"
 msgstr ""
-"Weet je zeker dat je het item \"%(inlistitem)s\" van je in lijst wilt"
-"verwijderen?"
+"Weet je zeker dat je het item \"%(inlistitem)s\" van je in lijst "
+"wiltverwijderen?"
+
+#: templates/projects/move_action.html:6
+#, python-format
+msgid "Move %(name)s"
+msgstr "Verplaats %(name)s"
+
+#: templates/projects/move_action.html:11
+#, python-format
+msgid ""
+"\n"
+"\t%(name)s is currently in the project %(project)s, where do you want to\n"
+"\tmove it to?"
+msgstr ""
+"\n"
+"%(name)s hoort op het moement bij project %(project)s, waar wil je het naar "
+"toe verplaatsen?"
+
+#: templates/projects/move_action.html:15
+#, python-format
+msgid ""
+"%(name)s is currently on your\n"
+"\taction list, where do you want to move it to?"
+msgstr ""
+"%(name)s staat op het moment op je actie lijst, waar wil je het naar toe "
+"verplaatsen?"
+
+#: templates/projects/project_confirm_delete.html:5
+#, python-format
+msgid "Delete %(name)s"
+msgstr "Verwijder %(name)s"
+
+#: templates/projects/project_confirm_delete.html:9
+#, fuzzy, python-format
+#| msgid ""
+#| "Are you sure you want to remove the item \"%(inlistitem)s\"\n"
+#| "from your in list?"
+msgid "Are you sure you want to remove the item \"%(project)s\"?\n"
+msgstr ""
+"Weet je zeker dat je het item \"%(inlistitem)s\" van je in lijst "
+"wilt verwijderen?"
