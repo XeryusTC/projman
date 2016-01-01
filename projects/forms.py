@@ -65,8 +65,6 @@ class ActionlistForm(forms.ModelForm):
         except ValidationError as e:
             self._errors[NON_FIELD_ERRORS].clear()
             self.add_error(NON_FIELD_ERRORS, DUPLICATE_ACTION_ERROR)
-            #e.error_dict = {NON_FIELD_ERRORS: [DUPLICATE_ACTION_ERROR]}
-            #self._update_errors(e)
 
     class Meta:
         model = models.ActionlistItem
