@@ -86,3 +86,14 @@ class FunctionalTestCase(StaticLiveServerTestCase):
 
     def is_logged_in(self):
         self.assertTrue(self.browser.current_url.endswith('/projects/'))
+
+    def create_action(self, user, text, project=''):
+        if self.against_staging:
+            remote.create_action(user, text, project)
+        else:
+            from projects import models, factories
+            u = User.objects.get(username=user)
+            p = None
+            if project != '':
+                p = models.Project.objects.get(user=u, name=project)
+            factories.ActionlistItemFactory(user=u, project=p, text=text)

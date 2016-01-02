@@ -6,7 +6,7 @@ import unittest
 from .base import FunctionalTestCase
 from . import pages
 from . import remote
-from projects import factories
+from projects import factories, models
 
 class ProjectsPageTests(FunctionalTestCase):
     def test_projects_can_be_created_from_scratch(self):
@@ -324,10 +324,10 @@ class ProjectsPageTests(FunctionalTestCase):
         self.browser.refresh()
 
         # Alice creates an action on the action list
+        self.create_action('alice', 'Look at game engine')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Look at game engine\n')
         self.assertIn('Look at game engine',
             action_page.list_text(action_page.thelist))
 
@@ -370,11 +370,11 @@ class ProjectsPageTests(FunctionalTestCase):
         self.browser.refresh()
 
         # Alice creates an action for the project
+        for i in range(3):
+            self.create_action('alice', 'Find #{}'.format(i+1), 'Make a top 3 list')
         page = pages.projects.BaseProjectPage(self.browser)
         page.project_link('Make a top 3 list').click()
         project_page = pages.projects.ProjectPage(self.browser)
-        for i in range(3):
-            project_page.add_box.send_keys('Find #{}\n'.format(i+1))
 
         # She sees a move action button next to the new action and clisk it
         actions = project_page.get_list_rows(project_page.thelist)
@@ -397,10 +397,10 @@ class ProjectsPageTests(FunctionalTestCase):
         # Alice is send back to the project page
         self.assertIn('Make a top 3 list', project_page.info.text)
         # The other items are also still there
-        for i in range(1, 3):
-            self.assertIn('Find #{}'.format(i+1),
+        for i in (2, 3):
+            self.assertIn('Find #{}'.format(i),
                 project_page.list_text(project_page.thelist),
-                'Item #{} not found in the list'.format(i+1))
+                'Item #{} not found in the list'.format(i))
 
     def test_action_items_can_be_moved_between_projects(self):
         # Alice is a user with two projects
@@ -414,10 +414,10 @@ class ProjectsPageTests(FunctionalTestCase):
         self.browser.refresh()
 
         # Alice creates an action on the first project
+        self.create_action('alice', 'Find a wine store', 'Feed me')
         page = pages.projects.BaseProjectPage(self.browser)
         page.project_link('Feed me').click()
         project_page = pages.projects.ProjectPage(self.browser)
-        project_page.add_box.send_keys('Find a wine store\n')
 
         # Noticing that she created the action for the wrong project she
         # goes to the move page
@@ -447,15 +447,15 @@ class ProjectsPageTests(FunctionalTestCase):
             factories.ProjectFactory(user=user, name='Cook dinner')
         self.browser.refresh()
 
-        page = pages.projects.BaseProjectPage(self.browser)
-        page.project_link('Cook dinner').click()
-        project_page = pages.projects.ProjectPage(self.browser)
-        project_page.add_box.send_keys('Go to the grocery store\n')
+        # Create the same action on both projects
+        self.create_action('alice', 'Go to the grocery store')
+        self.create_action('alice', 'Go to the grocery store', 'Cook dinner')
 
-        # She goes to the action list and adds the same action
+        # She goes to the action list
+        page = pages.projects.BaseProjectPage(self.browser)
+        project_page = pages.projects.ProjectPage(self.browser)
         page.action_link(page.sidebar).click()
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Go to the grocery store\n')
 
         # She tries to move the action to the project
         action_page.get_list_rows(action_page.thelist)[0]['move'].click()
@@ -479,9 +479,11 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # On the project page she creates an action
         project_page = pages.projects.ProjectPage(self.browser)
-        project_page.add_box.send_keys('Find a place where salamanders live')
-        project_page.add_button.click()
-        project_page.add_box.send_keys('Buy some boxes\n')
+        self.assertIn('Catch some salamanders', project_page.info.text)
+        self.create_action('alice', 'Find a place where salamanders live',
+            'Catch some salamanders')
+        self.create_action('alice', 'Buy some boxes', 'Catch some salamanders')
+        self.browser.refresh()
 
         # She realises that she already knows where they live, so she
         # removes the action
@@ -520,8 +522,10 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # On the project page she creates an action
         project_page = pages.projects.ProjectPage(self.browser)
-        project_page.add_box.send_keys('Pet Felix\n')
-        project_page.add_box.send_keys('Pet Garfield\n')
+        self.assertIn('Pet the cats', project_page.info.text)
+        self.create_action('alice', 'Pet Felix', 'Pet the cats')
+        self.create_action('alice', 'Pet Garfield', 'Pet the cats')
+        self.browser.refresh()
 
         # The 'Pet Felix' item should be on the page
         self.assertIn('Pet Felix',
@@ -736,8 +740,10 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # On the project page she creates an action
         project_page = pages.projects.ProjectPage(self.browser)
-        project_page.add_box.send_keys('Save money\n')
-        project_page.add_box.send_keys('Figure out where to go\n')
+        self.assertIn('Plan holiday', project_page.info.text)
+        self.create_action('alice', 'Save money', 'Plan holiday')
+        self.create_action('alice', 'Figure out where to go', 'Plan holiday')
+        self.browser.refresh()
 
         # The items appear on the page
         self.assertIn('Save money',

@@ -23,3 +23,8 @@ def create_project(host, user, name, description=''):
     return subprocess.check_output(['fab',
         'create_project:user={},name={},description={}'.format(user, name,
             description), '--host={}'.format(host)], cwd=THIS_FOLDER)
+
+def create_action(host, user, text, project=''):
+    return subprocess.check_output(['fab',
+        'create_action:user={},text={},project={}'.format(user, text, project),
+        '--host={}'.format(host)], cwd=THIS_FOLDER)

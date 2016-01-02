@@ -28,3 +28,9 @@ def create_project(user, name, description=''):
         .format(manage=_get_manage_py(env.host), user=user, name=name,
             desc=description))
     print project
+
+def create_action(user, text, project=''):
+    project = run('{manage} create_action {user} {text} --project {project}'
+        .format(manage=_get_manage_py(env.host), user=user, text=text,
+            project=project))
+    print project
