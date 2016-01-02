@@ -123,6 +123,7 @@ class ProjectDeletePage(PageObject):
 class MoveActionPage(PageObject):
     content = PageElement(id_='content')
     confirm = PageElement(name='move')
+    form    = PageElement(tag_name='form')
 
     _select = PageElement(tag_name='select')
     @property

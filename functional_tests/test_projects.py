@@ -346,7 +346,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # There is also a select box where she can move the action to,
         # she selects the project and clicks the confirm button
         move_page.select.select_by_visible_text('Make a game')
-        move_page.confirm.click()
+        move_page.form.submit()
 
         # She arrives on the action list, where the item has disapeared
         self.assertNotIn('Look at game engine',
@@ -392,7 +392,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # In the select box she selects the action list
         move_page.select.select_by_value('')
-        move_page.confirm.click()
+        move_page.form.submit()
 
         # Alice is send back to the project page
         self.assertIn('Make a top 3 list', project_page.info.text)
@@ -426,7 +426,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # She selects the other project from the move page
         move_page = pages.projects.MoveActionPage(self.browser)
         move_page.select.select_by_visible_text('Buy wine')
-        move_page.confirm.click()
+        move_page.form.submit()
 
         # She returns to the first project's page, where there is no action
         self.assertIn('Feed me', project_page.info.text)
@@ -461,7 +461,7 @@ class ProjectsPageTests(FunctionalTestCase):
         action_page.get_list_rows(action_page.thelist)[0]['move'].click()
         move_page = pages.projects.MoveActionPage(self.browser)
         move_page.select.select_by_visible_text('Cook dinner')
-        move_page.confirm.click()
+        move_page.form.submit()
 
         # She sees a duplicate action error
         self.assertIn('This is already planned for that project',
