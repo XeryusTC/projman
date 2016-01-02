@@ -82,6 +82,7 @@ class CreateProjectPage(PageObject):
 
 class ProjectPage(PageObject):
     info       = PageElement(id_='info')
+    title      = PageElement(xpath="//div[@id='info']//h1/parent::*")
     add_box    = PageElement(name='text')
     add_button = PageElement(xpath="//form//input[@name='submit']")
     edit       = PageElement(css='.action-edit')

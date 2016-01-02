@@ -37,7 +37,7 @@
 <div id="list">
 	{% for item in project.action_list.all %}
 		<div class="mui-row{% if item.complete %} checked{% endif %}">
-			<div class="mui-col-xs-12 mui-col-md-6 action-item">
+			<div class="mui-col-xs-12 mui-col-md-6 action-item full-height">
 				{{ item.text }}
 				<form method="post"
 					action="{% url 'projects:complete_action' item.pk %}">

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
+from selenium.common.exceptions import NoSuchElementException
 
 from . import remote
 from .base import FunctionalTestCase
@@ -117,6 +118,11 @@ class AccountPagesLayout(FunctionalTestCase):
 
 
 class ProjectsPagesTests(FunctionalTestCase):
+    """Smoke tests for the pages under /projects/"""
+    def set_size(self):
+        self.width = 1200
+        self.browser.set_window_size(self.width, 800)
+
     def test_inlist_page(self):
         """Test the page under /projects/inlist/"""
         # Alice is a user who goes to the inlist page
@@ -154,3 +160,100 @@ class ProjectsPagesTests(FunctionalTestCase):
         # The action list is underneath the form
         self.assertLess(action_page.add_box.location['y'],
             action_page.thelist[0].location['y'])
+
+    def test_create_project_page(self):
+        """Test the page under /projects/project/create/"""
+        # Alice is a user who goes to the create project page
+        self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.create_project_link(page.sidebar).click()
+        self.set_size()
+
+        # The name and description fields are above each other and the
+        # create button is at the bottom, aligned left
+        create_page = pages.projects.CreateProjectPage(self.browser)
+        self.assertLess(create_page.name_box.location['y'],
+            create_page.description_box.location['y'])
+        self.assertLess(create_page.description_box.location['y'],
+            create_page.create_button.location['y'])
+        self.assertLess(create_page.description_box.location['x'],
+            self.width / 2)
+
+    def test_project_page(self):
+        """Test the page under /projects/project/PK/"""
+        # Alice is a user who has a project
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Test layout',
+                'Also test styling')
+        else:
+            from projects.factories import ProjectFactory
+            ProjectFactory(user=user, name='Test layout',
+                description='Also test styling')
+        self.browser.refresh()
+        self.create_action('alice', 'Test the title layout', 'Test layout')
+        self.create_action('alice', 'Test the action layout', 'Test layout')
+
+        # She goes to the project page
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Test layout').click()
+        project_page = pages.projects.ProjectPage(self.browser)
+
+        # The title is on the top, with the project edit and delete buttons to
+        # the right of the title, but not next to it (they are in the right
+        # half of the page while the title is on the left)
+        self.set_size()
+        self.assertLess(project_page.title.location['x'], self.width / 2)
+        self.assertGreater(project_page.edit.location['x'], self.width / 2)
+        self.assertGreater(project_page.delete.location['x'], self.width / 2)
+        self.assertAlmostEqual(project_page.title.location['y'],
+            project_page.edit.location['y'], delta=10)
+        self.assertAlmostEqual(project_page.title.location['y'],
+            project_page.delete.location['y'], delta=10)
+
+        # The add action form is under that, the text box is on the left
+        # while the button is on the right
+        self.assertLess(project_page.info.location['y'],
+            project_page.add_box.location['y'])
+        self.assertLess(project_page.add_box.location['x'], self.width / 2)
+        self.assertGreater(project_page.add_button.location['x'], self.width/2)
+        self.assertAlmostEqual(project_page.add_box.location['y'],
+            project_page.add_button.location['y'], delta=10)
+        self.assertEqual(project_page.add_button.location['x'],
+            project_page.edit.location['x'])
+
+        # The action list is under that, with the manipulation buttons
+        # on the right half of the page as well
+        action = project_page.get_list_rows(project_page.thelist)[0]
+        self.assertLess(project_page.add_box.location['y'],
+            action['text'].location['y'])
+        self.assertLess(action['text'].location['x'], self.width / 2)
+        self.assertGreater(action['delete'].location['x'], self.width / 2)
+        self.assertGreater(action['move'].location['x'], self.width / 2)
+        self.assertAlmostEqual(action['text'].location['y'],
+            action['delete'].location['y'], delta=10)
+        self.assertAlmostEqual(action['text'].location['y'],
+            action['move'].location['y'], delta=10)
+
+    def test_action_move_page(self):
+        """Test the page under /projects/actions/PK/move/"""
+        # Alice is a user who has an action
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        self.create_action('alice', 'Test some more layouts')
+
+        # She goes to the action's move page
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+        action_page = pages.projects.ActionlistPage(self.browser)
+        action = action_page.get_list_rows(action_page.thelist)[0]
+        action['move'].click()
+
+        # She also sees that the move button is under the select box
+        move_page = pages.projects.MoveActionPage(self.browser)
+        self.assertLess(move_page._select.location['y'],
+            move_page.confirm.location['y'])
+
+        # When she lands on the move page she sees that there is no label
+        with self.assertRaises(NoSuchElementException):
+            select_label = self.browser.find_element_by_xpath(
+                "//label[@for='id_project']")
