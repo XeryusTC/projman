@@ -89,7 +89,7 @@ class FunctionalTestCase(StaticLiveServerTestCase):
 
     def create_action(self, user, text, project=''):
         if self.against_staging:
-            remote.create_action(user, text, project)
+            remote.create_action(self.server_host, user, text, project)
         else:
             from projects import models, factories
             u = User.objects.get(username=user)

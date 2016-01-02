@@ -30,7 +30,11 @@ def create_project(user, name, description=''):
     print project
 
 def create_action(user, text, project=''):
-    project = run('{manage} create_action {user} {text} --project {project}'
-        .format(manage=_get_manage_py(env.host), user=user, text=text,
-            project=project))
-    print project
+    if project == '':
+        p = run('{manage} create_action {user} \'{text}\''
+            .format(manage=_get_manage_py(env.host), user=user, text=text))
+    else:
+        p = run('{manage} create_action {user} \'{text}\' --project {project}'
+            .format(manage=_get_manage_py(env.host), user=user, text=text,
+                project=project))
+    print p
