@@ -42,11 +42,11 @@ class ActionPageTests(FunctionalTestCase):
     def test_action_list_items_are_not_visible_for_other_users(self):
         # Alice visits the website and creates an item for the action list
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        self.create_action('alice', 'Pet the cat')
+        self.create_action('alice', 'Repaint the bed')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Pet the cat\n')
-        action_page.add_box.send_keys('Repaint the bed\n')
         # The items are both on the page
         self.assertIn('Pet the cat',
             action_page.list_text(action_page.thelist))
@@ -113,14 +113,12 @@ class ActionPageTests(FunctionalTestCase):
     def test_can_complete_action_item(self):
         # Alice is a user who logs in and goes to the action list page
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        self.create_action('alice', 'Check this action')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
 
-        # She adds an item to the action page
+        # There is an action on the page (created earlier)
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Check this action\n')
-
-        # The element should end up on the page
         self.assertIn('Check this action',
             action_page.list_text(action_page.thelist))
 
@@ -144,12 +142,12 @@ class ActionPageTests(FunctionalTestCase):
     def test_can_undo_completed_action_item(self):
         # Alice is a user who logs in and goes to the action list page
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        self.create_action('alice', 'Uncomplete this action')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
 
         # She adds an item to the action page and completes it
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Uncomplete this action\n')
         action_page.get_list_rows(action_page.thelist)[0]['text'].click()
 
         # The item is in the completed list
@@ -166,15 +164,13 @@ class ActionPageTests(FunctionalTestCase):
     def test_can_delete_action_item(self):
         # Alice is a user who logs in and goes to the action list page
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        self.create_action('alice', 'Create actions')
+        self.create_action('alice', 'Remove an action')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
 
-        # She adds two items to the action_page
+        # There are two items to the action_page
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Create actions\n')
-        action_page.add_box.send_keys('Remove an action\n')
-
-        # Wait for the elements to be added
         self.assertIn('Create actions',
             action_page.list_text(action_page.thelist))
         self.assertIn('Remove an action',
@@ -208,13 +204,13 @@ class ActionPageTests(FunctionalTestCase):
     def test_can_delete_completed_action_items(self):
         # Alice is a user who logs in and goes to the action list page
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
+        self.create_action('alice', 'Complete action')
+        self.create_action('alice', 'Remove completed action')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Complete action\n')
-        action_page.add_box.send_keys('Remove completed action\n')
 
-        # Make sure the elements are added
+        # Make sure the actions have been added
         self.assertIn('Complete action',
             action_page.list_text(action_page.thelist))
         self.assertIn('Remove completed action',
@@ -376,15 +372,13 @@ class ActionPageTests(FunctionalTestCase):
         self.assertIn('Forbidden', body_text)
 
     def test_deleting_other_persons_action_item_returns_403(self):
-        # Alice is a user who logs in and goes to the inlist page
+        # Alice is a user who logs in and has an action on the action list
         self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        self.create_action('alice', 'Test forbidden status')
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
-
-        # She adds an item
         action_page = pages.projects.ActionlistPage(self.browser)
-        action_page.add_box.send_keys('Test forbidden status\n')
-        # She goes to the delete page
+        # She goes to the delete page for the action
         item = action_page.get_list_rows(action_page.thelist)[0]
         item['delete'].click()
 
