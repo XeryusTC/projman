@@ -57,11 +57,8 @@ class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
     model = models.ActionlistItem
 
     def get_success_url(self):
-        if self.object.project:
-            return reverse('projects:project',
-                kwargs={'pk': self.object.project.pk})
-        else:
-            return reverse('projects:actionlist')
+        return reverse('projects:project',
+            kwargs={'pk': self.object.project.pk})
 
     def dispatch(self, request, *args, **kwargs):
         item = get_object_or_404(models.ActionlistItem, pk=self.kwargs['pk'])
