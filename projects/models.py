@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 DUPLICATE_ACTION_ERROR = _("You already planned to do this")
 INVALID_USER_ERROR = _('Actions and projects must belong to the same user.')
+ACTION_PROJECT_NAME = 'Actions' # Don't translate this (yet)
 
 class InlistItem(models.Model):
     text = models.CharField(max_length=255, default='')
@@ -34,7 +35,8 @@ class ActionlistItem(models.Model):
 
         # Make the default project the user's Actions project
         if self.project == None:
-            self.project = Project.objects.get(user=self.user, name='Actions')
+            self.project = Project.objects.get(user=self.user,
+                name=ACTION_PROJECT_NAME)
 
         # Validate that two items on the list are not the same
         queryset = ActionlistItem.objects.exclude(pk=self.pk).filter(
@@ -46,7 +48,8 @@ class ActionlistItem(models.Model):
         # Just changing the default in clean is not enough, we need to
         # change it here as well
         if self.project == None:
-            self.project = Project.objects.get(user=self.user, name='Actions')
+            self.project = Project.objects.get(user=self.user,
+                name=ACTION_PROJECT_NAME)
         super(ActionlistItem, self).save(*args, **kwargs)
 
     def __str__(self):

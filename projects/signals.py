@@ -8,5 +8,5 @@ from projects import models
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_action_project_for_new_user(sender, created, instance, **kwargs):
     if created:
-        p = models.Project(name='Actions', user=instance)
+        p = models.Project(name=models.ACTION_PROJECT_NAME, user=instance)
         p.save()

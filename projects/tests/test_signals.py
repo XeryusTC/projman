@@ -13,4 +13,4 @@ class ActionlistProjectTests(TestCase):
         ps = models.Project.objects.filter(user=user)
 
         self.assertEqual(ps.count(), 1)
-        self.assertEqual(ps[0].name, 'Actions')
+        self.assertEqual(ps[0].name, models.ACTION_PROJECT_NAME)

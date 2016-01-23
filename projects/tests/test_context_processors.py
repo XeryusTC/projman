@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase, RequestFactory
 
 from projects import context_processors as cp
-from projects import factories
+from projects import factories, models
 
 User = get_user_model()
 
@@ -27,8 +27,10 @@ class ProjectNamesTests(TestCase):
         self.assertEqual(cp.project_list(request)['project_list'], [])
 
     def test_project_list_contains_users_projects(self):
-        projects = factories.ProjectFactory.create_batch(size=10,
+        factories.ProjectFactory.create_batch(size=10,
             user=self.alice)
+        projects = models.Project.objects.filter(user=self.alice)
+
         request = self.factory.get('/')
         request.user = self.alice
 
@@ -46,6 +48,6 @@ class ProjectNamesTests(TestCase):
 
         project_list = cp.project_list(request)['project_list']
 
-        self.assertEqual(project_list.count(), 1)
+        self.assertEqual(project_list.count(), 2)
         self.assertIn(ap, project_list)
         self.assertNotIn(bp, project_list)

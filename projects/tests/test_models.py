@@ -4,7 +4,8 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from projects import factories
-from projects.models import InlistItem, ActionlistItem, Project
+from projects.models import (InlistItem, ActionlistItem, Project,
+    ACTION_PROJECT_NAME)
 
 User = get_user_model()
 u = None
@@ -95,7 +96,7 @@ class ActionlistItemModelTest(TestCase):
 
     def test_project_field_refers_to_users_action_project_by_default(self):
         item = factories.ActionlistItemFactory(user=u)
-        project = Project.objects.get(user=u, name='Actions')
+        project = Project.objects.get(user=u, name=ACTION_PROJECT_NAME)
         self.assertEqual(item.project, project)
 
     def test_action_user_and_project_user_should_be_equal(self):
