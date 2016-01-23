@@ -100,7 +100,8 @@ class ActionlistFormTest(TestCase):
         item = form.save()
 
         self.assertEqual(models.ActionlistItem.objects.count(), 1)
-        self.assertIsNone(item.project)
+        self.assertEqual(item.project, models.Project.objects.get(user=alice,
+            name=models.ACTION_PROJECT_NAME))
 
     def test_form_can_save_action_to_project(self):
         p = factories.ProjectFactory(user=alice)
@@ -247,6 +248,7 @@ class CreateProjectFormTest(TestCase):
         self.assertIsInstance(form.helper, FormHelper)
 
     def test_form_save(self):
+        self.assertEqual(models.Project.objects.count(), 3)
         form = forms.CreateProjectForm(data={'name': 'test',
             'description': 'test description'})
         form.instance.user = alice
@@ -254,8 +256,7 @@ class CreateProjectFormTest(TestCase):
         form.is_valid()
         project = form.save()
 
-        self.assertEqual(models.Project.objects.count(), 1)
-        self.assertEqual(project, models.Project.objects.first())
+        self.assertEqual(models.Project.objects.count(), 4)
 
     def test_form_validation_for_empty_name(self):
         form = forms.CreateProjectForm(data={'name': '', 'description': 'test'})
@@ -289,7 +290,7 @@ class EditProjectFormTest(TestCase):
         self.assertIsInstance(form.helper, FormHelper)
 
     def test_form_save(self):
-        self.assertEqual(models.Project.objects.count(), 1)
+        self.assertEqual(models.Project.objects.count(), 4)
         form = forms.EditProjectForm(data={'name': 'test',
             'description': 'test description'})
         form.instance = self.project
@@ -297,7 +298,8 @@ class EditProjectFormTest(TestCase):
         form.is_valid()
         saved = form.save()
 
-        self.assertEqual(models.Project.objects.count(), 1)
+        # No new project got added
+        self.assertEqual(models.Project.objects.count(), 4)
         self.assertEqual(saved.pk, self.project.pk)
         self.assertEqual(saved.name, 'test')
         self.assertEqual(saved.description, 'test description')
@@ -344,14 +346,13 @@ class MoveActionFormTest(TestCase):
 
     def test_changes_action_to_action_list(self):
         project = factories.ProjectFactory(user=alice)
-        self.action.project = project
-        self.action.save()
-        form = forms.MoveActionForm(data={'project': ''}, instance=self.action)
+        form = forms.MoveActionForm(data={'project': project.pk},
+            instance=self.action)
 
         self.assertTrue(form.is_valid())
         saved = form.save()
 
-        self.assertIsNone(saved.project)
+        self.assertEqual(saved.project, project)
 
     def test_cannot_move_to_project_of_different_user(self):
         project = factories.ProjectFactory(user=bob)
@@ -369,12 +370,12 @@ class MoveActionFormTest(TestCase):
         self.assertIn(projects[0].pk, choices)
         self.assertIn(projects[1].pk, choices)
         self.assertIn(projects[2].pk, choices)
-        self.assertIn('', choices) # Action list is also present
         self.assertEqual(len(choices), 4)
 
-    def test_empty_label_is_actionlist(self):
+    def test_there_is_no_empty_label(self):
         form = forms.MoveActionForm(instance=self.action)
-        self.assertIn(('', 'Actions'), form.fields['project'].choices)
+        self.assertNotIn('',
+            [item[0] for item in form.fields['project'].choices])
 
     def test_move_causes_duplication_shows_correct_error(self):
         project = factories.ProjectFactory(user=alice)
