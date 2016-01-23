@@ -341,7 +341,7 @@ class ProjectsPageTests(FunctionalTestCase):
         move_page = pages.projects.MoveActionPage(self.browser)
         self.assertIn('Move Look at game engine', self.browser.title)
         self.assertIn('Look at game engine', move_page.content.text)
-        self.assertIn('action list', move_page.content.text)
+        self.assertIn('Actions', move_page.content.text)
 
         # There is also a select box where she can move the action to,
         # she selects the project and clicks the confirm button
@@ -388,10 +388,9 @@ class ProjectsPageTests(FunctionalTestCase):
         move_page = pages.projects.MoveActionPage(self.browser)
         self.assertIn('Find #1', move_page.content.text)
         self.assertIn('Make a top 3 list', move_page.content.text)
-        self.assertNotIn('action list', move_page.content.text)
 
         # In the select box she selects the action list
-        move_page.select.select_by_value('')
+        move_page.select.select_by_visible_text('Actions')
         move_page.form.submit()
 
         # Alice is send back to the project page

@@ -17,7 +17,7 @@ class ActionPageTests(FunctionalTestCase):
 
         # On the new page there is a text box where she is invited to enter
         # a new action item
-        self.assertEqual(self.browser.title, 'Action list')
+        self.assertEqual(self.browser.title, 'Actions')
         action_page = pages.projects.ActionlistPage(self.browser)
         self.assertEqual(action_page.add_box.get_attribute('placeholder'),
             'What do you need to do?')

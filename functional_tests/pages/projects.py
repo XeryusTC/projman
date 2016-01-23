@@ -38,31 +38,6 @@ class InlistDeletePage(PageObject):
     confirm = PageElement(xpath="//input[@type='submit']")
 
 
-class ActionlistPage(PageObject):
-    add_box     = PageElement(name='text')
-    add_button  = PageElement(xpath="//form//input[@id='submit-id-submit']")
-    error_lists = MultiPageElement(css='.errorlist')
-    thelist     = MultiPageElement(css='#list .mui-row')
-    checked_list = MultiPageElement(css='#checked .mui-row')
-
-    _list_text   = PageElement(css='.full-height', context=True)
-    _delete_item = PageElement(class_name='action-delete', context=True)
-    _move_item   = PageElement(class_name='action-move', context=True)
-
-    def list_text(self, context):
-        text = [self._list_text(row).text for row in context]
-        return text
-
-    def get_list_rows(self, context):
-        res = {}
-        for i in range(len(context)):
-            res[i] = {
-                'text':   self._list_text(context[i]),
-                'delete': self._delete_item(context[i]),
-                'move':   self._move_item(context[i])}
-        return res
-
-
 class ActionDeletePage(PageObject):
     content = PageElement(id_='content')
     confirm = PageElement(xpath="//input[@type='submit']")
@@ -107,6 +82,7 @@ class ProjectPage(PageObject):
                 'move':   self._move_item(context[i]),
             }
         return res
+ActionlistPage = ProjectPage
 
 
 class EditPage(PageObject):
