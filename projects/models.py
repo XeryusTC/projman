@@ -69,3 +69,7 @@ class Project(models.Model):
 
     class Meta:
         unique_together = ('name', 'user')
+
+
+def get_user_action_project(user):
+    return Project.objects.get(user=user, name=ACTION_PROJECT_NAME)
