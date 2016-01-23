@@ -53,31 +53,6 @@ class InlistItemDelete(LoginRequiredMixin, DeleteView):
         return super(InlistItemDelete, self).dispatch(request, *args, **kwargs)
 
 
-class ActionlistView(LoginRequiredMixin, FormView):
-    template_name = 'projects/actionlist.html'
-    form_class = forms.ActionlistForm
-    success_url = reverse_lazy('projects:actionlist')
-
-    def get_context_data(self, **kwargs):
-        context = super(ActionlistView, self).get_context_data(**kwargs)
-        context['actionlist_items'] = models.ActionlistItem.objects.filter(
-            user=self.request.user, complete=False, project=None)
-        context['actionlist_complete'] = models.ActionlistItem.objects.filter(
-            user=self.request.user, complete=True, project=None)
-        context['form'].instance.user = self.request.user
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        form.instance.user = self.request.user
-        form.validate_unique()
-        if form.is_valid():
-            form.save(self.request.user)
-            return super(ActionlistView, self).form_valid(form)
-        else:
-            return super(ActionlistView, self).form_invalid(form)
-
-
 class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
     model = models.ActionlistItem
 

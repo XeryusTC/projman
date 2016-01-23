@@ -174,133 +174,6 @@ class InlistItemDeleteViewTests(ViewTestCase):
         self.assertEqual(response.status_code, 403)
 
 
-@unittest.expectedFailure
-class ActionlistViewTests(ViewTestCase):
-    def setUp(self):
-        self.url = '/en/projects/actions/'
-        self.view = views.ActionlistView.as_view()
-
-    def test_actionlist_url_resolves_to_actionlist_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_actionlist_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/actionlist.html')
-
-    def test_login_required(self):
-        response = self.get_request(AnonymousUser())
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
-
-    def test_actionlist_uses_actionlist_form(self):
-        response = self.get_request(alice)
-        self.assertIsInstance(response.context_data['form'],
-            forms.ActionlistForm)
-
-    def test_actionlist_displays_only_items_for_that_user(self):
-        item1 = factories.ActionlistItemFactory(text='item 1', user=alice)
-        item2 = factories.ActionlistItemFactory(text='item 2', user=alice)
-        item3 = factories.ActionlistItemFactory(text='item 3', user=bob)
-
-        response = self.get_request(alice)
-
-        self.assertContains(response, 'item 1')
-        self.assertContains(response, 'item 2')
-        self.assertNotContains(response, 'item 3')
-
-    def test_POST_request_saves_to_users_actionlist(self):
-        response = self.post_request(alice, {'text': 'giants'})
-
-        self.assertEqual(models.ActionlistItem.objects.count(), 1)
-        item = models.ActionlistItem.objects.first()
-        self.assertEqual(item.text, 'giants')
-        self.assertEqual(item.user, alice)
-
-    def test_POST_redirects_to_actionlist(self):
-        response = self.post_request(alice, {'text': 'test'})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.url)
-
-    def test_empty_input_saves_nothing_to_db(self):
-        response = self.post_request(alice, {'text': ''})
-        self.assertEqual(models.ActionlistItem.objects.count(), 0)
-
-    def test_empty_input_shows_error_on_page(self):
-        response = self.post_request(alice, {'text': ''})
-        self.assertContains(response, forms.EMPTY_TEXT_ERROR)
-
-    def test_trying_to_enter_same_text_twice_shows_error_on_page(self):
-        item1 = factories.ActionlistItemFactory(text='twice', user=alice)
-
-        response = self.post_request(alice, {'text': 'twice'})
-
-        self.assertEqual(models.ActionlistItem.objects.count(), 1)
-        self.assertContains(response, forms.DUPLICATE_ACTION_ERROR)
-
-    def test_context_includes_users_actionlist_items(self):
-        item1 = factories.ActionlistItemFactory(text='action 1', user=alice)
-        item2 = factories.ActionlistItemFactory(text='action 2', user=alice)
-
-        response = self.get_request(alice)
-
-        self.assertIn('actionlist_items', response.context_data.keys())
-        self.assertIn(item1, response.context_data['actionlist_items'])
-        self.assertIn(item2, response.context_data['actionlist_items'])
-
-    def test_only_uncompleted_items_in_context_actionlist(self):
-        nc = factories.ActionlistItemFactory.create_batch(2, user=alice,
-            complete=False)
-        co = factories.ActionlistItemFactory.create_batch(2, user=alice,
-            complete=True)
-
-        response = self.get_request(alice)
-
-        context = response.context_data['actionlist_items']
-        self.assertEqual(len(nc), len(context))
-        self.assertIn(nc[0], context)
-        self.assertIn(nc[1], context)
-
-    def test_context_includes_users_completed_action_list(self):
-        item1 = factories.ActionlistItemFactory(user=alice, complete=True)
-        item2 = factories.ActionlistItemFactory(user=alice, complete=True)
-
-        response = self.get_request(alice)
-
-        self.assertIn('actionlist_complete', response.context_data.keys())
-        self.assertIn(item1, response.context_data['actionlist_complete'])
-        self.assertIn(item2, response.context_data['actionlist_complete'])
-
-    def test_only_completed_items_in_context_actionlist_complete(self):
-        nc = factories.ActionlistItemFactory.create_batch(2, user=alice,
-            complete=False)
-        co = factories.ActionlistItemFactory.create_batch(2, user=alice,
-            complete=True)
-
-        response = self.get_request(alice)
-
-        context = response.context_data['actionlist_complete']
-        self.assertEqual(len(co), len(context))
-        self.assertIn(co[0], context)
-        self.assertIn(co[1], context)
-
-    def test_only_show_action_items_without_project(self):
-        project = factories.ProjectFactory(user=alice)
-        item1 = factories.ActionlistItemFactory(user=alice)
-        item2 = factories.ActionlistItemFactory(user=alice, project=project)
-
-        response = self.get_request(alice)
-
-        actionlist = response.context_data['actionlist_items']
-        self.assertIn(item1, actionlist)
-        self.assertNotIn(item2, actionlist)
-        self.assertSequenceEqual([],
-            response.context_data['actionlist_complete'])
-
-
 class ActionlistItemDeleteViewTests(ViewTestCase):
     def setUp(self):
         self.item = factories.ActionlistItemFactory(user=alice)
@@ -332,7 +205,8 @@ class ActionlistItemDeleteViewTests(ViewTestCase):
     def test_POST_redirects_to_action_list_for_non_project_actions(self):
         response = self.post_request(alice, pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('projects:actionlist'))
+        self.assertEqual(response.url, reverse('projects:project',
+            kwargs={'pk': models.get_user_action_project(alice).pk}))
 
     def test_POST_redirects_to_project_page_for_project_actions(self):
         project = factories.ProjectFactory(user=alice)
