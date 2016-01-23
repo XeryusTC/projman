@@ -93,10 +93,10 @@ class ActionlistItemModelTest(TestCase):
         item = ActionlistItem(text='test', user=u, project=project)
         item.save()
 
-    def test_project_field_refers_to_no_project_by_default(self):
+    def test_project_field_refers_to_users_action_project_by_default(self):
         item = factories.ActionlistItemFactory(user=u)
-        item.save()
-        self.assertIsNone(item.project)
+        project = Project.objects.get(user=u, name='Actions')
+        self.assertEqual(item.project, project)
 
     def test_action_user_and_project_user_should_be_equal(self):
         bob = User.objects.create_user('bob', 'bob@test.org', 'bob')

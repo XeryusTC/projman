@@ -23,7 +23,7 @@ class ActionlistItem(models.Model):
     text = models.CharField(max_length=255, default='')
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     complete = models.BooleanField(default=False, editable=False)
-    project = models.ForeignKey('Project', blank=True, null=True, default=None,
+    project = models.ForeignKey('Project', default=None, null=True,
         related_name='action_list')
 
     def clean(self):
@@ -32,11 +32,22 @@ class ActionlistItem(models.Model):
         if self.project != None and self.user != self.project.user:
             raise ValidationError(INVALID_USER_ERROR)
 
+        # Make the default project the user's Actions project
+        if self.project == None:
+            self.project = Project.objects.get(user=self.user, name='Actions')
+
         # Validate that two items on the list are not the same
         queryset = ActionlistItem.objects.exclude(pk=self.pk).filter(
             text=self.text, user=self.user, project=self.project)
         if queryset.exists():
             raise ValidationError(DUPLICATE_ACTION_ERROR)
+
+    def save(self, *args, **kwargs):
+        # Just changing the default in clean is not enough, we need to
+        # change it here as well
+        if self.project == None:
+            self.project = Project.objects.get(user=self.user, name='Actions')
+        super(ActionlistItem, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.text
