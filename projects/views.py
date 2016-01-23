@@ -159,6 +159,7 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
         if 'form' not in context.keys():
             context['form'] = self.get_form()
             context['form'].instance.user = self.request.user
+        context['protected'] = (self.object.name == models.ACTION_PROJECT_NAME)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -189,6 +190,11 @@ class EditProjectView(LoginRequiredMixin, UpdateView):
         # Need to check against AnonymousUser to not break LoginRequiredMixin
         if request.user != project.user and request.user != AnonymousUser():
             return permission_denied(request)
+
+        # Check whether the project is an action project
+        if project.name == models.ACTION_PROJECT_NAME:
+            return permission_denied(request)
+
         return super(EditProjectView, self).dispatch(request, *args, **kwargs)
 
 
@@ -201,6 +207,11 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
         # Need to check against AnonymousUser to not break LoginRequiredMixin
         if request.user != project.user and request.user != AnonymousUser():
             return permission_denied(request)
+
+        # Check whether the project is an action project
+        if project.name == models.ACTION_PROJECT_NAME:
+            return permission_denied(request)
+
         return super(DeleteProjectView, self).dispatch(request, *args, **kwargs)
 
 

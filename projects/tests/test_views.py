@@ -448,6 +448,15 @@ class ProjectViewTests(ViewTestCase):
         self.assertIn(co[0], context.action_list.all())
         self.assertIn(co[1], context.action_list.all())
 
+    def test_notifies_when_project_is_users_action_project(self):
+        project = models.get_user_action_project(alice)
+        response = self.get_request(alice, pk=project.pk)
+        self.assertTrue(response.context_data['protected'])
+
+    def test_non_action_projects_are_not_protected(self):
+        response = self.get_request(alice, pk=self.project.pk)
+        self.assertFalse(response.context_data['protected'])
+
 
 class CreateProjectViewTests(ViewTestCase):
     def setUp(self):
@@ -600,6 +609,16 @@ class EditProjectViewTests(ViewTestCase):
         response = self.get_request(bob, pk=self.project.pk)
         self.assertEqual(response.status_code, 403)
 
+    def test_returns_403_when_trying_to_edit_action_project_with_get(self):
+        project = models.get_user_action_project(alice)
+        response = self.get_request(alice, pk=project.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_returns_403_when_trying_to_edit_action_project_with_post(self):
+        project = models.get_user_action_project(alice)
+        response = self.post_request(alice, pk=project.pk)
+        self.assertEqual(response.status_code, 403)
+
 
 class DeleteProjectViewTests(ViewTestCase):
     def setUp(self):
@@ -634,6 +653,16 @@ class DeleteProjectViewTests(ViewTestCase):
 
     def test_returns_403_when_wrong_user_requests_page_with_post(self):
         response = self.post_request(bob, pk=self.project.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_returns_403_when_deleting_users_action_project_with_get(self):
+        response = self.get_request(alice,
+            pk=models.get_user_action_project(alice).pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_returns_403_when_deleting_users_action_project_with_post(self):
+        response = self.post_request(alice,
+            pk=models.get_user_action_project(alice).pk)
         self.assertEqual(response.status_code, 403)
 
 

@@ -398,3 +398,33 @@ class ActionPageTests(FunctionalTestCase):
         body_text = self.browser.find_element_by_tag_name('body').text
         self.assertIn('403', body_text)
         self.assertIn('Forbidden', body_text)
+
+    def test_cannot_delete_action_project(self):
+        # Alice is a user who logs in and goes to the action project
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She sees that there is no delete button on the page
+        action_page = pages.projects.ProjectPage(self.browser)
+        self.assertIsNone(action_page.delete)
+
+        # Going to the delete page directly shows a 403 Forbidden error
+        self.browser.get(self.browser.current_url + 'delete/')
+        self.assertIn('403', page.body.text)
+        self.assertIn('Forbidden', page.body.text)
+
+    def test_cannot_edit_action_project(self):
+        # Alice is a user who logs in and goes to the action project
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She sees that there is no edit button on the page
+        action_page = pages.projects.ProjectPage(self.browser)
+        self.assertIsNone(action_page.edit)
+
+        # Going to the edit page directly shows a 403 Forbidden error
+        self.browser.get(self.browser.current_url + 'edit/')
+        self.assertIn('403', page.body.text)
+        self.assertIn('Forbidden', page.body.text)
