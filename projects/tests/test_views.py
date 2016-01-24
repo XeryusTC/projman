@@ -3,12 +3,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import resolve, reverse
 from django.http.response import Http404
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.utils.html import escape
 import unittest
 from unittest.mock import Mock, patch
 
 from projects import factories, forms, models, views
+from common.tests import ViewTestCase
 
 User = get_user_model()
 alice = None
@@ -22,24 +23,6 @@ def setUpModule():
 def tearDownModule():
     alice.delete()
     bob.delete()
-
-class ViewTestCase(TestCase):
-    factory = RequestFactory()
-
-    def get_request(self, user, url=None, **kwargs):
-        if url == None:
-            url = self.url
-        request = self.factory.get(self.url)
-        request.user = user
-        return self.view(request, url, **kwargs)
-
-    def post_request(self, user, data={}, url=None, **kwargs):
-        if url == None:
-            url = self.url
-        request = self.factory.post(self.url, data)
-        request.user = user
-        return self.view(request, url, **kwargs)
-
 
 class TestMainPage(TestCase):
     def test_mainpage_url_resolves_to_mainpage_view(self):
