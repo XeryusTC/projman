@@ -52,6 +52,10 @@
 				</div>
 				<div class="mui-col-xs-6 mui-col-sm-11 mui--text-right">
 					{% block appbar %}{% endblock %}
+					<a class="mui-btn" href="{% url 'settings:main' %}">
+						{% trans 'Settings' %}
+						<span class="fa fa-cog"></span>
+					</a>
 					<a class="mui-btn" href="{% url 'account_logout' %}">
 						{% trans 'Log out' %}
 						<span class="fa fa-sign-out"></span>

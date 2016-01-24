@@ -2,3 +2,4 @@
 from .accounts import *
 from .landingpage import *
 from .projects import *
+from .settings import *
