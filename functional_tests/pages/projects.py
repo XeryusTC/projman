@@ -14,6 +14,7 @@ class BaseProjectPage(PageObject):
     inlist_link = PageElement(link_text='In list', context=True)
     action_link = PageElement(link_text='Actions', context=True)
     create_project_link = PageElement(link_text='Create project', context=True)
+    settings_link = PageElement(link_text='SETTINGS')
 
     _project_links = MultiPageElement(css="a.project", context=True)
     def project_link(self, text):
