@@ -37,3 +37,18 @@ class SettingsViewTest(ViewTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRegex(response.url,
             r'/en(-us)?/accounts/login/\?next=' + self.url)
+
+    def test_uses_settings_form(self):
+        response = self.get_request(alice)
+        self.assertIsInstance(response.context_data['form'],
+            forms.SettingsForm)
+
+    def test_POST_redirects_to_main_settings_view(self):
+        response = self.post_request(alice, {'language': 'en'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.url)
+
+    def test_POST_request_can_change_users_language_setting(self):
+        self.assertEqual(alice.settings.language, 'en')
+        self.post_request(alice, {'language', 'nl'})
+        self.assertEqual(alice.settings.language, 'nl')
