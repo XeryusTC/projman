@@ -16,4 +16,8 @@ server {
 		proxy_redirect off;
 		proxy_pass http://unix:/tmp/SITENAME.socket;
 	}
+
+	error_page 403 = /403/;
+	error_page 404 = /404/;
+	error_page 500 502 503 504 = /500/;
 }
