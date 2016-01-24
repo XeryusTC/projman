@@ -74,10 +74,7 @@ class ActionCompleteView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         item = get_object_or_404(models.ActionlistItem, pk=self.kwargs['pk'])
-        if item.project:
-            return reverse('projects:project', kwargs={'pk': item.project.pk})
-        else:
-            return reverse('projects:actionlist')
+        return reverse('projects:project', kwargs={'pk': item.project.pk})
 
     def form_valid(self, form):
         form.save(models.ActionlistItem.objects.get(pk=self.kwargs['pk']),
@@ -222,8 +219,6 @@ class MoveActionView(LoginRequiredMixin, UpdateView):
     context_object_name = 'action'
 
     def get_success_url(self):
-        if self.old_project == None:
-            return reverse('projects:actionlist')
         return reverse('projects:project', kwargs={'pk': self.old_project.pk})
 
     def post(self, *args, **kwargs):

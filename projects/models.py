@@ -28,15 +28,15 @@ class ActionlistItem(models.Model):
         related_name='action_list')
 
     def clean(self):
-        # Do not allow the user field to be different than the project's
-        # user field
-        if self.project != None and self.user != self.project.user:
-            raise ValidationError(INVALID_USER_ERROR)
-
         # Make the default project the user's Actions project
         if self.project == None:
             self.project = Project.objects.get(user=self.user,
                 name=ACTION_PROJECT_NAME)
+
+        # Do not allow the user field to be different than the project's
+        # user field
+        if self.user != self.project.user:
+            raise ValidationError(INVALID_USER_ERROR)
 
         # Validate that two items on the list are not the same
         queryset = ActionlistItem.objects.exclude(pk=self.pk).filter(
