@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans '403 Forbidden' %}{% endblock %}
+
+{% block content %}
+<div class="mui-container-fluid">
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui--text-headline">
+			{% trans '403 Forbidden' %}
+		</div>
+	</div>
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			{% blocktrans %}You are not allowed to access {{ request_path }}.
+			{% endblocktrans %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

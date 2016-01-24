@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans '404 Not Found' %}{% endblock %}
+
+{% block content %}
+<div class="mui-container-fluid">
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui--text-headline">
+			{% trans '404 Not Found' %}
+		</div>
+	</div>
+	<div class="mui-row">
+		<div class="mui-col-xs-12">
+			{% blocktrans %}The page {{ request_path }} could not be found.
+			{% endblocktrans %}
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+import django.views.defaults as default_views
 
 import allauth.urls
 import projects.urls
@@ -30,4 +31,7 @@ urlpatterns += i18n_patterns(
     url(r'^accounts/', include(allauth.urls)),
     url(r'^projects/', include(projects.urls, namespace='projects')),
     url(r'^$', LandingView.as_view(), name='landingpage'),
+
+    url('^403/$', default_views.permission_denied),
+    url('^500/$', default_views.server_error),
 )
