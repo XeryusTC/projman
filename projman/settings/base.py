@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'landing',
     'functional_tests',
     'projects',
+    'settings',
 
     # external apps
     'crispy_forms',

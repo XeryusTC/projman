@@ -20,6 +20,7 @@ import django.views.defaults as default_views
 
 import allauth.urls
 import projects.urls
+import settings.urls
 
 from landing.views import LandingView
 
@@ -31,6 +32,7 @@ urlpatterns += i18n_patterns(
     url(r'^accounts/', include(allauth.urls)),
     url(r'^projects/', include(projects.urls, namespace='projects')),
     url(r'^$', LandingView.as_view(), name='landingpage'),
+    url(r'^settings/', include(settings.urls, namespace='settings')),
 
     url('^403/$', default_views.permission_denied),
     url('^500/$', default_views.server_error),
