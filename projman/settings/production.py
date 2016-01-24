@@ -59,9 +59,11 @@ EMAIL_USE_TLS = True
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
-# Currently disabled since we don't have staging specific settings yet
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 try:
     from .admins import ADMINS
