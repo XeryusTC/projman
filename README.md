@@ -81,6 +81,13 @@ will still be generated but not uploaded. They are stored in
 edit them before uploading them to the server, just make sure that you
 place the right files in the right location.
 
+Finally you should copy the file `deploy/admins.py-example` to
+`projman/settings/admins.py` and update the setting in that file
+according to the
+[ADMINS setting](https://docs.djangoproject.com/en/1.8/ref/settings/#std:setting-ADMINS).
+While it is not necessary to do this it is useful to be notified of
+errors by email.
+
 ## Deployment
 
 Deployment consists of updating the source, some files and applying the

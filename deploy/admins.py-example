@@ -1,0 +1,2 @@
+# -*- coding: utf-8 -*-
+ADMINS = (('John Doe', 'john@example.com'),)

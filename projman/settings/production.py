@@ -60,5 +60,11 @@ EMAIL_USE_TLS = True
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
 # Currently disabled since we don't have staging specific settings yet
-#SESSION_COOKIE_SECURE = True
-#CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+try:
+    from .admins import ADMINS
+except ImportError:
+    # No admins have been configured, ignore them
+    pass
