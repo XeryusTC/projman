@@ -3,4 +3,4 @@
 from page_objects import PageObject, PageElement
 
 class SettingsPage(PageObject):
-    pass
+    return_link = PageElement(css='a.mui--text-title.appbar-correct')

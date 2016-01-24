@@ -1,0 +1,19 @@
+{% extends 'html.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans 'Settings' %}{%endblock %}
+
+{% block body %}
+<header id="header">
+	<div class="mui-appbar mui--appbar-line-height">
+		<div class="mui-container-fluid">
+			<div class="mui-row">
+				<div class="mui-col-xs-4">
+					<a class="mui--text-title appbar-correct"
+						href="{% url 'projects:main' %}">{{ site.name }}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+{% endblock %}
