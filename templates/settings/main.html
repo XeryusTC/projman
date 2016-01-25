@@ -1,1 +1,8 @@
 {% extends 'settings/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="mui-container">
+	{% crispy form %}
+</div>
+{% endblock %}

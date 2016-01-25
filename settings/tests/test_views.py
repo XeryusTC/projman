@@ -4,6 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import resolve, reverse
 
 from common.tests import ViewTestCase
+from settings import forms
 from settings import views
 
 User = get_user_model()
@@ -20,6 +21,7 @@ class SettingsViewTest(ViewTestCase):
     def setUp(self):
         self.url = reverse('settings:main')
         self.view = views.SettingsMainView.as_view()
+        alice.settings.language = 'en-us'
 
     def test_settings_base_url_resolves_to_settings_main_view(self):
         found = resolve(self.url)
@@ -49,6 +51,10 @@ class SettingsViewTest(ViewTestCase):
         self.assertEqual(response.url, self.url)
 
     def test_POST_request_can_change_users_language_setting(self):
-        self.assertEqual(alice.settings.language, 'en')
-        self.post_request(alice, {'language', 'nl'})
+        self.assertEqual(alice.settings.language, 'en-us')
+        self.post_request(alice, {'language': 'nl'})
         self.assertEqual(alice.settings.language, 'nl')
+
+    def test_form_instance_user_is_requesting_user(self):
+        response = self.get_request(alice)
+        self.assertEqual(response.context_data['form'].instance.user, alice)
