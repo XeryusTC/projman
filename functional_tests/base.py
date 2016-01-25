@@ -74,7 +74,10 @@ class FunctionalTestCase(StaticLiveServerTestCase):
             user = username
         else:
             user = User.objects.create_user(username, email, password)
-        # Log in via the normal workflow
+        self.login_user(username, password)
+        return user
+
+    def login_user(self, username, password):
         self.browser.get(self.server_url)
         landingpage = pages.landingpage.LandingPage(self.browser)
         landingpage.body_signin.click()
@@ -82,7 +85,7 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         loginpage.username.send_keys(username)
         loginpage.password.send_keys(password)
         loginpage.signin.click()
-        return user
+
 
     def is_logged_in(self):
         self.assertTrue(self.browser.current_url.endswith('/projects/'))

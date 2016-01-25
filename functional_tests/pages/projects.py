@@ -5,16 +5,16 @@ from selenium.webdriver.support.ui import Select
 class BaseProjectPage(PageObject):
     body    = PageElement(tag_name='body')
     content = PageElement(id_='content')
-    logout  = PageElement(link_text='LOG OUT')
+    logout  = PageElement(name='logout')
     overlay = PageElement(id_='mui-overlay')
     sidebar = PageElement(id_="sidebar")
     sidebar_hide = PageElement(class_name='js-hide-sidebar')
     sidebar_show = PageElement(class_name='js-show-sidebar')
 
-    inlist_link = PageElement(link_text='In list', context=True)
+    inlist_link = PageElement(name='inlist_link', context=True)
     action_link = PageElement(link_text='Actions', context=True)
     create_project_link = PageElement(link_text='Create project', context=True)
-    settings_link = PageElement(link_text='SETTINGS')
+    settings_link = PageElement(name='settings')
 
     _project_links = MultiPageElement(css="a.project", context=True)
     def project_link(self, text):

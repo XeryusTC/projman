@@ -15,7 +15,7 @@
 	<div class="mui-divider"></div>
 	<ul>
 		<li>
-			<a class="sidebar-mainlink"
+			<a class="sidebar-mainlink" name="inlist_link"
 				href="{% url 'projects:inlist' %}">{% trans 'In list' %}</a>
 		</li>
 		<li>
@@ -52,11 +52,13 @@
 				</div>
 				<div class="mui-col-xs-6 mui-col-sm-11 mui--text-right">
 					{% block appbar %}{% endblock %}
-					<a class="mui-btn" href="{% url 'settings:main' %}">
+					<a class="mui-btn" href="{% url 'settings:main' %}"
+						name="settings">
 						{% trans 'Settings' %}
 						<span class="fa fa-cog"></span>
 					</a>
-					<a class="mui-btn" href="{% url 'account_logout' %}">
+					<a class="mui-btn" href="{% url 'account_logout' %}"
+						name="logout">
 						{% trans 'Log out' %}
 						<span class="fa fa-sign-out"></span>
 					</a>
