@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-01 20:48+0000\n"
+"POT-Creation-Date: 2016-01-26 19:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,7 +58,7 @@ msgstr "Wat moet er gebeuren?"
 msgid "Convert"
 msgstr "Converteren"
 
-#: projects/forms.py:123 templates/projects/base.html:28
+#: projects/forms.py:123 templates/projects/base.html:24
 #: templates/projects/create_project.html:5
 #: templates/projects/create_project.html:8
 msgid "Create project"
@@ -74,10 +74,6 @@ msgstr "Project bijwerken"
 msgid "Move action"
 msgstr "Converteer naar actie"
 
-#: projects/forms.py:171 templates/projects/base.html:23
-msgid "Actions"
-msgstr "Acties"
-
 #: projects/models.py:7
 #, fuzzy
 #| msgid "You've already got this on your list"
@@ -88,13 +84,52 @@ msgstr "Je hebt dit al op je lijst staan"
 msgid "Actions and projects must belong to the same user."
 msgstr "De eigenaar van acties en projecten moeten hetzelfde zijn."
 
-#: projman/settings/base.py:120
+#: projman/settings/base.py:121
 msgid "English"
 msgstr "Engels"
 
-#: projman/settings/base.py:121
+#: projman/settings/base.py:122
 msgid "Dutch"
 msgstr "Nederlands"
+
+#: settings/forms.py:13
+msgid "Save"
+msgstr "Opslaan"
+
+#: settings/forms.py:19
+msgid "Language"
+msgstr "Taal"
+
+#: templates/403.html:4 templates/403.html.py:10
+msgid "403 Forbidden"
+msgstr ""
+
+#: templates/403.html:15
+#, fuzzy, python-format
+#| msgid "You are not allowed to do this"
+msgid ""
+"You are not allowed to access %(request_path)s.\n"
+"\t\t\t"
+msgstr "Je hebt geen toestemming om dit te doen"
+
+#: templates/404.html:4 templates/404.html.py:10
+msgid "404 Not Found"
+msgstr ""
+
+#: templates/404.html:15
+#, python-format
+msgid ""
+"The page %(request_path)s could not be found.\n"
+"\t\t\t"
+msgstr ""
+
+#: templates/500.html:4 templates/500.html.py:10
+msgid "500 Internal Server Error"
+msgstr ""
+
+#: templates/500.html:15
+msgid "An error occured while generating this page"
+msgstr ""
 
 #: templates/account/email_confirm.html:6
 #: templates/account/email_confirm.html:8
@@ -293,10 +328,6 @@ msgstr ""
 "link in die e-mail om je inschrijving compleet te maken. Neem contact met "
 "ons op als je binnen een paar minuten geen email hebt gekregen."
 
-#: templates/projects/actionlist.html:11
-msgid "Action list"
-msgstr "Actie lijst"
-
 #: templates/projects/actionlistitem_confirm_delete.html:4
 msgid "Delete action"
 msgstr "Verwijder actie"
@@ -330,7 +361,11 @@ msgstr ""
 msgid "In list"
 msgstr "In lijst"
 
-#: templates/projects/base.html:60
+#: templates/projects/base.html:57 templates/settings/base.html:4
+msgid "Settings"
+msgstr "Instellingen"
+
+#: templates/projects/base.html:62
 msgid "Log out"
 msgstr "Afmelden"
 
@@ -404,5 +439,11 @@ msgstr "Verwijder %(name)s"
 #| "from your in list?"
 msgid "Are you sure you want to remove the item \"%(project)s\"?\n"
 msgstr ""
-"Weet je zeker dat je het item \"%(inlistitem)s\" van je in lijst "
-"wilt verwijderen?"
+"Weet je zeker dat je het item \"%(inlistitem)s\" van je in lijst wilt "
+"verwijderen?"
+
+#~ msgid "Actions"
+#~ msgstr "Acties"
+
+#~ msgid "Action list"
+#~ msgstr "Actie lijst"

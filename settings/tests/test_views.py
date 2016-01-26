@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import resolve, reverse
+from django.utils import translation
+from unittest.mock import patch
 
 from common.tests import ViewTestCase
 from settings import forms
@@ -19,9 +22,15 @@ def tearDownModule():
 
 class SettingsViewTest(ViewTestCase):
     def setUp(self):
+        # Reset the language
+        alice.settings.language = settings.LANGUAGE_CODE
+        translation.activate('en-us')
+
         self.url = reverse('settings:main')
         self.view = views.SettingsMainView.as_view()
-        alice.settings.language = 'en-us'
+
+    def tearDown(self):
+        translation.deactivate()
 
     def test_settings_base_url_resolves_to_settings_main_view(self):
         found = resolve(self.url)
@@ -48,7 +57,7 @@ class SettingsViewTest(ViewTestCase):
     def test_POST_redirects_to_main_settings_view(self):
         response = self.post_request(alice, {'language': 'en'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, self.url)
+        self.assertRegex(response.url, r'/en(-us)?/settings/')
 
     def test_POST_request_can_change_users_language_setting(self):
         self.assertEqual(alice.settings.language, 'en-us')
@@ -58,3 +67,8 @@ class SettingsViewTest(ViewTestCase):
     def test_form_instance_user_is_requesting_user(self):
         response = self.get_request(alice)
         self.assertEqual(response.context_data['form'].instance.user, alice)
+
+    @patch('settings.views.translation.activate')
+    def test_POST_request_activates_appropriate_language(self, mock_activate):
+        self.post_request(alice, {'language': 'nl'})
+        mock_activate.assert_called_once_with('nl')

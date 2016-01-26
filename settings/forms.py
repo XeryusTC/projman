@@ -15,3 +15,6 @@ class SettingsForm(forms.ModelForm):
     class Meta:
         model = models.Settings
         exclude = ('user',)
+        labels = {
+            'language': _('Language'),
+        }
