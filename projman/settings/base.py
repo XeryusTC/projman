@@ -136,7 +136,7 @@ STATICFILES_DIRS = (
 )
 
 # Allauth related
-LOGIN_REDIRECT_URL = "projects:main"
+LOGIN_REDIRECT_URL = "settings:set_language"
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',

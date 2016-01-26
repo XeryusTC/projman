@@ -72,3 +72,50 @@ class SettingsViewTest(ViewTestCase):
     def test_POST_request_activates_appropriate_language(self, mock_activate):
         self.post_request(alice, {'language': 'nl'})
         mock_activate.assert_called_once_with('nl')
+
+
+class SetLanguageViewTests(ViewTestCase):
+    def setUp(self):
+        self.url = reverse('settings:set_language')
+        self.view = views.SetLanguageView.as_view()
+
+    def test_set_language_url_resolves_to_set_language_view(self):
+        found = resolve(self.url)
+        self.assertEqual(found.func.__name__, self.view.__name__)
+
+    def test_redirects_to_projects_main_view(self):
+        response = self.get_request(alice)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('projects:main'))
+
+    @patch('settings.views.translation.activate')
+    def test_changes_active_language(self, mock_activate):
+        alice.settings.language = 'nl'
+        self.get_request(alice)
+        mock_activate.assert_called_once_with('nl')
+
+    def test_sets_language_in_session(self):
+        alice.settings.language = 'nl'
+        request = self.factory.get(self.url)
+        request.user = alice
+        request.session = {}
+
+        self.view(request, self.url)
+
+        self.assertEqual(request.session[translation.LANGUAGE_SESSION_KEY],
+            alice.settings.language)
+
+    @patch('settings.views.translation.activate')
+    def test_can_deal_with_overly_specific_languages(self, mock_activate):
+        """
+        Language codes like en-us should be converted to more generic ones
+        when they are not directly supported
+        """
+        alice.settings.language = 'nl-su' # Overly specific (for now)
+
+        request = self.get_request(alice)
+
+        mock_activate.assert_called_once_with('nl')
+
+    def test_view_is_used_when_user_logs_in(self):
+        self.assertEqual(settings.LOGIN_REDIRECT_URL, "settings:set_language")
