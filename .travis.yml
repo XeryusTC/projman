@@ -28,6 +28,8 @@ before_script:
     - "sh -e /etc/init.d/xvfb start"
     - sleep 3 # allow xvfb some time to start
 script:
+    # All translations should compile without problems
+    - python manage.py compilemessages
     - coverage run -p manage.py test landing
     - coverage run -p manage.py test projects
     - coverage run -p manage.py test settings
