@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-26 19:54+0000\n"
+"POT-Creation-Date: 2016-01-26 23:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,7 +102,7 @@ msgstr "Taal"
 
 #: templates/403.html:4 templates/403.html.py:10
 msgid "403 Forbidden"
-msgstr ""
+msgstr "403 Verboden"
 
 #: templates/403.html:15
 #, fuzzy, python-format
@@ -114,22 +114,22 @@ msgstr "Je hebt geen toestemming om dit te doen"
 
 #: templates/404.html:4 templates/404.html.py:10
 msgid "404 Not Found"
-msgstr ""
+msgstr "404 Niet gevonden"
 
 #: templates/404.html:15
 #, python-format
 msgid ""
 "The page %(request_path)s could not be found.\n"
 "\t\t\t"
-msgstr ""
+msgstr "De pagina %(request_path)s kon niet worden gevonden."
 
 #: templates/500.html:4 templates/500.html.py:10
 msgid "500 Internal Server Error"
-msgstr ""
+msgstr "500 Interne Server Fout"
 
 #: templates/500.html:15
 msgid "An error occured while generating this page"
-msgstr ""
+msgstr "Er is een fout opgetreden tijdens het genereren van deze pagina"
 
 #: templates/account/email_confirm.html:6
 #: templates/account/email_confirm.html:8
