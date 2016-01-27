@@ -5,8 +5,6 @@ from django.core.urlresolvers import resolve, reverse
 from django.http.response import Http404
 from django.test import TestCase
 from django.utils.html import escape
-import unittest
-from unittest.mock import Mock, patch
 
 from projects import factories, forms, models, views
 from common.tests import ViewTestCase

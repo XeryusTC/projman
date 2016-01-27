@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import ButtonHolder, Div, Field, Layout, Submit
+from crispy_forms.layout import ButtonHolder, Div, Layout, Submit
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.utils.translation import ugettext_lazy as _

@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 from braces.views import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
-from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (TemplateView, FormView, DeleteView,
-    UpdateView, CreateView, DetailView)
+    UpdateView, DetailView)
 from django.views.generic.edit import FormMixin
 from django.views.defaults import permission_denied
 

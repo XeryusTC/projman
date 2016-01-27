@@ -6,7 +6,6 @@ from django.utils import translation
 from django.views import generic as cbv
 
 from settings import forms
-from settings import models
 
 class SettingsMainView(LoginRequiredMixin, cbv.UpdateView):
     template_name = 'settings/main.html'
