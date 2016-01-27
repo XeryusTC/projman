@@ -49,7 +49,6 @@ class SettingsTests(TestCase):
     def test_inlist_delete_confirm_field_can_be_false(self):
         alice.settings.inlist_delete_confirm = False
         alice.settings.save()
-        alice.settings.inlist_delete_confirm = True # Reset value
 
     def test_action_delete_confirm_is_true_by_default(self):
         self.assertTrue(alice.settings.inlist_delete_confirm)
@@ -57,7 +56,6 @@ class SettingsTests(TestCase):
     def test_action_delete_confirm_can_be_false(self):
         alice.settings.action_delete_confirm = False
         alice.settings.save()
-        alice.settings.action_delete_confirm = True
 
     def test_string_representation(self):
         self.assertEqual(str(alice.settings), "alice's settings")
