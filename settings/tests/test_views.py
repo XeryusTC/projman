@@ -25,6 +25,8 @@ class SettingsViewTest(ViewTestCase):
         # Reset the language
         alice.settings.language = settings.LANGUAGE_CODE
         translation.activate('en-us')
+        # Reset other settings
+        alice.settings.inlist_delete_confirm = True
 
         self.url = reverse('settings:main')
         self.view = views.SettingsMainView.as_view()
@@ -72,6 +74,11 @@ class SettingsViewTest(ViewTestCase):
     def test_POST_request_activates_appropriate_language(self, mock_activate):
         self.post_request(alice, {'language': 'nl'})
         mock_activate.assert_called_once_with('nl')
+
+    def test_POST_request_can_change_users_inlist_delete_confirm_setting(self):
+        self.assertTrue(alice.settings.inlist_delete_confirm)
+        self.post_request(alice, {'language': 'en'})
+        self.assertFalse(alice.settings.inlist_delete_confirm)
 
 
 class SetLanguageViewTests(ViewTestCase):

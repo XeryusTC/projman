@@ -7,6 +7,7 @@ class Settings(models.Model):
         related_name='settings')
     language = models.CharField(max_length=5, choices=settings.LANGUAGES,
         default=settings.LANGUAGE_CODE)
+    inlist_delete_confirm = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.user) + "'s settings"

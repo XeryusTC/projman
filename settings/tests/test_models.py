@@ -32,5 +32,16 @@ class SettingsTests(TestCase):
     def test_settings_has_language_field(self):
         alice.settings.language
 
+    def test_settings_has_inlist_delete_confirm_field(self):
+        alice.settings.inlist_delete_confirm
+
+    def test_inlist_delete_confirm_field_is_true_by_default(self):
+        self.assertTrue(alice.settings.inlist_delete_confirm)
+
+    def test_inlist_delete_confirm_field_can_be_false(self):
+        alice.settings.inlist_delete_confirm = False
+        alice.settings.save()
+        alice.settings.inlist_delete_confirm = True # Reset value
+
     def test_string_representation(self):
         self.assertEqual(str(alice.settings), "alice's settings")

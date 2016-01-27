@@ -6,6 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from settings import models
 
+INLIST_DELETE_CONFIRM_LABEL = _('Ask for confirmation when deleting ' + \
+        'inlist item')
+
 class SettingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SettingsForm, self).__init__(*args, **kwargs)
@@ -17,4 +20,5 @@ class SettingsForm(forms.ModelForm):
         exclude = ('user',)
         labels = {
             'language': _('Language'),
+            'inlist_delete_confirm': INLIST_DELETE_CONFIRM_LABEL,
         }
