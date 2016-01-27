@@ -48,7 +48,19 @@
 			</div>
 			<div class="mui-col-xs-4">
 				{% url 'projects:delete_actionlist' item.pk as delete_url %}
-				{% include 'projects/buttons/delete.html' with url=delete_url only %}
+				{% if user.settings.action_delete_confirm %}
+					{% include 'projects/buttons/delete.html' with url=delete_url only %}
+				{% else %}
+					<form method="post" action="{{ delete_url }}"
+						class="button-form">
+						{% csrf_token %}
+						<button type="submit" title="{% trans 'Delete' %}"
+							class="mui-btn mui-btn--danger mui-btn--fab action-delete">
+							<span class="fa fa-trash fa-2x"></span>
+						</button>
+					</form>
+				{% endif %}
+
 				{% url 'projects:move_action' item.pk as move_url %}
 				{% include 'projects/buttons/move.html' with url=move_url only %}
 			</div>

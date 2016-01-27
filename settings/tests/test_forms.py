@@ -40,3 +40,18 @@ class SettingsFormTests(TestCase):
         form = forms.SettingsForm()
         self.assertEqual(form.fields['inlist_delete_confirm'].label,
             forms.INLIST_DELETE_CONFIRM_LABEL)
+
+    def test_can_change_action_delete_confirm(self):
+        user = User.objects.create_user('alice', 'alice@test.org', 'alice')
+        self.assertEqual(user.settings.action_delete_confirm, True)
+        form = forms.SettingsForm(data={'action_delete_confirm': False,
+            'language': 'nl'})
+        form.instance = user.settings
+
+        form.save()
+        self.assertFalse(user.settings.action_delete_confirm)
+
+    def test_action_delete_confirm_has_sensible_label(self):
+        form = forms.SettingsForm()
+        self.assertEqual(form.fields['action_delete_confirm'].label,
+            forms.ACTION_DELETE_CONFIRM_LABEL)

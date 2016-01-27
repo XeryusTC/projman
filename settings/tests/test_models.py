@@ -16,7 +16,15 @@ def setUpModule():
 def tearDownModule():
     alice.delete()
 
+def reset_user_settings(settings):
+    settings.language = 'en-us'
+    settings.inlist_delete_confirm = True
+    settings.action_delete_confirm = True
+
 class SettingsTests(TestCase):
+    def setUp(self):
+        reset_user_settings(alice.settings)
+
     def test_settings_has_user_field(self):
         models.Settings.objects.get(user=alice)
 
@@ -42,6 +50,14 @@ class SettingsTests(TestCase):
         alice.settings.inlist_delete_confirm = False
         alice.settings.save()
         alice.settings.inlist_delete_confirm = True # Reset value
+
+    def test_action_delete_confirm_is_true_by_default(self):
+        self.assertTrue(alice.settings.inlist_delete_confirm)
+
+    def test_action_delete_confirm_can_be_false(self):
+        alice.settings.action_delete_confirm = False
+        alice.settings.save()
+        alice.settings.action_delete_confirm = True
 
     def test_string_representation(self):
         self.assertEqual(str(alice.settings), "alice's settings")

@@ -9,6 +9,7 @@ from unittest.mock import patch
 from common.tests import ViewTestCase
 from settings import forms
 from settings import views
+from settings.tests.test_models import reset_user_settings
 
 User = get_user_model()
 alice = None
@@ -22,11 +23,8 @@ def tearDownModule():
 
 class SettingsViewTest(ViewTestCase):
     def setUp(self):
-        # Reset the language
-        alice.settings.language = settings.LANGUAGE_CODE
-        translation.activate('en-us')
-        # Reset other settings
-        alice.settings.inlist_delete_confirm = True
+        reset_user_settings(alice.settings)
+        translation.activate(alice.settings.language)
 
         self.url = reverse('settings:main')
         self.view = views.SettingsMainView.as_view()
@@ -79,6 +77,23 @@ class SettingsViewTest(ViewTestCase):
         self.assertTrue(alice.settings.inlist_delete_confirm)
         self.post_request(alice, {'language': 'en'})
         self.assertFalse(alice.settings.inlist_delete_confirm)
+
+    def test_POST_request_can_change_users_inlist_delete_confirm_setting2(self):
+        alice.settings.inlist_delete_confirm = False
+        self.post_request(alice, {'language': 'en',
+            'inlist_delete_confirm': True})
+        self.assertTrue(alice.settings.inlist_delete_confirm)
+
+    def test_POST_request_can_change_users_inlist_delete_confirm_setting(self):
+        self.assertTrue(alice.settings.action_delete_confirm)
+        self.post_request(alice, {'language': 'en'})
+        self.assertFalse(alice.settings.action_delete_confirm)
+
+    def test_POST_request_can_change_users_inlist_delete_confirm_setting2(self):
+        alice.settings.action_delete_confirm = False
+        self.post_request(alice, {'language': 'en',
+            'action_delete_confirm': True})
+        self.assertTrue(alice.settings.action_delete_confirm)
 
 
 class SetLanguageViewTests(ViewTestCase):

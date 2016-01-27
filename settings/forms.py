@@ -8,6 +8,7 @@ from settings import models
 
 INLIST_DELETE_CONFIRM_LABEL = _('Ask for confirmation when deleting ' + \
         'inlist item')
+ACTION_DELETE_CONFIRM_LABEL = _('Ask for confirmation when deleting actions')
 
 class SettingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -21,4 +22,5 @@ class SettingsForm(forms.ModelForm):
         labels = {
             'language': _('Language'),
             'inlist_delete_confirm': INLIST_DELETE_CONFIRM_LABEL,
+            'action_delete_confirm': ACTION_DELETE_CONFIRM_LABEL,
         }
