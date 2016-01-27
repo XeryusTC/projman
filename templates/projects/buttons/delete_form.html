@@ -1,0 +1,8 @@
+{% load i18n %}
+<form method="post" action="{{ url }}" class="button-form">
+	{% csrf_token %}
+	<button type="submit" title="{% trans 'Delete' %}"
+		class="mui-btn mui-btn--danger mui-btn--fab {% firstof action "action-delete" %}">
+		<span class="fa fa-trash fa-2x"></span>
+	</button>
+</form>

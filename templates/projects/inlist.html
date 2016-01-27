@@ -17,25 +17,14 @@
 			{% if user.settings.inlist_delete_confirm %}
 				{% include 'projects/buttons/delete.html' with url=delete_url only %}
 			{% else %}
-				<form method="post" action="{{ delete_url }}"
-					class="button-form">
-					{% csrf_token %}
-					<button type="submit" title="{% trans 'Delete' %}"
-						class="mui-btn mui-btn--danger mui-btn--fab action-delete">
-						<span class="fa fa-trash fa-2x"></span>
-					</button>
-				</form>
+				{% include 'projects/buttons/delete_form.html' with url=delete_url %}
 			{% endif %}
-			<a class="mui-btn mui-btn--fab action-convert"
-				href="{% url 'projects:convert_inlist_action' item.pk %}"
-				title="{% trans 'Convert to action' %}">
-				<span class="fa fa-gavel fa-2x"></span>
-			</a>
-			<a class="mui-btn mui-btn--fab action-project"
-				href="{% url 'projects:convert_inlist_project' item.pk %}"
-				title="{% trans 'Convert to project' %}">
-				<span class="fa fa-chevron-right fa-2x"></span>
-			</a>
+
+			{% url 'projects:convert_inlist_action' item.pk as convert_action_url %}
+			{% include 'projects/buttons/convert_inlist_action.html' with url=convert_action_url only %}
+			
+			{% url 'projects:convert_inlist_project' item.pk as convert_project_url %}
+			{% include 'projects/buttons/convert_inlist_project.html' with url=convert_project_url only %}
 		</div>
 	</div>
 {% endfor %}

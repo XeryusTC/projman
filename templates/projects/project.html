@@ -18,10 +18,8 @@
 		</div>
 		{% if not protected %}
 			<div class="mui-col-xs-12 mui-col-md-6">
-				<a class="action-edit mui-btn mui-btn--fab"
-					href="{% url 'projects:edit_project' project.pk %}">
-					<span class="fa fa-pencil fa-2x"></span>
-				</a>
+				{% url 'projects:edit_project' project.pk as edit_url %}
+				{% include 'projects/buttons/edit.html' with url=edit_url %}
 				{% url 'projects:delete' project.pk as delete_url %}
 				{% include 'projects/buttons/delete.html' with url=delete_url action="delete-project" only %}
 			</div>
@@ -51,14 +49,7 @@
 				{% if user.settings.action_delete_confirm %}
 					{% include 'projects/buttons/delete.html' with url=delete_url only %}
 				{% else %}
-					<form method="post" action="{{ delete_url }}"
-						class="button-form">
-						{% csrf_token %}
-						<button type="submit" title="{% trans 'Delete' %}"
-							class="mui-btn mui-btn--danger mui-btn--fab action-delete">
-							<span class="fa fa-trash fa-2x"></span>
-						</button>
-					</form>
+					{% include 'projects/buttons/delete_form.html' with url=delete_url %}
 				{% endif %}
 
 				{% url 'projects:move_action' item.pk as move_url %}
