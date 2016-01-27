@@ -39,3 +39,7 @@ a.appbar-correct {
 .checked .action-item:hover {
 	text-decoration: none;
 }
+
+form.button-form {
+	display: inline;
+}
