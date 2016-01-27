@@ -4,6 +4,8 @@ import unittest
 
 from .base import FunctionalTestCase
 from . import pages
+from . import remote
+import projects.factories
 
 class SettingsTests(FunctionalTestCase):
     def test_can_navigate_to_projects_from_settings(self):
@@ -124,3 +126,60 @@ class SettingsTests(FunctionalTestCase):
         self.assertNotEqual(self.browser.title, 'Delete in list item')
         self.assertEqual(self.browser.title, 'In list')
         self.assertEqual(len(inlist_page.listrows), 0)
+
+    def test_actionlist_delete_confirm(self):
+        # Alice is a user who logs into the website
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+
+        # She goes to the settings
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.settings_link.click()
+
+        # She sees an option that asks for confirmation when an action
+        # item gets deleted
+        settings_page = pages.settings.SettingsPage(self.browser)
+        self.assertTrue(settings_page.action_delete_confirm.is_selected())
+        self.assertIn('Ask for confirmation when deleting actions',
+            settings_page.content.text,)
+
+        # She switches it off and saves her settings
+        settings_page.action_delete_confirm.click()
+        settings_page.confirm.click()
+
+        # Alice goes to add an item to her actionlist
+        settings_page.return_link.click()
+        page.action_link(page.sidebar).click()
+        actionlist_page = pages.projects.ActionlistPage(self.browser)
+        actionlist_page.add_box.send_keys('Watch more series\n')
+
+        # Alice deletes the item
+        item = actionlist_page.get_list_rows(actionlist_page.thelist)[0]
+        item['delete'].click()
+
+        # The item gets deleted without going through the confirmation page
+        self.assertNotEqual(self.browser.title, 'Delete action')
+        self.assertEqual(self.browser.title, 'Actions')
+        self.assertEqual(len(actionlist_page.thelist), 0)
+
+        # She also has an action on a project
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Plan a rave', '')
+            remote.create_action(self.server_host, 'alice', 'Find a location',
+                'Plan a rave')
+        else:
+            p = projects.factories.ProjectFactory(user=user,
+                name='Plan a rave')
+            projects.factories.ActionlistItemFactory(user=user, project=p,
+                text='Find a location')
+        self.browser.refresh()
+
+        # She goess to delete the action from the project
+        page.project_link('Plan a rave').click()
+        project_page = pages.projects.ProjectPage(self.browser)
+        item = project_page.get_list_rows(project_page.thelist)[0]
+        item['delete'].click()
+
+        # This item also got deleted without needing confirmation
+        self.assertNotEqual(self.browser.title, 'Delete action')
+        self.assertEqual(self.browser.title, 'Plan a rave')
+        self.assertEqual(len(project_page.thelist), 0)
