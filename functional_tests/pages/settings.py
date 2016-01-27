@@ -4,6 +4,7 @@ from page_objects import PageObject, PageElement, MultiPageElement
 
 class SettingsPage(PageObject):
     return_link = PageElement(css='a.mui--text-title.appbar-correct')
+    inlist_delete_confirm = PageElement(name='inlist_delete_confirm')
     confirm     = PageElement(name='confirm')
 
     _settings_list = MultiPageElement(tag_name='label')

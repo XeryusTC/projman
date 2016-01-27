@@ -88,3 +88,39 @@ class SettingsTests(FunctionalTestCase):
             'instellingen')
         self.assertEqual('in lijst',
             project_page.inlist_link(project_page.sidebar).text.lower())
+
+    def test_inlist_delete_confirm(self):
+        """Test if the inlist confirm delete setting skips the confirm page"""
+        # Alice is a user who logs into the website
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+
+        # She goes to the settings
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.settings_link.click()
+
+        # Currently the option to ask for confirmation when inlist items
+        # are deleted is on
+        settings_page = pages.settings.SettingsPage(self.browser)
+        self.assertTrue(settings_page.inlist_delete_confirm.is_selected())
+
+        # She switches it off and saves her settings
+        settings_page.inlist_delete_confirm.click()
+        settings_page.confirm.click()
+
+        # Alice goes to add an item to her inlist
+        settings_page.return_link.click()
+        project_page.inlist_link(project_page.sidebar).click()
+        inlist_page = pages.projects.InlistPage(self.browser)
+        inlist_page.add_box.send_keys("Don't test the settings\n")
+
+        # Deciding that this is a stupid idea she deletes the item
+        self.assertIn("Don't test the settings",
+            [item.text for item in inlist_page.thelist])
+        item = inlist_page.listrows[0]
+        inlist_page.delete_item(item).click()
+
+        # She sees that she is not send to the confirm page but instead
+        # the item has just disapeared
+        self.assertNotEqual(self.browser.title, 'Delete in list item')
+        self.assertEqual(self.browser.title, 'In list')
+        self.assertEqual(len(inlist_page.listrows), 0)
