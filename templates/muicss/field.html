@@ -25,11 +25,19 @@
 					<div class="mui-textfield mui-textfield--float-label">
 				{% endif %}
 			{% endif %}
-			{{ field }}
+
+			{% if not field|is_select %}
+				{{ field }}
+			{% endif %}
+			{# field should come before select, but after other elements so #}
+			{# elements are ordered correctly and responsive if need be #}
 			{% if field.label %}
 				<label for="{{ field.id_for_label }}" tabindex="100">
 					{{ field.label }}
 				</label>
+			{% endif %}
+			{% if field|is_select %}
+				{{ field }}
 			{% endif %}
 			</div>
 		</div>
