@@ -11,7 +11,7 @@ def requirements():
     """Install all the software requirements that pip can't manage or
     that don't live in our virtualenv."""
     sudo('apt-get install nginx git python3 python3-pip \
-        postgresql-server-dev-9.4')
+        postgresql-server-dev-9.4 gettext')
     sudo('pip3 install virtualenv')
 
 def provision():
@@ -36,6 +36,7 @@ def update():
     deploy.deploy._get_latest_source(env, REPO_URL)
     deploy.deploy._update_virtualenv(env)
     deploy.deploy._update_static_files(env)
+    deploy.deploy._update_translations(env)
     deploy.deploy._update_database(env)
 
 def restart():

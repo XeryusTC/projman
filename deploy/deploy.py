@@ -29,3 +29,8 @@ def _update_database(env):
     with _enable_env_vars(env):
         run('cd {dir} && ../virtualenv/bin/python3 manage.py migrate \
                 --noinput'.format(dir=env.source_dir))
+
+def _update_translations(env):
+    with _enable_env_vars(env):
+        run('cd {} && ../virtualenv/bin/python3 manage.py compilemessages' \
+            .format(env.source_dir))

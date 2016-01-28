@@ -19,7 +19,7 @@ script. If you want to install them manually you can do so by running the
 following command:
 
 ```
-apt-get install nginx git python3 python3-pip postgresql-server-dev-9.4
+apt-get install nginx git python3 python3-pip postgresql-server-dev-9.4 gettext
 ```
 
 automatic installation can be done via
