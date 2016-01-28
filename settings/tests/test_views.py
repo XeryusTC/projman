@@ -84,12 +84,12 @@ class SettingsViewTest(ViewTestCase):
             'inlist_delete_confirm': True})
         self.assertTrue(alice.settings.inlist_delete_confirm)
 
-    def test_POST_request_can_change_users_inlist_delete_confirm_setting(self):
+    def test_POST_request_can_change_users_action_delete_confirm_setting(self):
         self.assertTrue(alice.settings.action_delete_confirm)
         self.post_request(alice, {'language': 'en'})
         self.assertFalse(alice.settings.action_delete_confirm)
 
-    def test_POST_request_can_change_users_inlist_delete_confirm_setting2(self):
+    def test_POST_request_can_change_users_action_delete_confirm_setting2(self):
         alice.settings.action_delete_confirm = False
         self.post_request(alice, {'language': 'en',
             'action_delete_confirm': True})
