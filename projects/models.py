@@ -26,6 +26,7 @@ class ActionlistItem(models.Model):
     complete = models.BooleanField(default=False, editable=False)
     project = models.ForeignKey('Project', default=None, null=True,
         related_name='action_list')
+    deadline = models.DateTimeField(default=None, null=True, blank=True)
 
     def clean(self):
         # Make the default project the user's Actions project

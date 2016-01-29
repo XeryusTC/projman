@@ -125,6 +125,14 @@ class ActionlistItemModelTest(TestCase):
         item2 = factories.ActionlistItemFactory(user=u, text='not dupe',
             project=projects[1])
 
+    def test_has_deadline_field(self):
+        item = ActionlistItem(text='test', user=u, deadline=None)
+        item.save()
+
+    def test_deadline_field_defaults_to_none(self):
+        item = factories.ActionlistItemFactory(user=u)
+        self.assertIsNone(item.deadline)
+
 
 class ProjectModelTests(TestCase):
     def test_default_name(self):

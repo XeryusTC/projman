@@ -721,3 +721,12 @@ class MoveActionViewTests(ViewTestCase):
 
         self.assertEqual(response.url, reverse('projects:project',
             kwargs={'pk': self.project.pk}))
+
+    def test_POST_request_can_update_action_deadline(self):
+        self.assertIsNone(self.action.deadline)
+        self.post_request(alice, {'deadline_0': '1970-01-01',
+            'deadline_1': '00:00:00', 'project': self.action.project.pk},
+            pk=self.action.pk)
+        self.action.refresh_from_db()
+        self.assertEqual(str(self.action.deadline),
+            '1970-01-01 00:00:00+00:00')

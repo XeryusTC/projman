@@ -388,3 +388,15 @@ class MoveActionFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors[NON_FIELD_ERRORS],
             [forms.DUPLICATE_MOVE_ERROR])
+
+    def test_can_change_deadline_on_action(self):
+        self.assertIsNone(self.action.deadline)
+        form = forms.MoveActionForm(instance=self.action,
+            data={'deadline_0': '1970-01-01', 'deadline_1': '00:00:00',
+            'project': self.action.project.pk})
+
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        self.assertEquals(str(self.action.deadline),
+            '1970-01-01 00:00:00+00:00')

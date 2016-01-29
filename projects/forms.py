@@ -160,6 +160,8 @@ class EditProjectForm(forms.ModelForm):
 
 
 class MoveActionForm(forms.ModelForm):
+    deadline = forms.SplitDateTimeField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(MoveActionForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -180,4 +182,4 @@ class MoveActionForm(forms.ModelForm):
 
     class Meta:
         model = models.ActionlistItem
-        fields = ('project',)
+        fields = ('project', 'deadline')
