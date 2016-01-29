@@ -729,6 +729,39 @@ class ProjectsPageTests(FunctionalTestCase):
         self.assertIn('403', body_text)
         self.assertIn('Forbidden', body_text)
 
+    def test_accessing_other_persons_project_returns_404(self):
+        # Alice is a user with a project
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Secure the site',
+                'Test the site\'s security')
+        else:
+            factories.ProjectFactory(user=user, name='Secure the site',
+                description='Test the site\'s security')
+        self.browser.refresh()
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.project_link('Secure the site').click()
+
+        # Copy the url so Trudy can use it
+        project_page = pages.projects.ProjectPage(self.browser)
+        self.wait_for(lambda: self.assertIn('Test the site\'s security',
+            project_page.info.text))
+        project_url = self.browser.current_url
+
+        # Trudy is a different user who tries to access Alice's project
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
+
+        # Trudy enters the project url for Alice's project
+        self.browser.get(project_url)
+
+        # She is greeted with a 404 Not Found error
+        body_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('404', self.browser.title)
+        self.assertIn('404', body_text)
+        self.assertIn('Not Found', body_text)
+
     def test_project_action_items_do_not_show_on_action_list(self):
         # Alice is a user who creates a project
         self.create_and_login_user('alice', 'alice@test.org', 'alice')

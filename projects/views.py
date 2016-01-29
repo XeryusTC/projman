@@ -2,6 +2,7 @@
 from braces.views import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import (TemplateView, FormView, DeleteView,
     UpdateView, DetailView)
@@ -168,6 +169,14 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        project = get_object_or_404(models.Project, pk=self.kwargs['pk'])
+
+        # Need to check against AnonymousUser to not break LoginRequiredMixin
+        if project.user != request.user and request.user != AnonymousUser():
+            raise Http404()
+        return super(ProjectView, self).dispatch(request, *args, **kwargs)
 
 
 class EditProjectView(LoginRequiredMixin, UpdateView):

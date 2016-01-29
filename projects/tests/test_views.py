@@ -358,7 +358,7 @@ class ProjectViewTests(ViewTestCase):
         self.assertTemplateUsed(response, 'projects/project.html')
 
     def test_login_required(self):
-        response = self.get_request(AnonymousUser())
+        response = self.get_request(AnonymousUser(), pk=self.project.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
 
@@ -437,6 +437,14 @@ class ProjectViewTests(ViewTestCase):
     def test_non_action_projects_are_not_protected(self):
         response = self.get_request(alice, pk=self.project.pk)
         self.assertFalse(response.context_data['protected'])
+
+    def test_GET_request_shows_404_error_ion_wrong_user_request(self):
+        with self.assertRaises(Http404):
+            response = self.get_request(bob, pk=self.project.pk)
+
+    def test_POST_request_shows_404_error_on_wrong_user_request(self):
+        with self.assertRaises(Http404):
+            response = self.post_request(bob, pk=self.project.pk)
 
 
 class CreateProjectViewTests(ViewTestCase):
