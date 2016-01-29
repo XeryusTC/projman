@@ -38,7 +38,10 @@
 	{% for item in project.action_list.all %}
 		<div class="mui-row{% if item.complete %} checked{% endif %}">
 			<div class="mui-col-xs-12 mui-col-md-6 action-item full-height">
-				{{ item.text }}
+				<div class="action-text">{{ item.text }}</div>
+				{% if item.deadline != None %}
+					<div class="action-deadline">{{ item.deadline }}</div>
+				{% endif %}
 				<form method="post"
 					action="{% url 'projects:complete_action' item.pk %}">
 					{% csrf_token %}

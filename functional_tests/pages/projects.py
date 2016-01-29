@@ -67,9 +67,10 @@ class ProjectPage(PageObject):
     checked_list = MultiPageElement(css='#list .mui-row.checked')
     error_lists  = MultiPageElement(css='.errorlist')
 
-    _list_text   = PageElement(css='.action-item', context=True)
+    _list_text   = PageElement(css='.action-item .action-text', context=True)
     _delete_item = PageElement(class_name='action-delete', context=True)
     _move_item   = PageElement(class_name='action-move', context=True)
+    _item_deadline = PageElement(css='.action-deadline', context=True)
 
     def list_text(self, context):
         return [self._list_text(row).text for row in context]
@@ -80,8 +81,11 @@ class ProjectPage(PageObject):
             res[i] = {
                 'text':   self._list_text(context[i]),
                 'delete': self._delete_item(context[i]),
-                'move':   self._move_item(context[i]),
+                'edit':   self._move_item(context[i]),
+                'deadline': self._item_deadline(context[i]),
             }
+            # The following is for compatibility with older FTs
+            res[i]['move'] = res[i]['edit']
         return res
 ActionlistPage = ProjectPage
 
@@ -97,12 +101,16 @@ class ProjectDeletePage(PageObject):
     confirm = PageElement(xpath="//input[@value='Confirm']")
 
 
-class MoveActionPage(PageObject):
+class EditActionPage(PageObject):
     content = PageElement(id_='content')
     confirm = PageElement(name='move')
     form    = PageElement(tag_name='form')
+    deadline_date = PageElement(name='deadline_0')
+    deadline_time = PageElement(name='deadline_1')
 
     _select = PageElement(tag_name='select')
     @property
     def select(self):
         return Select(self._select)
+# Compatibility with FTs that test for the move button
+MoveActionPage = EditActionPage
