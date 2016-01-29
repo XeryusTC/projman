@@ -6,6 +6,8 @@ import unittest
 from .base import FunctionalTestCase
 from . import pages
 
+import projects.factories
+
 class ActionPageTests(FunctionalTestCase):
     def test_can_add_items_to_action_list(self):
         # Alice visits the website
@@ -430,3 +432,63 @@ class ActionPageTests(FunctionalTestCase):
         self.browser.get(self.browser.current_url + 'edit/')
         self.assertIn('403', page.body.text)
         self.assertIn('Forbidden', page.body.text)
+
+    def test_action_items_can_have_a_deadline(self):
+        # Alice is a user who has an item on her action list
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            create_project(self.server_host, 'alice', 'Edit action')
+        else:
+            projects.factories.ActionlistItemFactory(user=user,
+                text='Edit action')
+        page = pages.projects.BaseProjectPage(self.browser)
+        page.action_link(page.sidebar).click()
+
+        # She sees an edit button next to the item and clicks it
+        project_page = pages.projects.ProjectPage(self.browser)
+        item = project_page.get_list_rows(project_page.thelist)[0]
+        self.assertIsNone(item['deadline'])
+        item['edit'].click()
+
+        # She ends up on an edit action page
+        edit_page = pages.projects.EditActionPage(self.browser)
+        # The edit action page allows moving of the action
+        self.assertIsNotNone(edit_page.select)
+
+        # There is also a field to edit a date and time for a deadline
+        self.assertIn('Deadline', edit_page.content.text)
+        # She enters a date into the field and submits the form
+        edit_page.deadline_date.send_keys('1970-01-01')
+        edit_page.deadline_time.send_keys('00:00:00')
+        edit_page.confirm.click()
+
+        # Alice returns to the action list page, where the item has a
+        # deadline on it
+        item = project_page.get_list_rows(project_page.thelist)[0]
+        self.assertEqual('Jan. 1, 1970, midnight', item['deadline'].text)
+
+        # When she adds a second item it has no deadline on it
+        project_page.add_box.send_keys('Write a novel\n')
+        self.assertIn('Write a novel',
+            project_page.list_text(project_page.thelist))
+        actions = project_page.get_list_rows(project_page.thelist)
+        for idx, item in actions.items():
+            if item['text'].text == 'Write a novel':
+                break
+        self.assertIsNone(item['deadline'])
+
+        # Alice goes to enter a deadline for that item as well
+        item['edit'].click()
+        edit_page.deadline_date.send_keys('2000-01-01')
+        edit_page.deadline_time.send_keys('00:00:00\n')
+
+        # When she returns to the action list she sees that both items
+        # have different dates
+        actions = project_page.get_list_rows(project_page.thelist)
+        for idx, item in actions.items():
+            if item['text'].text == 'Edit action':
+                self.assertEqual('Jan. 1, 1970, midnight',
+                    item['deadline'].text)
+            elif item['text'].text == 'Write a novel':
+                self.assertEqual('Jan. 1, 2000, midnight',
+                    item['deadline'].text)
