@@ -46,7 +46,7 @@ class InlistItemDelete(LoginRequiredMixin, DeleteView):
         item = get_object_or_404(models.InlistItem, pk=self.kwargs['pk'])
         # Need to check against AnonymousUser to not break LoginRequiredMixin
         if request.user != item.user and request.user != AnonymousUser():
-            return permission_denied(request)
+            raise Http404()
         return super(InlistItemDelete, self).dispatch(request, *args, **kwargs)
 
 
@@ -61,7 +61,7 @@ class ActionlistItemDelete(LoginRequiredMixin, DeleteView):
         item = get_object_or_404(models.ActionlistItem, pk=self.kwargs['pk'])
         # Need to check against AnonymousUser to not break LoginRequiredMixin
         if request.user != item.user and request.user != AnonymousUser():
-            return permission_denied(request)
+            raise Http404()
         return super(ActionlistItemDelete, self).dispatch(request, *args, **kwargs)
 
 
@@ -93,7 +93,7 @@ class InlistItemToActionView(LoginRequiredMixin, FormView):
         # Test if the request came from the right user
         if request.user != self.inlist_item.user \
             and request.user != AnonymousUser():
-            return permission_denied(request)
+            raise Http404()
 
         return super(InlistItemToActionView, self).dispatch(request, *args,
             **kwargs)

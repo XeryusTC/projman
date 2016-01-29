@@ -340,7 +340,7 @@ class ActionPageTests(FunctionalTestCase):
         # She is now logged out and on the landing page again
         self.assertTrue(self.browser.current_url.endswith('/en/'))
 
-    def test_converting_other_persons_inlist_item_to_action_gives_403(self):
+    def test_converting_other_persons_inlist_item_to_action_gives_404(self):
         # Alice is a user who logs in and goes to the inlist page
         self.create_and_login_user('alice', 'alice@test.org', 'alice')
         page = pages.projects.BaseProjectPage(self.browser)
@@ -366,12 +366,13 @@ class ActionPageTests(FunctionalTestCase):
 
         # Trudy directly enters the url
         self.browser.get(convert_url)
-        # She is greeted with a 403 Forbidden error
+        # She is greeted with a 404 Not Found error
         body_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn('403', body_text)
-        self.assertIn('Forbidden', body_text)
+        self.assertIn('404', self.browser.title)
+        self.assertIn('404', body_text)
+        self.assertIn('Not Found', body_text)
 
-    def test_deleting_other_persons_action_item_returns_403(self):
+    def test_deleting_other_persons_action_item_returns_404(self):
         # Alice is a user who logs in and has an action on the action list
         self.create_and_login_user('alice', 'alice@test.org', 'alice')
         self.create_action('alice', 'Test forbidden status')
@@ -394,10 +395,11 @@ class ActionPageTests(FunctionalTestCase):
 
         # Trudy directly enters the url
         self.browser.get(delete_url)
-        # She sees a 403 Forbidden error
+        # She sees a 404 Not Found error
         body_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn('403', body_text)
-        self.assertIn('Forbidden', body_text)
+        self.assertIn('404', self.browser.title)
+        self.assertIn('404', body_text)
+        self.assertIn('Not Found', body_text)
 
     def test_cannot_delete_action_project(self):
         # Alice is a user who logs in and goes to the action project

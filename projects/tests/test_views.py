@@ -146,13 +146,13 @@ class InlistItemDeleteViewTests(ViewTestCase):
         response = self.get_request(alice, pk=self.item.pk)
         self.assertContains(response, self.item.text)
 
-    def test_returns_403_when_wrong_user_requests_page_with_get(self):
-        response = self.get_request(bob, pk=self.item.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_returns_404_when_wrong_user_requests_page_with_get(self):
+        with self.assertRaises(Http404):
+            self.get_request(bob, pk=self.item.pk)
 
-    def test_returns_403_when_wrong_user_requests_page_with_post(self):
-        response = self.post_request(bob, pk=self.item.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_returns_404_when_wrong_user_requests_page_with_post(self):
+        with self.assertRaises(Http404):
+            self.post_request(bob, pk=self.item.pk)
 
 
 class ActionlistItemDeleteViewTests(ViewTestCase):
@@ -197,13 +197,13 @@ class ActionlistItemDeleteViewTests(ViewTestCase):
         self.assertEqual(response.url, reverse('projects:project',
             kwargs={'pk': project.pk}))
 
-    def test_GET_from_different_user_shows_403_Forbidden(self):
-        response = self.get_request(bob, pk=self.item.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_GET_from_different_user_shows_404(self):
+        with self.assertRaises(Http404):
+            self.get_request(bob, pk=self.item.pk)
 
-    def test_POST_from_different_user_shows_403_Forbidden(self):
-        response = self.post_request(bob, pk=self.item.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_POST_from_different_user_shows_404(self):
+        with self.assertRaises(Http404):
+            self.post_request(bob, pk=self.item.pk)
 
 
 class ActionCompleteViewTest(ViewTestCase):
@@ -331,13 +331,13 @@ class ConvertInlistItemToActionItemTest(ViewTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('projects:inlist'))
 
-    def test_get_request_from_wrong_user_returns_403_Forbidden(self):
-        response = self.get_request(bob, pk=self.item.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_get_request_from_wrong_user_returns_404(self):
+        with self.assertRaises(Http404):
+            self.get_request(bob, pk=self.item.pk)
 
-    def test_post_request_from_wrong_user_returns_403_Forbidden(self):
-        response = self.post_request(bob, pk=self.item.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_post_request_from_wrong_user_returns_404(self):
+        with self.assertRaises(Http404):
+            self.post_request(bob, pk=self.item.pk)
 
 
 class ProjectViewTests(ViewTestCase):
