@@ -191,7 +191,7 @@ class EditProjectView(LoginRequiredMixin, UpdateView):
         project = get_object_or_404(models.Project, pk=self.kwargs['pk'])
         # Need to check against AnonymousUser to not break LoginRequiredMixin
         if request.user != project.user and request.user != AnonymousUser():
-            return permission_denied(request)
+            raise Http404()
 
         # Check whether the project is an action project
         if project.name == models.ACTION_PROJECT_NAME:
@@ -208,7 +208,7 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
         project = get_object_or_404(models.Project, pk=self.kwargs['pk'])
         # Need to check against AnonymousUser to not break LoginRequiredMixin
         if request.user != project.user and request.user != AnonymousUser():
-            return permission_denied(request)
+            raise Http404()
 
         # Check whether the project is an action project
         if project.name == models.ACTION_PROJECT_NAME:

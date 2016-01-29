@@ -663,7 +663,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # She sees that she is on the landing page
         self.assertTrue(self.browser.current_url.endswith('/en/'))
 
-    def test_deleting_other_persons_project_returns_403(self):
+    def test_deleting_other_persons_project_returns_404(self):
         # Alice is a user with a project
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
@@ -691,12 +691,13 @@ class ProjectsPageTests(FunctionalTestCase):
         # Trudy enters the delete project url for Alice's project
         self.browser.get(delete_url)
 
-        # She is greeted with a 403 Forbidden message
+        # She is greeted with a 404 Not found message
         body_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn('403', body_text)
-        self.assertIn('Forbidden', body_text)
+        self.assertIn('404', self.browser.title)
+        self.assertIn('404', body_text)
+        self.assertIn('Not Found', body_text)
 
-    def test_changing_other_persons_project_details_returns_403(self):
+    def test_changing_other_persons_project_details_returns_404(self):
         # Alice is a user with a project
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
@@ -724,10 +725,11 @@ class ProjectsPageTests(FunctionalTestCase):
         # Trudy enters the delete project url for Alice's project
         self.browser.get(delete_url)
 
-        # She is greeted with a 403 Forbidden message
+        # She is greeted with a 404 Not Found message
         body_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn('403', body_text)
-        self.assertIn('Forbidden', body_text)
+        self.assertIn('404', self.browser.title)
+        self.assertIn('404', body_text)
+        self.assertIn('Not Found', body_text)
 
     def test_accessing_other_persons_project_returns_404(self):
         # Alice is a user with a project

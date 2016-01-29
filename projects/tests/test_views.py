@@ -590,13 +590,13 @@ class EditProjectViewTests(ViewTestCase):
             pk=self.project.pk)
         self.assertContains(response, forms.DUPLICATE_PROJECT_ERROR)
 
-    def test_returns_403_when_wrong_user_requests_page_with_get(self):
-        response = self.get_request(bob, pk=self.project.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_returns_404_when_wrong_user_requests_page_with_get(self):
+        with self.assertRaises(Http404):
+            self.get_request(bob, pk=self.project.pk)
 
-    def test_returns_403_when_wrong_user_requests_page_with_post(self):
-        response = self.get_request(bob, pk=self.project.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_returns_404_when_wrong_user_requests_page_with_post(self):
+        with self.assertRaises(Http404):
+            self.get_request(bob, pk=self.project.pk)
 
     def test_returns_403_when_trying_to_edit_action_project_with_get(self):
         project = models.get_user_action_project(alice)
@@ -636,13 +636,13 @@ class DeleteProjectViewTests(ViewTestCase):
         response = self.get_request(alice, pk=self.project.pk)
         self.assertContains(response, self.project.name)
 
-    def test_returns_403_when_wrong_user_requests_page_with_get(self):
-        response = self.get_request(bob, pk=self.project.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_returns_404_when_wrong_user_requests_page_with_get(self):
+        with self.assertRaises(Http404):
+            self.get_request(bob, pk=self.project.pk)
 
-    def test_returns_403_when_wrong_user_requests_page_with_post(self):
-        response = self.post_request(bob, pk=self.project.pk)
-        self.assertEqual(response.status_code, 403)
+    def test_returns_404_when_wrong_user_requests_page_with_post(self):
+        with self.assertRaises(Http404):
+            self.post_request(bob, pk=self.project.pk)
 
     def test_returns_403_when_deleting_users_action_project_with_get(self):
         response = self.get_request(alice,
