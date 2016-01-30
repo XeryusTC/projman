@@ -655,12 +655,12 @@ class DeleteProjectViewTests(ViewTestCase):
         self.assertEqual(response.status_code, 403)
 
 
-class MoveActionViewTests(ViewTestCase):
+class EditActionViewTests(ViewTestCase):
     def setUp(self):
         self.action = factories.ActionlistItemFactory(user=alice)
         self.project = factories.ProjectFactory(user=alice)
-        self.url = reverse('projects:move_action', kwargs={'pk': self.action.pk})
-        self.view = views.MoveActionView.as_view()
+        self.url = reverse('projects:edit_action', kwargs={'pk': self.action.pk})
+        self.view = views.EditActionView.as_view()
 
     def test_move_action_url_resolves_to_move_action_view(self):
         found = resolve(self.url)
@@ -668,7 +668,7 @@ class MoveActionViewTests(ViewTestCase):
 
     def test_move_action_view_uses_correct_templates(self):
         self.client.login(username='alice', password='alice')
-        response = self.client.get('/en/projects/actions/{}/move/'.format(
+        response = self.client.get('/en/projects/actions/{}/edit/'.format(
             self.action.pk))
         self.assertTemplateUsed(response, 'html.html')
         self.assertTemplateUsed(response, 'projects/base.html')
@@ -683,7 +683,7 @@ class MoveActionViewTests(ViewTestCase):
     def test_uses_move_project_form(self):
         response = self.get_request(alice, pk=self.action.pk)
         self.assertIsInstance(response.context_data['form'],
-            forms.MoveActionForm)
+            forms.EditActionForm)
 
     def test_POST_request_updates_action(self):
         response = self.post_request(alice, {'project': self.project.pk},

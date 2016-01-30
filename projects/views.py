@@ -217,10 +217,10 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
         return super(DeleteProjectView, self).dispatch(request, *args, **kwargs)
 
 
-class MoveActionView(LoginRequiredMixin, UpdateView):
+class EditActionView(LoginRequiredMixin, UpdateView):
     template_name = 'projects/move_action.html'
     model = models.ActionlistItem
-    form_class = forms.MoveActionForm
+    form_class = forms.EditActionForm
     context_object_name = 'action'
 
     def get_success_url(self):
@@ -230,4 +230,4 @@ class MoveActionView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         self.old_project = self.object.project
 
-        return super(MoveActionView, self).post(*args, **kwargs)
+        return super(EditActionView, self).post(*args, **kwargs)

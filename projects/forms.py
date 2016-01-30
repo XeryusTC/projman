@@ -159,11 +159,11 @@ class EditProjectForm(forms.ModelForm):
         }
 
 
-class MoveActionForm(forms.ModelForm):
+class EditActionForm(forms.ModelForm):
     deadline = forms.SplitDateTimeField(required=False)
 
     def __init__(self, *args, **kwargs):
-        super(MoveActionForm, self).__init__(*args, **kwargs)
+        super(EditActionForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('move', _('Move action')))

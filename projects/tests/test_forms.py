@@ -326,17 +326,17 @@ class EditProjectFormTest(TestCase):
         self.assertTrue(form.is_valid())
 
 
-class MoveActionFormTest(TestCase):
+class EditActionFormTest(TestCase):
     def setUp(self):
         self.action = factories.ActionlistItemFactory(user=alice)
 
     def test_cripsy_helper_is_set(self):
-        form = forms.MoveActionForm(instance=self.action)
+        form = forms.EditActionForm(instance=self.action)
         self.assertIsInstance(form.helper, FormHelper)
 
     def test_changes_action_to_project(self):
         project = factories.ProjectFactory(user=alice)
-        form = forms.MoveActionForm(data={'project': project.pk},
+        form = forms.EditActionForm(data={'project': project.pk},
             instance=self.action)
 
         form.is_valid()
@@ -346,7 +346,7 @@ class MoveActionFormTest(TestCase):
 
     def test_changes_action_to_action_list(self):
         project = factories.ProjectFactory(user=alice)
-        form = forms.MoveActionForm(data={'project': project.pk},
+        form = forms.EditActionForm(data={'project': project.pk},
             instance=self.action)
 
         self.assertTrue(form.is_valid())
@@ -356,7 +356,7 @@ class MoveActionFormTest(TestCase):
 
     def test_cannot_move_to_project_of_different_user(self):
         project = factories.ProjectFactory(user=bob)
-        form = forms.MoveActionForm(data={'project': project.pk},
+        form = forms.EditActionForm(data={'project': project.pk},
             instance=self.action)
         self.assertFalse(form.is_valid())
 
@@ -364,7 +364,7 @@ class MoveActionFormTest(TestCase):
         factories.ProjectFactory.create_batch(2, user=bob)
         projects = factories.ProjectFactory.create_batch(3, user=alice)
 
-        form = forms.MoveActionForm(instance=self.action)
+        form = forms.EditActionForm(instance=self.action)
 
         choices = [pk for (pk, text) in form.fields['project'].choices]
         self.assertIn(projects[0].pk, choices)
@@ -373,7 +373,7 @@ class MoveActionFormTest(TestCase):
         self.assertEqual(len(choices), 4)
 
     def test_there_is_no_empty_label(self):
-        form = forms.MoveActionForm(instance=self.action)
+        form = forms.EditActionForm(instance=self.action)
         self.assertNotIn('',
             [item[0] for item in form.fields['project'].choices])
 
@@ -382,7 +382,7 @@ class MoveActionFormTest(TestCase):
         action2 = factories.ActionlistItemFactory(user=alice, project=project,
             text=self.action.text)
 
-        form = forms.MoveActionForm(data={'project': project.pk},
+        form = forms.EditActionForm(data={'project': project.pk},
             instance=self.action)
 
         self.assertFalse(form.is_valid())
@@ -391,7 +391,7 @@ class MoveActionFormTest(TestCase):
 
     def test_can_change_deadline_on_action(self):
         self.assertIsNone(self.action.deadline)
-        form = forms.MoveActionForm(instance=self.action,
+        form = forms.EditActionForm(instance=self.action,
             data={'deadline_0': '1970-01-01', 'deadline_1': '00:00:00',
             'project': self.action.project.pk})
 

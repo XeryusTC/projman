@@ -55,8 +55,8 @@
 					{% include 'projects/buttons/delete_form.html' with url=delete_url %}
 				{% endif %}
 
-				{% url 'projects:move_action' item.pk as move_url %}
-				{% include 'projects/buttons/move.html' with url=move_url only %}
+				{% url 'projects:edit_action' item.pk as edit_url %}
+				{% include 'projects/buttons/move.html' with url=edit_url only %}
 			</div>
 		</div>
 	{% endfor %}
