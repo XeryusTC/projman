@@ -131,7 +131,7 @@ class ActionPageTests(FunctionalTestCase):
         chain = webdriver.ActionChains(self.browser)
         chain.move_to_element(item['text'])
         chain.perform()
-        self.assertEqual(item['text'].value_of_css_property('text-decoration'),
+        self.assertEqual(item['item'].value_of_css_property('text-decoration'),
             'line-through')
         # She also notices that her curser indicates that she can click it
         self.assertEqual(item['text'].value_of_css_property('cursor'), 'pointer')
