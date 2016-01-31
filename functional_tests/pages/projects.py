@@ -70,7 +70,7 @@ class ProjectPage(PageObject):
     _item        = PageElement(css='.action-item', context=True)
     _list_text   = PageElement(css='.action-item .action-text', context=True)
     _delete_item = PageElement(class_name='action-delete', context=True)
-    _move_item   = PageElement(class_name='action-move', context=True)
+    _move_item   = PageElement(class_name='action-edit-action', context=True)
     _item_deadline = PageElement(css='.action-deadline', context=True)
 
     def list_text(self, context):

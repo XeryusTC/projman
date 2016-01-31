@@ -56,7 +56,7 @@
 				{% endif %}
 
 				{% url 'projects:edit_action' item.pk as edit_url %}
-				{% include 'projects/buttons/move.html' with url=edit_url only %}
+				{% include 'projects/buttons/edit.html' with url=edit_url action='action-edit-action' %}
 			</div>
 		</div>
 	{% endfor %}
