@@ -106,9 +106,11 @@ class ProjectDeletePage(PageObject):
 class EditActionPage(PageObject):
     content = PageElement(id_='content')
     confirm = PageElement(name='move')
+    errors  = MultiPageElement(css='.errorlist')
     form    = PageElement(tag_name='form')
     deadline_date = PageElement(name='deadline_0')
     deadline_time = PageElement(name='deadline_1')
+    text_box      = PageElement(name='text')
 
     _select = PageElement(tag_name='select')
     @property

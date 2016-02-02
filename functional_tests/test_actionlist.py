@@ -5,6 +5,7 @@ import unittest
 
 from .base import FunctionalTestCase
 from . import pages
+from . import remote
 
 import projects.factories
 
@@ -492,3 +493,82 @@ class ActionPageTests(FunctionalTestCase):
             elif item['text'].text == 'Write a novel':
                 self.assertEqual('Jan. 1, 2000, midnight',
                     item['deadline'].text)
+
+    def test_can_change_action_item_text(self):
+        # Alice is a user who has an item on her action list
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_action(self.server_host, 'alice', 'Play games')
+        else:
+            projects.factories.ActionlistItemFactory(user=user,
+                text='Play games')
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.action_link(project_page.sidebar).click()
+
+        # She sees an edit button next to it, which she clicks
+        list_page = pages.projects.ProjectPage(self.browser)
+        item = list_page.get_list_rows(list_page.thelist)[0]
+        item['edit'].click()
+
+        # She sees that there is a text entry field with the action's name
+        # in it
+        edit_page = pages.projects.EditActionPage(self.browser)
+        self.assertEqual(edit_page.text_box.get_attribute('value'),
+            'Play games')
+
+        # Alice decides to change the text and saves her changes
+        edit_page.text_box.clear()
+        edit_page.text_box.send_keys('Play some games')
+        edit_page.confirm.click()
+
+        # She lands on the action list page and sees that her item has changed
+        self.assertIn('Play some games',
+            list_page.list_text(list_page.thelist))
+        self.assertNotIn('Play games',
+            list_page.list_text(list_page.thelist))
+
+    def test_cannot_change_action_item_text_when_it_is_duplicate(self):
+        # Alice is a user with two items on her action list
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_action(self.server_host, 'alice', 'Save the planet')
+            remote.create_action(self.server_host, 'alice',
+                'Defeat the aliens')
+        else:
+            projects.factories.ActionlistItemFactory(user=user,
+                text='Save the planet')
+            projects.factories.ActionlistItemFactory(user=user,
+                text='Defeat the aliens')
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.action_link(project_page.sidebar).click()
+
+        # Alice realises that aliens don't exist, so she wants to change
+        # one of the actions
+        list_page = pages.projects.ProjectPage(self.browser)
+        for idx, item in list_page.get_list_rows(list_page.thelist).items():
+            if item['text'].text == 'Defeat the aliens':
+                item['edit'].click()
+                break
+
+        # Alice changes the item's text to be the same as the other's
+        edit_page = pages.projects.EditActionPage(self.browser)
+        self.assertEqual(edit_page.text_box.get_attribute('value'),
+            'Defeat the aliens')
+        import time
+        time.sleep(5)
+        edit_page.text_box.clear()
+        edit_page.text_box.send_keys('Save the planet\n')
+
+        # Instead of being send to the action list page she gets an error
+        self.assertIn("This is already planned for that project",
+            [error.text for error in edit_page.errors])
+        self.assertEqual(len(edit_page.errors), 1)
+
+        # When she returns to the action list without saving none of the
+        # items has changed
+        project_page.action_link(project_page.sidebar).click()
+        self.assertIn('Save the planet',
+            list_page.list_text(list_page.thelist))
+        self.assertIn('Defeat the aliens',
+            list_page.list_text(list_page.thelist))
+        self.assertEqual(len(list_page.thelist), 2)
