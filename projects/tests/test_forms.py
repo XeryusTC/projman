@@ -406,3 +406,13 @@ class EditActionFormTest(TestCase):
             data={'text': 'lvl up', 'project': self.action.project.pk})
         form.save()
         self.assertEqual(self.action.text, 'lvl up')
+
+    def test_changing_text_to_duplicate_shows_correct_error(self):
+        action2 = factories.ActionlistItemFactory(user=alice)
+
+        form = forms.EditActionForm(data={'text': self.action.text,
+            'project': self.action.project.pk}, instance=action2)
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors[NON_FIELD_ERRORS],
+            [forms.DUPLICATE_MOVE_ERROR])

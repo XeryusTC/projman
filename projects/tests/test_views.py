@@ -737,3 +737,9 @@ class EditActionViewTests(ViewTestCase):
             'project': self.action.project.pk}, pk=self.action.pk)
         self.action.refresh_from_db()
         self.assertEqual(self.action.text, 'case of tests')
+
+    def test_cannot_update_action_text_when_it_results_in_duplicate_text(self):
+        action2 = factories.ActionlistItemFactory(user=alice)
+        response = self.post_request(alice, {'text': self.action.text,
+            'project': self.action.project.pk}, pk=action2.pk)
+        self.assertContains(response, forms.DUPLICATE_MOVE_ERROR)
