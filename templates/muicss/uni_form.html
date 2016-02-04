@@ -3,13 +3,17 @@
 		value="{{ redirect_field_value }}" />
 {% endif %}
 
-{% for error in form.non_field_errors %}
-	<div class="mui-row">
-		<div class="mui-col-xs-12 mui--text-danger">
-			{{ error }}
-		</div>
+{% if form.non_field_errors %}
+	<div class="errorlist">
+		{% for error in form.non_field_errors %}
+			<div class="mui-row">
+				<div class="mui-col-xs-12 mui--text-danger">
+					{{ error }}
+				</div>
+			</div>
+		{% endfor %}
 	</div>
-{% endfor %}
+{% endif %}
 
 {% for field in form %}
 	{% include "muicss/field.html" %}
