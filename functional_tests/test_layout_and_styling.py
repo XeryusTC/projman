@@ -235,7 +235,7 @@ class ProjectsPagesTests(FunctionalTestCase):
         self.assertAlmostEqual(action['text'].location['y'],
             action['move'].location['y'], delta=10)
 
-    def test_action_move_page(self):
+    def test_action_edit_page(self):
         """Test the page under /projects/actions/PK/move/"""
         # Alice is a user who has an action
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
@@ -246,14 +246,20 @@ class ProjectsPagesTests(FunctionalTestCase):
         page.action_link(page.sidebar).click()
         action_page = pages.projects.ActionlistPage(self.browser)
         action = action_page.get_list_rows(action_page.thelist)[0]
-        action['move'].click()
+        action['edit'].click()
 
-        # She also sees that the move button is under the select box
-        move_page = pages.projects.MoveActionPage(self.browser)
-        self.assertLess(move_page._select.location['y'],
-            move_page.confirm.location['y'])
+        # She sees that the ordering of the elements is text, project,
+        # dealine, submit button
+        edit_page = pages.projects.EditActionPage(self.browser)
+        self.assertLess(edit_page.text_box.location['y'],
+            edit_page._select.location['y'])
+        self.assertLess(edit_page._select.location['y'],
+            edit_page.deadline_date.location['y'])
+        self.assertLess(edit_page.deadline_date.location['y'],
+            edit_page.confirm.location['y'])
 
-        # When she lands on the move page she sees that there is no label
-        with self.assertRaises(NoSuchElementException):
-            select_label = self.browser.find_element_by_xpath(
-                "//label[@for='id_project']")
+        # She also sees that the label for the select element is visible
+        # (this is here because we used to check for the label not being
+        # present)
+        select_label = self.browser.find_element_by_xpath(
+            "//label[@for='id_project']")

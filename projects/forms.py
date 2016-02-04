@@ -171,7 +171,6 @@ class EditActionForm(forms.ModelForm):
         self.fields['project'].queryset = models.Project.objects.filter(
             user=self.instance.user)
         self.fields['project'].empty_label = None
-        self.fields['project'].label = False
 
     def validate_unique(self):
         try:
