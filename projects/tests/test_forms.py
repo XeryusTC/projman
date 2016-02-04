@@ -336,8 +336,8 @@ class EditActionFormTest(TestCase):
 
     def test_changes_action_to_project(self):
         project = factories.ProjectFactory(user=alice)
-        form = forms.EditActionForm(data={'project': project.pk},
-            instance=self.action)
+        form = forms.EditActionForm(data={'project': project.pk,
+            'text': self.action.text}, instance=self.action)
 
         form.is_valid()
         saved = form.save()
@@ -346,8 +346,8 @@ class EditActionFormTest(TestCase):
 
     def test_changes_action_to_action_list(self):
         project = factories.ProjectFactory(user=alice)
-        form = forms.EditActionForm(data={'project': project.pk},
-            instance=self.action)
+        form = forms.EditActionForm(data={'project': project.pk,
+            'text': self.action.pk}, instance=self.action)
 
         self.assertTrue(form.is_valid())
         saved = form.save()
@@ -393,10 +393,16 @@ class EditActionFormTest(TestCase):
         self.assertIsNone(self.action.deadline)
         form = forms.EditActionForm(instance=self.action,
             data={'deadline_0': '1970-01-01', 'deadline_1': '00:00:00',
-            'project': self.action.project.pk})
+            'project': self.action.project.pk, 'text': self.action.text})
 
         self.assertTrue(form.is_valid())
         form.save()
 
         self.assertEquals(str(self.action.deadline),
             '1970-01-01 00:00:00+00:00')
+
+    def test_can_change_text_of_action(self):
+        form = forms.EditActionForm(instance=self.action,
+            data={'text': 'lvl up', 'project': self.action.project.pk})
+        form.save()
+        self.assertEqual(self.action.text, 'lvl up')

@@ -182,4 +182,4 @@ class EditActionForm(forms.ModelForm):
 
     class Meta:
         model = models.ActionlistItem
-        fields = ('project', 'deadline')
+        fields = ('text', 'project', 'deadline')

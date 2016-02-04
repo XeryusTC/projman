@@ -686,8 +686,8 @@ class EditActionViewTests(ViewTestCase):
             forms.EditActionForm)
 
     def test_POST_request_updates_action(self):
-        response = self.post_request(alice, {'project': self.project.pk},
-            pk=self.action.pk)
+        response = self.post_request(alice, {'project': self.project.pk,
+            'text': self.action.text}, pk=self.action.pk)
         self.action.refresh_from_db()
         self.assertEqual(self.action.project, self.project)
 
@@ -697,8 +697,8 @@ class EditActionViewTests(ViewTestCase):
         self.assertIsNotNone(self.action.project)
 
         response = self.post_request(alice,
-            {'project': models.get_user_action_project(alice).pk},
-            pk=self.action.pk)
+            {'project': models.get_user_action_project(alice).pk,
+            'text': self.action.text}, pk=self.action.pk)
 
         self.action.refresh_from_db()
         self.assertEqual(self.action.project,
@@ -707,8 +707,8 @@ class EditActionViewTests(ViewTestCase):
     def test_POST_that_moves_from_actionlist_returns_to_actionlist(self):
         self.assertEqual(self.action.project,
             models.get_user_action_project(alice))
-        response = self.post_request(alice, {'project': self.project.pk},
-            pk=self.action.pk)
+        response = self.post_request(alice, {'project': self.project.pk,
+            'text': self.action.text}, pk=self.action.pk)
         self.assertEqual(response.url, reverse('projects:project',
             kwargs={'pk': models.get_user_action_project(alice).pk}))
 
@@ -716,8 +716,9 @@ class EditActionViewTests(ViewTestCase):
         self.action.project = self.project
         self.action.save()
 
-        response = self.post_request(alice, {'project':
-            models.get_user_action_project(alice).pk}, pk=self.action.pk)
+        response = self.post_request(alice, {'text': self.action.text,
+            'project': models.get_user_action_project(alice).pk},
+            pk=self.action.pk)
 
         self.assertEqual(response.url, reverse('projects:project',
             kwargs={'pk': self.project.pk}))
@@ -725,8 +726,14 @@ class EditActionViewTests(ViewTestCase):
     def test_POST_request_can_update_action_deadline(self):
         self.assertIsNone(self.action.deadline)
         self.post_request(alice, {'deadline_0': '1970-01-01',
-            'deadline_1': '00:00:00', 'project': self.action.project.pk},
-            pk=self.action.pk)
+            'deadline_1': '00:00:00', 'project': self.action.project.pk,
+            'text': self.action.text}, pk=self.action.pk)
         self.action.refresh_from_db()
         self.assertEqual(str(self.action.deadline),
             '1970-01-01 00:00:00+00:00')
+
+    def test_POST_request_can_update_action_text(self):
+        self.post_request(alice, {'text': 'case of tests',
+            'project': self.action.project.pk}, pk=self.action.pk)
+        self.action.refresh_from_db()
+        self.assertEqual(self.action.text, 'case of tests')
