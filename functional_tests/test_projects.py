@@ -339,7 +339,7 @@ class ProjectsPageTests(FunctionalTestCase):
         # She is greeted with a page that lists the action and says it is
         # in the action list
         move_page = pages.projects.MoveActionPage(self.browser)
-        self.assertIn('Move Look at game engine', self.browser.title)
+        self.assertIn('Edit Look at game engine', self.browser.title)
         self.assertIn('Look at game engine', move_page.content.text)
         self.assertIn('Actions', move_page.content.text)
 

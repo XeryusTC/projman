@@ -1,0 +1,14 @@
+{% extends 'projects/base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+{% blocktrans with name=action.text %}Edit {{ name }}{% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+<h1>
+	{% blocktrans with name=action.text %}Edit {{ name }}{% endblocktrans %}
+</h1>
+{% crispy form %}
+{% endblock %}

@@ -218,7 +218,7 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
 
 
 class EditActionView(LoginRequiredMixin, UpdateView):
-    template_name = 'projects/move_action.html'
+    template_name = 'projects/edit_action.html'
     model = models.ActionlistItem
     form_class = forms.EditActionForm
     context_object_name = 'action'

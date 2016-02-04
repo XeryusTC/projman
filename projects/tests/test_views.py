@@ -672,7 +672,7 @@ class EditActionViewTests(ViewTestCase):
             self.action.pk))
         self.assertTemplateUsed(response, 'html.html')
         self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/move_action.html')
+        self.assertTemplateUsed(response, 'projects/edit_action.html')
 
     def test_login_required(self):
         response = self.get_request(AnonymousUser(), pk=self.action.pk)
