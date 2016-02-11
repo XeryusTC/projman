@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-import time
+import signal
 import sys
+import time
+from unipath import Path
 
 from . import remote, pages
 
 DEFAULT_WAIT = 5
+SCREEN_DUMP_LOCATION = Path('screendumps/')
 User = get_user_model()
 
 class FunctionalTestCase(StaticLiveServerTestCase):
@@ -33,11 +37,43 @@ class FunctionalTestCase(StaticLiveServerTestCase):
     def setUp(self):
         if self.against_staging:
             remote.reset_database(self.server_host)
-        self.browser = webdriver.Firefox()
+        self.webdriver = webdriver.PhantomJS
+        self.browser = self.webdriver()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
+        if self._test_has_failed():
+            SCREEN_DUMP_LOCATION.mkdir()
+            for ix, handle in enumerate(self.browser.window_handles):
+                self._windowid = ix
+                self.browser.switch_to_window(handle)
+                filename = self._get_filename()
+                self.take_screenshot(filename + '.png')
+                self.dump_html(filename + '.html')
+        # Make sure that PhantomJS exits properly
+        self.browser.service.process.send_signal(signal.SIGTERM)
         self.browser.quit()
+
+    def _test_has_failed(self):
+        for method, error in self._outcome.errors:
+            if error:
+                return True
+        return False
+
+    def take_screenshot(self, filename):
+        print('screenshotting to', filename)
+        self.browser.get_screenshot_as_file(filename)
+
+    def dump_html(self, filename):
+        print('Dumping HTML to', filename)
+        filename.write_file(self.browser.page_source)
+
+    def _get_filename(self):
+        timestamp = datetime.now().isoformat().replace(':', '.')[:19]
+        return Path(SCREEN_DUMP_LOCATION + \
+            '{cls}.{method}-window{windowid}-{timestamp}'.format(
+                cls=self.__class__.__name__, method=self._testMethodName,
+                windowid=self._windowid, timestamp=timestamp))
 
     def assertElementPresent(self, elements, text):
         for e in elements:

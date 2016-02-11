@@ -82,7 +82,7 @@ class SettingsTests(FunctionalTestCase):
         self.browser.quit()
 
         # When alice returns later she sees that everything is still in Dutch
-        self.browser = webdriver.Firefox()
+        self.browser = self.webdriver()
         self.login_user('alice', 'alice')
         project_page = pages.projects.BaseProjectPage(self.browser)
         self.assertEqual(project_page.logout.text.lower(), 'afmelden')

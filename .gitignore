@@ -9,3 +9,7 @@ db.sqlite3
 # Coverage
 .coverage
 htmlcov
+
+# PhantomJS
+*.log
+screendumps

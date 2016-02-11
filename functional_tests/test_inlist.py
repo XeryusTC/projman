@@ -42,7 +42,7 @@ class InlistTests(FunctionalTestCase):
         # Bob is another user who goes to the inlist page on the website
         # and he does not see Alice's list
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = self.webdriver()
         page = pages.projects.BaseProjectPage(self.browser)
         inlist_page = pages.projects.InlistPage(self.browser)
 
@@ -167,7 +167,7 @@ class InlistTests(FunctionalTestCase):
 
         # Now Trudy logs in
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = self.webdriver()
         self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
 
         # Trudy goes directly to the delete page

@@ -89,7 +89,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # Bob is a different user who logs in
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = self.webdriver()
         page = pages.projects.BaseProjectPage(self.browser)
         create_page = pages.projects.CreateProjectPage(self.browser)
         project_page = pages.projects.ProjectPage(self.browser)
@@ -685,7 +685,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # Trudy is a different user who tries to delete Alice's project
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = self.webdriver()
         self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
 
         # Trudy enters the delete project url for Alice's project
@@ -719,7 +719,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # Trudy is a different user who tries to delete Alice's project
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = self.webdriver()
         self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
 
         # Trudy enters the delete project url for Alice's project
@@ -752,7 +752,7 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # Trudy is a different user who tries to access Alice's project
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = self.webdriver()
         self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
 
         # Trudy enters the project url for Alice's project
