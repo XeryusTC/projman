@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from selenium.common.exceptions import NoSuchElementException
+import math
 
 from . import remote
 from .base import FunctionalTestCase
@@ -136,7 +137,8 @@ class ProjectsPagesTests(FunctionalTestCase):
 
         # The text field and button to add items are horizontally aligned
         self.assertAlmostEqual(inlist_page.add_box.location['y'],
-            inlist_page.add_button.location['y'], delta=10)
+            inlist_page.add_button.location['y'],
+            delta=math.ceil(inlist_page.add_button.size['height'] / 2))
 
         # The inlist is underneath the form
         self.assertLess(inlist_page.add_box.location['y'],
@@ -155,7 +157,8 @@ class ProjectsPagesTests(FunctionalTestCase):
 
         # The text field and button to add items are horizontally aligned
         self.assertAlmostEqual(action_page.add_box.location['y'],
-            action_page.add_button.location['y'], delta=10)
+            action_page.add_button.location['y'],
+            delta=math.ceil(action_page.add_button.size['height'] / 2))
 
         # The action list is underneath the form
         self.assertLess(action_page.add_box.location['y'],
@@ -218,7 +221,8 @@ class ProjectsPagesTests(FunctionalTestCase):
         self.assertLess(project_page.add_box.location['x'], self.width / 2)
         self.assertGreater(project_page.add_button.location['x'], self.width/2)
         self.assertAlmostEqual(project_page.add_box.location['y'],
-            project_page.add_button.location['y'], delta=10)
+            project_page.add_button.location['y'],
+            delta=math.ceil(project_page.add_button.size['height'] / 2))
         self.assertEqual(project_page.add_button.location['x'],
             project_page.edit.location['x'])
 
