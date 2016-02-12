@@ -14,13 +14,9 @@ addons:
 env:
     global:
         - DJANGO_SETTINGS_MODULE="projman.settings.ci"
-    matrix:
-        - DJANGO_VERSION=1.8.6
-        - DJANGO_VERSION=1.9.2
 sudo: false
 install:
     - pip install -qr requirements/ci.txt
-    - pip install -q --upgrade Django==$DJANGO_VERSION
     - pip install coveralls
 before_script:
     # set up postgresql
