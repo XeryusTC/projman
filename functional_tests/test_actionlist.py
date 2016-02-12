@@ -57,8 +57,7 @@ class ActionPageTests(FunctionalTestCase):
             action_page.list_text(action_page.thelist))
 
         # Bob is another user who goes to the action list page on the site
-        self.browser.quit()
-        self.browser = self.webdriver()
+        self.restart_browser()
         page = pages.projects.BaseProjectPage(self.browser)
         action_page = pages.projects.ActionlistPage(self.browser)
 
@@ -363,8 +362,7 @@ class ActionPageTests(FunctionalTestCase):
         convert_url = self.browser.current_url
 
         # Trudy is another user who tries to mess with Alice's items
-        self.browser.quit()
-        self.browser = self.webdriver()
+        self.restart_browser()
         self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
 
         # Trudy directly enters the url
@@ -392,8 +390,7 @@ class ActionPageTests(FunctionalTestCase):
         delete_url = self.browser.current_url
 
         # Trudy is another user who tries to delete Alice's action
-        self.browser.quit()
-        self.browser = self.webdriver()
+        self.restart_browser()
         self.create_and_login_user('trudy', 'trudy@test.org', 'trudy')
 
         # Trudy directly enters the url

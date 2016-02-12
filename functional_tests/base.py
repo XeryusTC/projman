@@ -52,7 +52,16 @@ class FunctionalTestCase(StaticLiveServerTestCase):
                 self.dump_html(filename + '.html')
         # Make sure that PhantomJS exits properly
         self.browser.service.process.send_signal(signal.SIGTERM)
+        self.browser.service.process.wait()
         self.browser.quit()
+        super().tearDown()
+
+    def restart_browser(self):
+        self.browser.service.process.send_signal(signal.SIGTERM)
+        self.browser.service.process.wait()
+        self.browser.quit()
+        self.browser = self.webdriver()
+        self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def _test_has_failed(self):
         for method, error in self._outcome.errors:

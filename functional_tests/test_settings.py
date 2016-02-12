@@ -79,10 +79,8 @@ class SettingsTests(FunctionalTestCase):
             project_page.inlist_link(project_page.sidebar).text.lower())
 
         # Alice leaves the website
-        self.browser.quit()
-
         # When alice returns later she sees that everything is still in Dutch
-        self.browser = self.webdriver()
+        self.restart_browser()
         self.login_user('alice', 'alice')
         project_page = pages.projects.BaseProjectPage(self.browser)
         self.assertEqual(project_page.logout.text.lower(), 'afmelden')
