@@ -37,7 +37,7 @@ class FunctionalTestCase(StaticLiveServerTestCase):
     def setUp(self):
         if self.against_staging:
             remote.reset_database(self.server_host)
-        self.webdriver = webdriver.PhantomJS
+        self.webdriver = webdriver.Firefox
         self.browser = self.webdriver()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
@@ -50,15 +50,9 @@ class FunctionalTestCase(StaticLiveServerTestCase):
                 filename = self._get_filename()
                 self.take_screenshot(filename + '.png')
                 self.dump_html(filename + '.html')
-        # Make sure that PhantomJS exits properly
-        self.browser.service.process.send_signal(signal.SIGTERM)
-        self.browser.service.process.wait()
         self.browser.quit()
-        super().tearDown()
 
     def restart_browser(self):
-        self.browser.service.process.send_signal(signal.SIGTERM)
-        self.browser.service.process.wait()
         self.browser.quit()
         self.browser = self.webdriver()
         self.browser.implicitly_wait(DEFAULT_WAIT)
