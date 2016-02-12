@@ -1,19 +1,12 @@
 language: python
 python:
-    - "3.3"
     - "3.4"
     - "3.5"
-    - "3.5-dev"
-    - "nightly"
 cache:
     directories:
         - $HOME/.cache/pip
 before_cache:
     - rm -f $HOME/.cache/pip/log/debug.log
-matrix:
-    allow_failures:
-        - python: "3.5-dev"
-        - python: "nightly"
 services:
     - postgresql
 addons:
@@ -21,9 +14,12 @@ addons:
 env:
     global:
         - DJANGO_SETTINGS_MODULE="projman.settings.ci"
+    - DJANGO_VERSION=1.8.6
+    - DJANGO_VERSION=1.9.2
 sudo: false
 install:
-    - pip install -r requirements/ci.txt
+    - pip install -qr requirements/ci.txt
+    - pip install -q --upgrade Django==$DJANGO_VERSION
     - pip install coveralls
 before_script:
     # set up postgresql
