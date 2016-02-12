@@ -14,8 +14,9 @@ addons:
 env:
     global:
         - DJANGO_SETTINGS_MODULE="projman.settings.ci"
-    - DJANGO_VERSION=1.8.6
-    - DJANGO_VERSION=1.9.2
+    matrix:
+        - DJANGO_VERSION=1.8.6
+        - DJANGO_VERSION=1.9.2
 sudo: false
 install:
     - pip install -qr requirements/ci.txt
