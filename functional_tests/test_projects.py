@@ -733,17 +733,17 @@ class ProjectsPageTests(FunctionalTestCase):
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
             remote.create_project(self.server_host, 'alice', 'Secure the site',
-                'Test the site\'s security')
+                'Test the sites security')
         else:
             factories.ProjectFactory(user=user, name='Secure the site',
-                description='Test the site\'s security')
+                description='Test the sites security')
         self.browser.refresh()
         page = pages.projects.BaseProjectPage(self.browser)
         page.project_link('Secure the site').click()
 
         # Copy the url so Trudy can use it
         project_page = pages.projects.ProjectPage(self.browser)
-        self.wait_for(lambda: self.assertIn('Test the site\'s security',
+        self.wait_for(lambda: self.assertIn('Test the sites security',
             project_page.info.text))
         project_url = self.browser.current_url
 
