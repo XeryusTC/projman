@@ -34,6 +34,6 @@ urlpatterns += i18n_patterns(
     url(r'^$', LandingView.as_view(), name='landingpage'),
     url(r'^settings/', include(settings.urls, namespace='settings')),
 
-    url('^403/$', default_views.permission_denied),
+    url('^403/$', default_views.permission_denied, {'exception': None}),
     url('^500/$', default_views.server_error),
 )

@@ -195,7 +195,7 @@ class EditProjectView(LoginRequiredMixin, UpdateView):
 
         # Check whether the project is an action project
         if project.name == models.ACTION_PROJECT_NAME:
-            return permission_denied(request)
+            return permission_denied(request, None)
 
         return super(EditProjectView, self).dispatch(request, *args, **kwargs)
 
@@ -212,7 +212,7 @@ class DeleteProjectView(LoginRequiredMixin, DeleteView):
 
         # Check whether the project is an action project
         if project.name == models.ACTION_PROJECT_NAME:
-            return permission_denied(request)
+            return permission_denied(request, None)
 
         return super(DeleteProjectView, self).dispatch(request, *args, **kwargs)
 

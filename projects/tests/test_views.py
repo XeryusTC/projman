@@ -5,6 +5,7 @@ from django.core.urlresolvers import resolve, reverse
 from django.http.response import Http404
 from django.test import TestCase
 from django.utils.html import escape
+from unittest import mock
 
 from projects import factories, forms, models, views
 from common.tests import ViewTestCase
@@ -608,6 +609,16 @@ class EditProjectViewTests(ViewTestCase):
         response = self.post_request(alice, pk=project.pk)
         self.assertEqual(response.status_code, 403)
 
+    @mock.patch('projects.views.permission_denied')
+    def test_permission_denied_is_called_with_exception_argument(self,
+        mock_permission_denied):
+        project = models.get_user_action_project(alice)
+        request = self.factory.get(self.url)
+        request.user = alice
+        response = self.view(request, self.url, pk=project.pk)
+
+        mock_permission_denied.assert_called_once_with(request, None)
+
 
 class DeleteProjectViewTests(ViewTestCase):
     def setUp(self):
@@ -654,6 +665,13 @@ class DeleteProjectViewTests(ViewTestCase):
             pk=models.get_user_action_project(alice).pk)
         self.assertEqual(response.status_code, 403)
 
+    @mock.patch('projects.views.permission_denied')
+    def test_403_error_gets_dummy_exception(self, mock_permission_denied):
+        request = self.factory.post(self.url)
+        request.user = alice
+        self.view(request, self.url,
+            pk=models.get_user_action_project(alice).pk)
+        mock_permission_denied.assert_called_once_with(request, None)
 
 class EditActionViewTests(ViewTestCase):
     def setUp(self):
