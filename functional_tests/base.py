@@ -42,7 +42,7 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
-        if self._test_has_failed():
+        if self._test_has_failed(): # pragma: no cover
             SCREEN_DUMP_LOCATION.mkdir()
             for ix, handle in enumerate(self.browser.window_handles):
                 self._windowid = ix
@@ -57,21 +57,21 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         self.browser = self.webdriver()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
-    def _test_has_failed(self):
+    def _test_has_failed(self): # pragma: no cover
         for method, error in self._outcome.errors:
             if error:
                 return True
         return False
 
-    def take_screenshot(self, filename):
+    def take_screenshot(self, filename): # pragma: no cover
         print('screenshotting to', filename)
         self.browser.get_screenshot_as_file(filename)
 
-    def dump_html(self, filename):
+    def dump_html(self, filename): # pragma: no cover
         print('Dumping HTML to', filename)
         filename.write_file(self.browser.page_source)
 
-    def _get_filename(self):
+    def _get_filename(self): # pragma: no cover
         timestamp = datetime.now().isoformat().replace(':', '.')[:19]
         return Path(SCREEN_DUMP_LOCATION + \
             '{cls}.{method}-window{windowid}-{timestamp}'.format(
