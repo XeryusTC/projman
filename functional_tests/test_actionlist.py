@@ -435,7 +435,7 @@ class ActionPageTests(FunctionalTestCase):
         # Alice is a user who has an item on her action list
         user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
         if self.against_staging:
-            create_project(self.server_host, 'alice', 'Edit action')
+            remote.create_action(self.server_host, 'alice', 'Edit action')
         else:
             projects.factories.ActionlistItemFactory(user=user,
                 text='Edit action')
