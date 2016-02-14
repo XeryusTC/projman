@@ -91,46 +91,6 @@ class HomePageTest(FunctionalTestCase):
         # She ends up on a success page
         self.is_logged_in()
 
-    @unittest.expectedFailure
-    def test_can_login_using_persona_from_landingpage(self):
-        """Test if we can login using persona"""
-        # Alice goes to the website
-        self.browser.get(self.server_url)
-        page = landingpage.LandingPage(self.browser)
-
-        # She clicks on a Sign in button
-        page.header_signin.click()
-
-        # She clicks on the Persona login link
-        loginpage = accounts.LoginPage(self.browser)
-        loginpage.persona.click()
-
-        self.switch_to_new_window('Mozilla Persona')
-
-        # She enters her email into the persona field
-        persona = thirdparty.Persona(self.browser)
-        persona.email.send_keys('alice@mockmyid.com')
-        persona.email.send_keys(Keys.RETURN)
-
-        # She sees that she is logged in
-        self.switch_to_new_window('Sign In')
-        self.wait_for(lambda: self.is_logged_in(), timeout=30)
-
-    def test_remove_persona_login_workflow(self):
-        """Persona is discontinued later this year, so remove it"""
-        # Alice goes to the websites
-        self.browser.get(self.server_url)
-        page = landingpage.LandingPage(self.browser)
-
-        # She clicks on a Sign in button
-        page.header_signin.click()
-
-        # She sees that there is no Persona login link
-        loginpage = accounts.LoginPage(self.browser)
-        with self.assertRaises(NoSuchElementException):
-            self.browser.find_element_by_link_text('PERSONA')
-        self.assertIsNone(loginpage.persona)
-
     def test_register_with_django_auth_workflow(self):
         """Test if a user can register using the auth model from django"""
         # Alice goes to the website
