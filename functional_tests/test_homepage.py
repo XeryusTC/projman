@@ -5,10 +5,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 import email
 from imapclient import IMAPClient
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 import re
-import unittest
 
 from . import remote
 from .base import FunctionalTestCase
