@@ -14,6 +14,9 @@ addons:
 env:
     global:
         - DJANGO_SETTINGS_MODULE="projman.settings.ci"
+    matrix:
+        - REVERSE=
+        - REVERSE=--reverse
 sudo: false
 install:
     - pip install -r requirements/ci.txt
@@ -28,14 +31,9 @@ before_script:
 script:
     # All translations should compile without problems
     - python manage.py compilemessages
-    - coverage run -p manage.py test landing
-    - coverage run -p manage.py test projects
-    - coverage run -p manage.py test settings
-    - coverage run -p manage.py test functional_tests
-    # Run tests in reverse to ensure test independence
-    - python manage.py test landing --reverse
-    - python manage.py test projects --reverse
-    - python manage.py test settings --reverse
-    - python manage.py test functional_tests --reverse
+    - coverage run -p manage.py test landing $REVERSE
+    - coverage run -p manage.py test projects $REVERSE
+    - coverage run -p manage.py test settings $REVERSE
+    - coverage run -p manage.py test functional_tests $REVERSE
 after_success:
     - "coverage combine && coveralls"
