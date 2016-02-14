@@ -42,11 +42,7 @@ SITE_ID = 1
 
 INSTALLED_APPS += ('gunicorn',)
 
-SOCIALACCOUNT_PROVIDERS = {
-    'persona': {
-        'AUDIENCE': DOMAIN
-    }
-}
+SOCIALACCOUNT_PROVIDERS = {}
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -50,7 +50,6 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.persona',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -147,11 +146,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_URL = 'account_login'
 LOGOUT_URL = 'account_logout'
 
-SOCIALACCOUNT_PROVIDERS = {
-    'persona': {
-        'AUDIENCE': 'localhost'
-    }
-}
+SOCIALACCOUNT_PROVIDERS = {}
 
 CRISPY_TEMPLATE_PACK = 'muicss'
 CRISPY_ALLOWED_TEMPLATE_PACKS = ('muicss',)
