@@ -150,9 +150,6 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectView, self).get_context_data(**kwargs)
-        if 'form' not in context.keys():
-            context['form'] = self.get_form()
-            context['form'].instance.user = self.request.user
         context['protected'] = (self.object.name == models.ACTION_PROJECT_NAME)
         return context
 
