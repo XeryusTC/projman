@@ -8,7 +8,7 @@ from django.utils.html import escape
 from unittest import mock
 
 from projects import factories, forms, models, views
-from common.tests import ViewTestCase
+from common.tests import ViewTestMixin
 
 User = get_user_model()
 alice = None
@@ -23,45 +23,21 @@ def tearDownModule():
     alice.delete()
     bob.delete()
 
-class TestMainPage(TestCase):
-    def test_mainpage_url_resolves_to_mainpage_view(self):
-        found = resolve(reverse('projects:main'))
-        self.assertEqual(found.func.__name__,
-            views.MainPageView.as_view().__name__)
+class TestMainPage(ViewTestMixin, TestCase):
+    explicit_url = '/en/projects/'
+    templates = ('html.html', 'projects/base.html', 'projects/mainpage.html')
 
-    def test_mainpage_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get('/en/projects/')
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/mainpage.html')
-
-    def test_login_required(self):
-        response = self.client.get(reverse('projects:main'))
-        self.assertRedirects(response,
-            '/en/accounts/login/?next=/en/projects/')
+    def setUp(self):
+        self.url = reverse('projects:main')
+        self.view = views.MainPageView.as_view()
 
 
-class InlistpageTest(ViewTestCase):
+class InlistpageTest(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html', 'projects/inlist.html')
+
     def setUp(self):
         self.url = '/en/projects/inlist/'
         self.view = views.InlistView.as_view()
-
-    def test_inlist_url_resolves_to_inlist_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_inlist_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/inlist.html')
-
-    def test_login_required(self):
-        response = self.get_request(AnonymousUser())
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
 
     def test_inlist_uses_inlist_form(self):
         response = self.get_request(alice)
@@ -120,25 +96,18 @@ class InlistpageTest(ViewTestCase):
         self.assertContains(response, escape(forms.DUPLICATE_ITEM_ERROR))
 
 
-class InlistItemDeleteViewTests(ViewTestCase):
+class InlistItemDeleteViewTests(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+        'projects/inlistitem_confirm_delete.html')
+
     def setUp(self):
         self.item = factories.InlistItemFactory(user=alice)
         self.url = '/en/projects/inlist/{}/delete/'.format(self.item.pk)
         self.view = views.InlistItemDelete.as_view()
 
-    def test_inlist_item_delete_view_is_delete_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_inlist_item_delete_view_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response,
-            'projects/inlistitem_confirm_delete.html')
-
-    def test_login_required(self):
+    # Overwrite test from ViewTestMixin since it doesn't allow for extra
+    # parameters
+    def test_login_required_for_view(self):
         response = self.get_request(AnonymousUser(), pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
@@ -156,26 +125,18 @@ class InlistItemDeleteViewTests(ViewTestCase):
             self.post_request(bob, pk=self.item.pk)
 
 
-class ActionlistItemDeleteViewTests(ViewTestCase):
+class ActionlistItemDeleteViewTests(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+            'projects/actionlistitem_confirm_delete.html')
+
     def setUp(self):
         self.item = factories.ActionlistItemFactory(user=alice)
         self.url = '/en/projects/actions/{}/delete/'.format(self.item.pk)
         self.view = views.ActionlistItemDelete.as_view()
 
-    def test_actionlist_item_delete_view_is_delete_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__,
-            views.ActionlistItemDelete.as_view().__name__)
-
-    def test_actionlist_item_delete_view_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response,
-            'projects/actionlistitem_confirm_delete.html')
-
-    def test_login_required(self):
+    # Overwrite test from ViewTestMixin since it doesn't allow for extra
+    # parameters
+    def test_login_required_for_view(self):
         response = self.get_request(AnonymousUser(), pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
@@ -207,30 +168,18 @@ class ActionlistItemDeleteViewTests(ViewTestCase):
             self.post_request(bob, pk=self.item.pk)
 
 
-class ActionCompleteViewTest(ViewTestCase):
+class ActionCompleteViewTest(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+        'projects/actionlistitem_errorform.html')
+
     def setUp(self):
         self.item = factories.ActionlistItemFactory(user=alice)
         self.url = reverse('projects:complete_action',
             kwargs={'pk': self.item.pk})
+        self.explicit_url = '/en/projects/actions/{}/complete/'.format(
+            self.item.pk)
         self.view = views.ActionCompleteView.as_view()
 
-    def test_complete_action_view_is_complete_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_actioncomple_can_fall_back_to_correct_template(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get('/en/projects/actions/0/complete/')
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response,
-            'projects/actionlistitem_errorform.html')
-
-    def test_login_required(self):
-        response = self.get_request(AnonymousUser())
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url,
-            reverse('account_login') + '?next=' + self.url)
 
     def test_POST_changes_the_complete_status_to_true(self):
         self.assertFalse(self.item.complete)
@@ -268,31 +217,22 @@ class ActionCompleteViewTest(ViewTestCase):
             reverse('projects:project', kwargs={'pk': project.pk}))
 
 
-class ConvertInlistItemToActionItemTest(ViewTestCase):
+class ConvertInlistItemToActionItemTest(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+        'projects/convert_inlist_to_action.html')
+
     def setUp(self):
         self.item = factories.InlistItemFactory(user=alice)
         self.url = reverse('projects:convert_inlist_action',
             kwargs={'pk': self.item.pk})
         self.view = views.InlistItemToActionView.as_view()
 
-    def test_convert_inlist_to_action_is_correct_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_convert_to_action_view_usses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response,
-            'projects/convert_inlist_to_action.html')
-
     def test_uses_correct_form_class(self):
         response = self.get_request(alice, pk=self.item.pk)
         self.assertIsInstance(response.context_data['form'],
             forms.ConvertInlistToActionForm)
 
-    def test_login_required(self):
+    def test_login_required_for_view(self):
         response = self.get_request(AnonymousUser(), pk=self.item.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
@@ -341,24 +281,15 @@ class ConvertInlistItemToActionItemTest(ViewTestCase):
             self.post_request(bob, pk=self.item.pk)
 
 
-class ProjectViewTests(ViewTestCase):
+class ProjectViewTests(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html', 'projects/project.html')
+
     def setUp(self):
         self.project = factories.ProjectFactory(user=alice)
         self.url = reverse('projects:project', kwargs={'pk':self.project.pk})
         self.view = views.ProjectView.as_view()
 
-    def test_project_url_resolves_to_project_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_project_page_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/project.html')
-
-    def test_login_required(self):
+    def test_login_required_for_view(self):
         response = self.get_request(AnonymousUser(), pk=self.project.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
@@ -448,26 +379,13 @@ class ProjectViewTests(ViewTestCase):
             response = self.post_request(bob, pk=self.project.pk)
 
 
-class CreateProjectViewTests(ViewTestCase):
+class CreateProjectViewTests(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+        'projects/create_project.html')
+
     def setUp(self):
         self.url = reverse('projects:create_project')
         self.view = views.CreateProjectView.as_view()
-
-    def test_create_project_url_resolves_to_create_project_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_create_project_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/create_project.html')
-
-    def test_login_required(self):
-        response = self.get_request(AnonymousUser())
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
 
     def test_uses_create_project_form(self):
         response = self.get_request(alice)
@@ -520,25 +438,17 @@ class CreateProjectViewTests(ViewTestCase):
         self.assertEqual(models.InlistItem.objects.count(), 0)
 
 
-class EditProjectViewTests(ViewTestCase):
+class EditProjectViewTests(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+        'projects/project_edit.html')
+
     def setUp(self):
         self.project = factories.ProjectFactory(user=alice)
         self.url = reverse('projects:edit_project',
             kwargs={'pk': self.project.pk})
         self.view = views.EditProjectView.as_view()
 
-    def test_edit_project_url_resovles_to_edit_project_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_edit_project_page_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url, kwargs={'pk': self.project.pk})
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/project_edit.html')
-
-    def test_login_required(self):
+    def test_login_required_for_view(self):
         response = self.get_request(AnonymousUser(), pk=self.project.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
@@ -620,25 +530,16 @@ class EditProjectViewTests(ViewTestCase):
         mock_permission_denied.assert_called_once_with(request, None)
 
 
-class DeleteProjectViewTests(ViewTestCase):
+class DeleteProjectViewTests(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+        'projects/project_confirm_delete.html')
+
     def setUp(self):
         self.project = factories.ProjectFactory(user=alice)
         self.url = reverse('projects:delete', kwargs={'pk': self.project.pk})
         self.view = views.DeleteProjectView.as_view()
 
-    def test_project_delete_url_resolves_to_correct_delete_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_project_delete_view_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response,
-            'projects/project_confirm_delete.html')
-
-    def test_login_required(self):
+    def test_login_required_for_view(self):
         response = self.get_request(AnonymousUser(), pk=self.project.pk)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/accounts/login/?next=' + self.url)
@@ -673,30 +574,16 @@ class DeleteProjectViewTests(ViewTestCase):
             pk=models.get_user_action_project(alice).pk)
         mock_permission_denied.assert_called_once_with(request, None)
 
-class EditActionViewTests(ViewTestCase):
+
+class EditActionViewTests(ViewTestMixin, TestCase):
+    templates = ('html.html', 'projects/base.html',
+        'projects/edit_action.html')
+
     def setUp(self):
         self.action = factories.ActionlistItemFactory(user=alice)
         self.project = factories.ProjectFactory(user=alice)
         self.url = reverse('projects:edit_action', kwargs={'pk': self.action.pk})
         self.view = views.EditActionView.as_view()
-
-    def test_move_action_url_resolves_to_move_action_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_move_action_view_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get('/en/projects/actions/{}/edit/'.format(
-            self.action.pk))
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'projects/base.html')
-        self.assertTemplateUsed(response, 'projects/edit_action.html')
-
-    def test_login_required(self):
-        response = self.get_request(AnonymousUser(), pk=self.action.pk)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.endswith(
-            '/accounts/login/?next=' + self.url))
 
     def test_uses_move_project_form(self):
         response = self.get_request(alice, pk=self.action.pk)

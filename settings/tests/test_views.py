@@ -3,10 +3,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import resolve, reverse
+from django.test import TestCase
 from django.utils import translation
 from unittest.mock import patch
 
-from common.tests import ViewTestCase
+from common.tests import ViewTestMixin, RequestFunctionMixin
 from settings import forms
 from settings import views
 from settings.tests.test_models import reset_user_settings
@@ -21,7 +22,10 @@ def setUpModule():
 def tearDownModule():
     alice.delete()
 
-class SettingsViewTest(ViewTestCase):
+class SettingsViewTest(ViewTestMixin, TestCase):
+    templates = ['html.html', 'settings/base.html', 'settings/main.html']
+    explicit_url = '/en/settings/'
+
     def setUp(self):
         reset_user_settings(alice.settings)
         translation.activate(alice.settings.language)
@@ -31,23 +35,6 @@ class SettingsViewTest(ViewTestCase):
 
     def tearDown(self):
         translation.deactivate()
-
-    def test_settings_base_url_resolves_to_settings_main_view(self):
-        found = resolve(self.url)
-        self.assertEqual(found.func.__name__, self.view.__name__)
-
-    def test_settings_main_view_uses_correct_templates(self):
-        self.client.login(username='alice', password='alice')
-        response = self.client.get('/en/settings/')
-        self.assertTemplateUsed(response, 'html.html')
-        self.assertTemplateUsed(response, 'settings/base.html')
-        self.assertTemplateUsed(response, 'settings/main.html')
-
-    def test_login_required(self):
-        response = self.get_request(AnonymousUser())
-        self.assertEqual(response.status_code, 302)
-        self.assertRegex(response.url,
-            r'/en(-us)?/accounts/login/\?next=' + self.url)
 
     def test_uses_settings_form(self):
         response = self.get_request(alice)
@@ -96,7 +83,7 @@ class SettingsViewTest(ViewTestCase):
         self.assertTrue(alice.settings.action_delete_confirm)
 
 
-class SetLanguageViewTests(ViewTestCase):
+class SetLanguageViewTests(RequestFunctionMixin, TestCase):
     def setUp(self):
         self.url = reverse('settings:set_language')
         self.view = views.SetLanguageView.as_view()
