@@ -51,17 +51,30 @@
 						href="{% url 'projects:main' %}">{{ site.name }}</a>
 				</div>
 				<div class="mui-col-xs-6 mui-col-sm-11 mui--text-right">
-					{% block appbar %}{% endblock %}
-					<a class="mui-btn" href="{% url 'settings:main' %}"
-						name="settings">
-						{% trans 'Settings' %}
-						<span class="fa fa-cog"></span>
-					</a>
-					<a class="mui-btn" href="{% url 'account_logout' %}"
-						name="logout">
-						{% trans 'Log out' %}
-						<span class="fa fa-sign-out"></span>
-					</a>
+					<div class="mui-dropdown">
+						<button class="mui-btn" data-mui-toggle="dropdown"
+							name="menu">
+							{% trans 'Menu' %}
+							<span class="fa fa-caret-down"></span>
+						</button>
+						<ul class="mui-dropdown__menu mui-dropdown__menu--right">
+							{% block appbar %}{% endblock %}
+							<li>
+								<a class="mui-btn" name="settings"
+									href="{% url 'settings:main' %}">
+									{% trans 'Settings' %}
+									<span class="fa fa-cog"></span>
+								</a>
+							</li>
+							<li>
+								<a class="mui-btn" name="logout"
+									href="{% url 'account_logout' %}">
+									{% trans 'Log out' %}
+									<span class="fa fa-sign-out"></span>
+								</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

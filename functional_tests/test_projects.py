@@ -636,7 +636,8 @@ class ProjectsPageTests(FunctionalTestCase):
         create_page = pages.projects.CreateProjectPage(self.browser)
         create_page.name_box.send_keys('Catch up on tv\n')
 
-        # There is a log out button visible, she clicks it
+        # There is a log out button visible after clicking menu, she clicks it
+        page.menu.click()
         page.logout.click()
 
         # She lands on the logout confirmation page

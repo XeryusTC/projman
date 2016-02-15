@@ -137,6 +137,7 @@ class InlistTests(FunctionalTestCase):
         page.inlist_link(page.sidebar).click()
 
         # She sees a logout button on the appbar and clicks it
+        page.menu.click()
         page.logout.click()
 
         # She ends up on the confirmation page where she clicks the button

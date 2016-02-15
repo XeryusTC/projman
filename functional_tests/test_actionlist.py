@@ -332,7 +332,8 @@ class ActionPageTests(FunctionalTestCase):
         page = pages.projects.BaseProjectPage(self.browser)
         page.action_link(page.sidebar).click()
 
-        # Alice can click a log out button
+        # Alice can click a log out button in the menu
+        page.menu.click()
         page.logout.click()
 
         # She lands on the logout confirmation page

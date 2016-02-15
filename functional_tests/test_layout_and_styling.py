@@ -9,7 +9,7 @@ from . import pages
 
 User = get_user_model()
 
-class StylesheetTest(FunctionalTestCase):
+class CommonTest(FunctionalTestCase):
     def test_framework_is_loaded(self):
         # Alice visits the website
         self.browser.get(self.server_url)
@@ -34,6 +34,21 @@ class StylesheetTest(FunctionalTestCase):
         # She also sees that jQuery is loaded
         self.assertTrue(any(['jquery-2.1.4.min.js' in s.get_attribute('src')
             for s in page.scripts]))
+
+    def test_settings_and_logout_are_in_dropdown_menu(self):
+        # Alice logs in to the website
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        page = pages.projects.BaseProjectPage(self.browser)
+
+        # There are no visible settings and logout links
+        self.assertFalse(page.settings_link.is_displayed())
+        self.assertFalse(page.logout.is_displayed())
+
+        # She sees an icon on the top right corner, she clicks it and sees
+        # the logout and settings links
+        page.menu.click()
+        self.assertTrue(page.settings_link.is_displayed())
+        self.assertTrue(page.logout.is_displayed())
 
 class AccountPagesLayout(FunctionalTestCase):
     """Smoke tests for the layout of pages under /account/"""

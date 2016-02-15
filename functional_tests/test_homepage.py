@@ -224,8 +224,9 @@ class HomePageTest(FunctionalTestCase):
         # Alice is a returning user
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
 
-        # She clicks the log out button
+        # She clicks the log out button in the menu
         page = projects.BaseProjectPage(self.browser)
+        page.menu.click()
         page.logout.click()
 
         # She ends up on the confirmation page
