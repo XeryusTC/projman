@@ -654,6 +654,7 @@ class ProjectsPageTests(FunctionalTestCase):
         page.create_project_link(page.sidebar).click()
 
         # She sees the log out button and clicks it
+        page.menu.click()
         page.logout.click()
 
         # She lands on the logout confirmation page

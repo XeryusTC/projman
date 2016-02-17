@@ -14,6 +14,7 @@ class SettingsTests(FunctionalTestCase):
 
         # She clicks on the settings link
         project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.menu.click()
         project_page.settings_link.click()
 
         # She ends up on the settings page
@@ -32,6 +33,7 @@ class SettingsTests(FunctionalTestCase):
 
         # On the top of the page she sees a button, she decides to click it
         page = pages.projects.BaseProjectPage(self.browser)
+        page.menu.click()
         page.settings_link.click()
 
         # She is directed to a new page
@@ -60,6 +62,7 @@ class SettingsTests(FunctionalTestCase):
 
         # She goes to the settings
         project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.menu.click()
         project_page.settings_link.click()
 
         # Her language is currently set to English, but she wants it in Dutch
@@ -72,6 +75,7 @@ class SettingsTests(FunctionalTestCase):
         # When she goes back to the projects she sees that key elements
         # have been translated
         settings_page.return_link.click()
+        project_page.menu.click()
         self.assertEqual(project_page.logout.text.lower(), 'afmelden')
         self.assertEqual(project_page.settings_link.text.lower(),
             'instellingen')
@@ -83,6 +87,7 @@ class SettingsTests(FunctionalTestCase):
         self.restart_browser()
         self.login_user('alice', 'alice')
         project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.menu.click()
         self.assertEqual(project_page.logout.text.lower(), 'afmelden')
         self.assertEqual(project_page.settings_link.text.lower(),
             'instellingen')
@@ -96,6 +101,7 @@ class SettingsTests(FunctionalTestCase):
 
         # She goes to the settings
         project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.menu.click()
         project_page.settings_link.click()
 
         # Currently the option to ask for confirmation when inlist items
@@ -131,6 +137,7 @@ class SettingsTests(FunctionalTestCase):
 
         # She goes to the settings
         page = pages.projects.BaseProjectPage(self.browser)
+        page.menu.click()
         page.settings_link.click()
 
         # She sees an option that asks for confirmation when an action
