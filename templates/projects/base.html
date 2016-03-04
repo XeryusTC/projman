@@ -3,24 +3,22 @@
 {% load static %}
 
 {% block sidebar %}
-	<ul>
-		<li>
-			<a class="sidebar-mainlink" name="inlist_link"
-				href="{% url 'projects:inlist' %}">{% trans 'In list' %}</a>
-		</li>
-		<li>
-			<a class="sidebar-mainlink"
-				href="{% url 'projects:create_project' %}">
-				{% trans 'Create project' %}
-			</a>
-		</li>
+	<li>
+		<a class="sidebar-mainlink" name="inlist_link"
+			href="{% url 'projects:inlist' %}">{% trans 'In list' %}</a>
+	</li>
+	<li>
+		<a class="sidebar-mainlink"
+			href="{% url 'projects:create_project' %}">
+			{% trans 'Create project' %}
+		</a>
+	</li>
 
-		{% for project in project_list %}
-			<li>
-				<a class="sidebar-projectlink project"
-					href="{% url 'projects:project' project.pk %}">
-					{{ project.name }}</a>
-			</li>
-		{% endfor %}
-	</ul>
+	{% for project in project_list %}
+		<li>
+			<a class="sidebar-projectlink project"
+				href="{% url 'projects:project' project.pk %}">
+				{{ project.name }}</a>
+		</li>
+	{% endfor %}
 {% endblock %}

@@ -26,7 +26,9 @@
 		<a href="{% url 'projects:main' %}">{{ site.name }}</a>
 	</div>
 	<div class="mui-divider"></div>
-	{% block sidebar %}{% endblock %}
+	<ul>
+		{% block sidebar %}{% endblock %}
+	</ul>
 </div>
 
 <header class="mui-appbar mui--z1 mui--appbar-line-height" id="header">
