@@ -23,7 +23,8 @@ def tearDownModule():
     alice.delete()
 
 class SettingsViewTest(ViewTestMixin, TestCase):
-    templates = ['html.html', 'settings/base.html', 'settings/main.html']
+    templates = ('base.html', 'settings/base.html',
+        'settings/main.html')
     explicit_url = '/en/settings/'
 
     def setUp(self):

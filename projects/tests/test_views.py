@@ -25,7 +25,8 @@ def tearDownModule():
 
 class TestMainPage(ViewTestMixin, TestCase):
     explicit_url = '/en/projects/'
-    templates = ('html.html', 'projects/base.html', 'projects/mainpage.html')
+    templates = ('base_with_sidebar.html', 'projects/base.html',
+        'projects/mainpage.html')
 
     def setUp(self):
         self.url = reverse('projects:main')
@@ -33,7 +34,8 @@ class TestMainPage(ViewTestMixin, TestCase):
 
 
 class InlistpageTest(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html', 'projects/inlist.html')
+    templates = ('base_with_sidebar.html', 'projects/base.html',
+        'projects/inlist.html')
 
     def setUp(self):
         self.url = '/en/projects/inlist/'
@@ -97,7 +99,7 @@ class InlistpageTest(ViewTestMixin, TestCase):
 
 
 class InlistItemDeleteViewTests(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
         'projects/inlistitem_confirm_delete.html')
 
     def setUp(self):
@@ -126,7 +128,7 @@ class InlistItemDeleteViewTests(ViewTestMixin, TestCase):
 
 
 class ActionlistItemDeleteViewTests(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
             'projects/actionlistitem_confirm_delete.html')
 
     def setUp(self):
@@ -169,7 +171,7 @@ class ActionlistItemDeleteViewTests(ViewTestMixin, TestCase):
 
 
 class ActionCompleteViewTest(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
         'projects/actionlistitem_errorform.html')
 
     def setUp(self):
@@ -218,7 +220,7 @@ class ActionCompleteViewTest(ViewTestMixin, TestCase):
 
 
 class ConvertInlistItemToActionItemTest(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
         'projects/convert_inlist_to_action.html')
 
     def setUp(self):
@@ -282,7 +284,8 @@ class ConvertInlistItemToActionItemTest(ViewTestMixin, TestCase):
 
 
 class ProjectViewTests(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html', 'projects/project.html')
+    templates = ('base_with_sidebar.html', 'projects/base.html',
+        'projects/project.html')
 
     def setUp(self):
         self.project = factories.ProjectFactory(user=alice)
@@ -380,7 +383,7 @@ class ProjectViewTests(ViewTestMixin, TestCase):
 
 
 class CreateProjectViewTests(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
         'projects/create_project.html')
 
     def setUp(self):
@@ -439,7 +442,7 @@ class CreateProjectViewTests(ViewTestMixin, TestCase):
 
 
 class EditProjectViewTests(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
         'projects/project_edit.html')
 
     def setUp(self):
@@ -531,7 +534,7 @@ class EditProjectViewTests(ViewTestMixin, TestCase):
 
 
 class DeleteProjectViewTests(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
         'projects/project_confirm_delete.html')
 
     def setUp(self):
@@ -576,7 +579,7 @@ class DeleteProjectViewTests(ViewTestMixin, TestCase):
 
 
 class EditActionViewTests(ViewTestMixin, TestCase):
-    templates = ('html.html', 'projects/base.html',
+    templates = ('base_with_sidebar.html', 'projects/base.html',
         'projects/edit_action.html')
 
     def setUp(self):
