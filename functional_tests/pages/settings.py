@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import Select
 from page_objects import PageObject, PageElement, MultiPageElement
 
 class SettingsPage(PageObject):
-    return_link = PageElement(css='a.mui--text-title.appbar-correct')
+    return_link = PageElement(css='.mui--text-title a.appbar-correct')
     inlist_delete_confirm = PageElement(name='inlist_delete_confirm')
     action_delete_confirm = PageElement(name='action_delete_confirm')
     confirm     = PageElement(name='confirm')
