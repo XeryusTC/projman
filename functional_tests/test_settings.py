@@ -188,3 +188,20 @@ class SettingsTests(FunctionalTestCase):
         self.assertNotEqual(self.browser.title, 'Delete action')
         self.assertEqual(self.browser.title, 'Plan a rave')
         self.assertEqual(len(project_page.thelist), 0)
+
+    def test_settings_page_has_return_link_in_sidebar(self):
+        # Alice is a user who goes to the settings
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.menu.click()
+        project_page.settings_link.click()
+
+        # There is a sidebar on the page
+        settings_page = pages.settings.SettingsPage(self.browser)
+        self.assertIsNotNone(settings_page.sidebar)
+
+        # In the sidebar there is a button that returns to the projects page
+        self.assertIn('Home', project_page.sidebar.text)
+        # When she clicks it she is returned to the projects page
+        settings_page.sidebar_return_link.click()
+        project_page.inlist_link(project_page.sidebar).click()

@@ -8,6 +8,8 @@ class SettingsPage(PageObject):
     action_delete_confirm = PageElement(name='action_delete_confirm')
     confirm     = PageElement(name='confirm')
     content     = PageElement(id_='content')
+    sidebar     = PageElement(id_='sidebar')
+    sidebar_return_link = PageElement(css='#sidebar a#return')
 
     _settings_list = MultiPageElement(tag_name='label')
     @property
