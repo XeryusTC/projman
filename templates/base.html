@@ -1,7 +1,24 @@
-{% extends 'html.html' %}
 {% load static %}
+{# Changes made here should also be made in base_with_sidebar.html #}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block head_title %}{{ site.name }}{% endblock %}</title>
 
-{% block body %}
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<link href="//cdn.muicss.com/mui-0.2.9/css/mui.min.css" rel="stylesheet"
+		type="text/css" />
+	<link href="{% static 'css/style.css' %}" rel="stylesheet"
+		type="text/css">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+	   rel="stylesheet">
+	{% block head_extra %}{% endblock %}
+</head>
+<body>
+
 <header class="mui-appbar mui--z1">
 	<div class="mui-container">
 		<table width="100%">
@@ -19,4 +36,10 @@
 <div id="content">
 	{% block content %}{% endblock content %}
 </div>
-{% endblock %}
+
+<script src="//cdn.muicss.com/mui-0.2.9/js/mui.min.js"></script>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+{% block script %}{% endblock %}
+
+</body>
+</html>
