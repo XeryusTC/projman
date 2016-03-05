@@ -205,3 +205,33 @@ class SettingsTests(FunctionalTestCase):
         # When she clicks it she is returned to the projects page
         settings_page.sidebar_return_link.click()
         project_page.inlist_link(project_page.sidebar).click()
+
+    def test_can_change_password(self):
+        # Alice is a user who goes to the settings
+        self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.menu.click()
+        project_page.settings_link.click()
+
+        # She sees an account link in the sidebar and clicks it
+        settings_page = pages.settings.SettingsPage(self.browser)
+        settings_page.account_link.click()
+
+        # Here she sees a link that says she can change her password
+        # she clicks it
+        account_settings = pages.settings.AccountSettingsPage(self.browser)
+        account_settings.change_password.click()
+
+        # She ends up on a new page where the password can be changed
+        change_page = pages.settings.ChangePasswordPage(self.browser)
+        change_page.old_password.send_keys('alice')
+        change_page.password1.send_keys('security')
+        change_page.password2.send_keys('security')
+        change_page.confirm.click()
+
+        # Alice then signs out
+        settings_page.menu.click()
+        settings_page.logout.click()
+
+        # She must now log in with her new password
+        self.fail('Finish test')
