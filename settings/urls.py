@@ -7,4 +7,6 @@ urlpatterns = [
     url(r'^$', views.SettingsMainView.as_view(), name='main'),
     url(r'set_language/$', views.SetLanguageView.as_view(),
         name='set_language'),
+    url(r'account/$', views.AccountSettingsView.as_view(),
+        name='account'),
 ]

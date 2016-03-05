@@ -129,3 +129,13 @@ class SetLanguageViewTests(RequestFunctionMixin, TestCase):
 
     def test_view_is_used_when_user_logs_in(self):
         self.assertEqual(settings.LOGIN_REDIRECT_URL, "settings:set_language")
+
+
+class AccountSettingsViewTests(ViewTestMixin, TestCase):
+    templates = ('base_with_sidebar.html', 'settings/base.html',
+        'settings/account.html')
+    explicit_url = '/en/settings/account/'
+
+    def setUp(self):
+        self.url = reverse('settings:account')
+        self.view = views.AccountSettingsView.as_view()

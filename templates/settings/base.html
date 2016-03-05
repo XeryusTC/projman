@@ -9,4 +9,14 @@
 			{% trans 'Home' %}
 		</a>
 	</li>
+	<li>
+		<a class="sidebar-mainlink" href="{% url 'settings:main' %}" id="general">
+			{% trans 'General' %}
+		</a>
+	</li>
+	<li>
+		<a class="sidebar-mainlink" href="{% url 'settings:account' %}" id="account">
+			{% trans 'Account' %}
+		</a>
+	</li>
 {% endblock %}

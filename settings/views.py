@@ -31,3 +31,7 @@ class SetLanguageView(cbv.View):
             request.session[translation.LANGUAGE_SESSION_KEY] = language
 
         return HttpResponseRedirect(reverse('projects:main'))
+
+
+class AccountSettingsView(LoginRequiredMixin, cbv.TemplateView):
+    template_name = 'settings/account.html'
