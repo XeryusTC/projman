@@ -232,6 +232,9 @@ class SettingsTests(FunctionalTestCase):
         # Alice then signs out
         settings_page.menu.click()
         settings_page.logout.click()
+        confirm_page = pages.accounts.LogoutConfirmPage(self.browser)
+        confirm_page.confirm.click()
 
         # She must now log in with her new password
-        self.fail('Finish test')
+        self.login_user('alice', 'security')
+        self.is_logged_in()
