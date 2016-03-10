@@ -220,7 +220,7 @@ class SettingsTests(FunctionalTestCase):
         # On the form there is a change password form, she fills it out
         # and submits it
         account_settings = pages.settings.AccountSettingsPage(self.browser)
-        self.assertNotIn('Your password has been changed',
+        self.assertNotIn('Password successfully changed',
             account_settings.body.text)
         account_settings.old_password.send_keys('alice')
         account_settings.password1.send_keys('security')
@@ -228,7 +228,7 @@ class SettingsTests(FunctionalTestCase):
         account_settings.change_confirm.click()
 
         # There is a message on the page that the password has been changed
-        self.assertIn('Your password has been changed',
+        self.assertIn('Password successfully changed.',
             account_settings.body.text)
 
         # Alice then signs out

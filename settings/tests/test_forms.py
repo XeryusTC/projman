@@ -2,6 +2,7 @@
 import allauth.account
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from settings import forms
@@ -66,4 +67,4 @@ class ChangePasswordFormTests(TestCase):
     def test_form_uses_allauth_change_password_view(self):
         form = forms.ChangePasswordForm()
         self.assertEqual(form.helper.form_action,
-            reverse('account_change_password'))
+            reverse('settings:change_password'))

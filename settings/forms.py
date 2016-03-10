@@ -32,5 +32,5 @@ class ChangePasswordForm(allauth.account.forms.ChangePasswordForm):
     def __init__(self, *args, **kwargs):
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_action = reverse('account_change_password')
+        self.helper.form_action = reverse('settings:change_password')
         self.helper.add_input(Submit('change_password', _('Change password')))
