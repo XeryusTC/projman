@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+import allauth.account.views
 from braces.views import LoginRequiredMixin
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.utils import translation
 from django.views import generic as cbv
@@ -35,3 +36,12 @@ class SetLanguageView(cbv.View):
 
 class AccountSettingsView(LoginRequiredMixin, cbv.TemplateView):
     template_name = 'settings/account.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AccountSettingsView, self).get_context_data(**kwargs)
+        context['password_form'] = forms.ChangePasswordForm()
+        return context
+
+
+class ChangePasswordView(allauth.account.views.PasswordChangeView):
+    success_url = reverse_lazy('settings:account')

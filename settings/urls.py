@@ -9,4 +9,6 @@ urlpatterns = [
         name='set_language'),
     url(r'account/$', views.AccountSettingsView.as_view(),
         name='account'),
+    url(r'account/change_password/$', views.ChangePasswordView.as_view(),
+        name='change_password'),
 ]

@@ -1,8 +1,14 @@
 {% extends 'settings/base.html' %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
 {% block content %}
-<a href="{% url 'account_change_password' %}" id="changepwd">
-	{% trans 'Change password' %}
-</a>
+<div class="mui-container-fluid">
+	<div class="mui-row">
+		<div class="mui-col-xs-12 mui--text-headline">
+			{% trans 'Change password' %}
+		</div>
+	</div>
+{% crispy password_form %}
+</div>
+
 {% endblock %}
