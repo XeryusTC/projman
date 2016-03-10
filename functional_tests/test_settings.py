@@ -217,17 +217,19 @@ class SettingsTests(FunctionalTestCase):
         settings_page = pages.settings.SettingsPage(self.browser)
         settings_page.account_link.click()
 
-        # Here she sees a link that says she can change her password
-        # she clicks it
+        # On the form there is a change password form, she fills it out
+        # and submits it
         account_settings = pages.settings.AccountSettingsPage(self.browser)
-        account_settings.change_password.click()
+        self.assertNotIn('Your password has been changed',
+            account_settings.body.text)
+        account_settings.old_password.send_keys('alice')
+        account_settings.password1.send_keys('security')
+        account_settings.password2.send_keys('security')
+        account_settings.change_confirm.click()
 
-        # She ends up on a new page where the password can be changed
-        change_page = pages.settings.ChangePasswordPage(self.browser)
-        change_page.old_password.send_keys('alice')
-        change_page.password1.send_keys('security')
-        change_page.password2.send_keys('security')
-        change_page.confirm.click()
+        # There is a message on the page that the password has been changed
+        self.assertIn('Your password has been changed',
+            account_settings.body.text)
 
         # Alice then signs out
         settings_page.menu.click()

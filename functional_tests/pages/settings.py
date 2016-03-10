@@ -26,11 +26,9 @@ class SettingsPage(PageObject):
 
 
 class AccountSettingsPage(PageObject):
-    change_password = PageElement(css='a#changepwd')
-
-
-class ChangePasswordPage(PageObject):
-    old_password = PageElement(name='oldpassword')
-    password1    = PageElement(name='password1')
-    password2    = PageElement(name='password2')
-    confirm      = PageElement(xpath="//form//button[@type='submit']")
+    # Change password workflow
+    body           = PageElement(id_='content')
+    old_password   = PageElement(name='oldpassword')
+    password1      = PageElement(name='password1')
+    password2      = PageElement(name='password2')
+    change_confirm = PageElement(name='change_password')
