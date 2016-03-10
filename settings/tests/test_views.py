@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import allauth.account.forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -139,3 +140,23 @@ class AccountSettingsViewTests(ViewTestMixin, TestCase):
     def setUp(self):
         self.url = reverse('settings:account')
         self.view = views.AccountSettingsView.as_view()
+
+    def test_has_change_password_form_in_context(self):
+        response = self.get_request(alice)
+        self.assertIsNotNone(response.context_data['password_form'])
+        self.assertIsInstance(response.context_data['password_form'],
+            forms.ChangePasswordForm)
+
+
+class ChangePasswordViewTests(RequestFunctionMixin, TestCase):
+    def setUp(self):
+        self.url = reverse('settings:change_password')
+        self.view = views.ChangePasswordView.as_view()
+
+    def test_success_url_is_set_to_account_settings(self):
+        self.assertEqual(views.ChangePasswordView().success_url,
+            reverse('settings:account'))
+
+    def test_is_allauth_change_password_view(self):
+        self.assertIsInstance(views.ChangePasswordView(),
+            allauth.account.views.PasswordChangeView)

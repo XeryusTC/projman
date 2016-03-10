@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import allauth.account
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -55,3 +56,14 @@ class SettingsFormTests(TestCase):
         form = forms.SettingsForm()
         self.assertEqual(form.fields['action_delete_confirm'].label,
             forms.ACTION_DELETE_CONFIRM_LABEL)
+
+
+class ChangePasswordFormTests(TestCase):
+    def test_form_is_allauth_change_password_form(self):
+        form = forms.ChangePasswordForm()
+        self.assertIsInstance(form, allauth.account.forms.ChangePasswordForm)
+
+    def test_form_uses_allauth_change_password_view(self):
+        form = forms.ChangePasswordForm()
+        self.assertEqual(form.helper.form_action,
+            reverse('account_change_password'))
