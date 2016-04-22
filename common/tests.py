@@ -6,18 +6,20 @@ from django.test import TestCase, RequestFactory
 class RequestFunctionMixin:
     factory = RequestFactory()
 
-    def get_request(self, user, url=None, **kwargs):
+    def get_request(self, user, url=None, session={}, **kwargs):
         if url == None:
             url = self.url
         request = self.factory.get(self.url)
         request.user = user
+        request.session = session
         return self.view(request, url, **kwargs)
 
-    def post_request(self, user, data={}, url=None, **kwargs):
+    def post_request(self, user, data={}, url=None, session={}, **kwargs):
         if url == None:
             url = self.url
         request = self.factory.post(self.url, data)
         request.user = user
+        request.session = session
         return self.view(request, url, **kwargs)
 
 
