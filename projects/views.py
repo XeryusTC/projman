@@ -151,6 +151,7 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectView, self).get_context_data(**kwargs)
         context['protected'] = (self.object.name == models.ACTION_PROJECT_NAME)
+        context['sort_form'] = forms.ActionlistSortForm()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -228,3 +229,20 @@ class EditActionView(LoginRequiredMixin, UpdateView):
         self.old_project = self.object.project
 
         return super(EditActionView, self).post(*args, **kwargs)
+
+
+class ActionlistSortView(LoginRequiredMixin, FormView):
+    form_class = forms.ActionlistSortForm
+    template_name = 'dummy.html'
+    http_method_names = ['post']
+
+    def get_success_url(self):
+        if self.return_model.user != self.request.user:
+            return permission_denied(self.request, None)
+        return reverse('projects:project', kwargs={'pk': self.return_model.pk})
+
+    def form_valid(self, form):
+        self.request.session['sort_method'] = form.cleaned_data['sort_method']
+        self.request.session['sort_order'] = form.cleaned_data['sort_order']
+        self.return_model = form.cleaned_data['return_model']
+        return super(ActionlistSortView, self).form_valid(form)

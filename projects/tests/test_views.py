@@ -381,6 +381,11 @@ class ProjectViewTests(ViewTestMixin, TestCase):
         with self.assertRaises(Http404):
             response = self.post_request(bob, pk=self.project.pk)
 
+    def test_has_actionlist_sort_form(self):
+        response = self.get_request(alice, pk=self.project.pk)
+        self.assertIsInstance(response.context_data['sort_form'],
+            forms.ActionlistSortForm)
+
 
 class CreateProjectViewTests(ViewTestMixin, TestCase):
     templates = ('base_with_sidebar.html', 'projects/base.html',
@@ -651,3 +656,49 @@ class EditActionViewTests(ViewTestMixin, TestCase):
         response = self.post_request(alice, {'text': self.action.text,
             'project': self.action.project.pk}, pk=action2.pk)
         self.assertContains(response, forms.DUPLICATE_MOVE_ERROR)
+
+
+class ActionlistSortViewTests(ViewTestMixin, TestCase):
+    def setUp(self):
+        self.project = factories.ProjectFactory(user=alice)
+        self.url = reverse('projects:sort_actions')
+        self.view = views.ActionlistSortView.as_view()
+
+    def test_view_uses_correct_templates(self):
+        pass # Do not test for templates
+
+    def test_redirects_to_original_project(self):
+        response = self.post_request(alice, {'return_model': self.project.pk,
+            'sort_method': 'name', 'sort_order': 'asc'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('projects:project',
+            kwargs={'pk': self.project.pk}))
+
+    @mock.patch('projects.views.permission_denied')
+    def test_does_not_redirect_to_other_users_project(self,
+            mock_permission_denied):
+        project = factories.ProjectFactory(user=bob)
+        request = self.factory.post(self.url, {'return_model': project.pk,
+            'sort_method': 'name', 'sort_order': 'asc'})
+        request.user = alice
+        request.session = {}
+
+        self.view(request, self.url)
+        mock_permission_denied.assert_called_once_with(request, None)
+
+    def test_POST_request_updates_user_session(self):
+        project = factories.ProjectFactory(user=alice)
+        request = self.factory.post(self.url,
+            data={'return_model': project.pk, 'sort_method': 'name',
+            'sort_order': 'asc'})
+        request.user = alice
+        request.session = {}
+
+        response = self.view(request, self.url)
+
+        self.assertIn('sort_method', request.session.keys())
+        self.assertIn('sort_order', request.session.keys())
+
+    def test_GET_request_shows_permission_denied(self):
+        response = self.get_request(alice)
+        self.assertEqual(response.status_code, 405)

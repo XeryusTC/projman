@@ -416,3 +416,15 @@ class EditActionFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors[NON_FIELD_ERRORS],
             [forms.DUPLICATE_MOVE_ERROR])
+
+
+class ActionlistSortFormTests(TestCase):
+    def test_crispy_helper_is_set(self):
+        form = forms.ActionlistSortForm()
+        self.assertIsInstance(form.helper, FormHelper)
+
+    def test_has_method_and_order_field(self):
+        project = factories.ProjectFactory(user=alice)
+        form = forms.ActionlistSortForm({'sort_method': 'name',
+            'sort_order': 'asc', 'return_model': project.pk})
+        self.assertTrue(form.is_valid())

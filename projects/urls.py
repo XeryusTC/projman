@@ -30,4 +30,7 @@ urlpatterns = [
         name='edit_project'),
     url(r'project/(?P<pk>[0-9]+)/delete/$', views.DeleteProjectView.as_view(),
         name='delete'),
+
+    url(r'sort/actions/$', views.ActionlistSortView.as_view(),
+        name='sort_actions'),
 ]

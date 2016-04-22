@@ -182,3 +182,16 @@ class EditActionForm(forms.ModelForm):
     class Meta:
         model = models.ActionlistItem
         fields = ('text', 'project', 'deadline')
+
+
+class ActionlistSortForm(forms.Form):
+    sort_method = forms.ChoiceField([('name', _('Text'))])
+    sort_order  = forms.ChoiceField([('asc', _('Ascending')),
+        ('desc', _('Descending'))])
+    return_model = forms.ModelChoiceField(
+        queryset=models.Project.objects.all(),
+        widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super(ActionlistSortForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
