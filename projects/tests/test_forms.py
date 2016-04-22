@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from crispy_forms.helper import FormHelper
 from django.core.exceptions import NON_FIELD_ERRORS
+from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -422,6 +423,11 @@ class ActionlistSortFormTests(TestCase):
     def test_crispy_helper_is_set(self):
         form = forms.ActionlistSortForm()
         self.assertIsInstance(form.helper, FormHelper)
+
+    def test_submits_to_actionlist_sort_view_by_default(self):
+        form = forms.ActionlistSortForm()
+        self.assertEqual(form.helper.form_action,
+            reverse('projects:sort_actions'))
 
     def test_has_method_and_order_field(self):
         project = factories.ProjectFactory(user=alice)

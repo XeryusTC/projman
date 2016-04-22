@@ -151,7 +151,8 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectView, self).get_context_data(**kwargs)
         context['protected'] = (self.object.name == models.ACTION_PROJECT_NAME)
-        context['sort_form'] = forms.ActionlistSortForm()
+        context['sort_form'] = forms.ActionlistSortForm(
+            initial={'return_model': self.object.pk})
         return context
 
     def post(self, request, *args, **kwargs):

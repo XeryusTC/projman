@@ -34,6 +34,8 @@
 
 {% crispy form %}
 
+{% crispy sort_form %}
+
 <div id="list">
 	{% for item in project.action_list.all %}
 		<div class="mui-row{% if item.complete %} checked{% endif %}">

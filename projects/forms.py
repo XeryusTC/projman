@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import ButtonHolder, Div, Layout, Submit
+from crispy_forms.layout import ButtonHolder, Div, Layout, Submit, HTML
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from projects import models
@@ -195,3 +196,15 @@ class ActionlistSortForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ActionlistSortForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_class = 'mui-form--inline'
+        self.helper.form_action = reverse('projects:sort_actions')
+        self.helper.form_method = 'POST'
+        self.helper.layout = Layout(Div('return_model',
+            Div('sort_method',
+                css_class='mui-col-xs-4 mui-col-md-offset-2 mui-col-md-2 hide-label'),
+            Div('sort_order',
+                css_class='mui-col-xs-4 mui-col-md-2 hide-label'),
+            Div(ButtonHolder(Submit('sort', _('Sort'))),
+                css_class='mui-col-xs-4 mui-col-md-2'),
+            css_class='mui-row'),
+        )
