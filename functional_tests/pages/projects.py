@@ -74,6 +74,18 @@ class ProjectPage(PageObject):
     _move_item   = PageElement(class_name='action-edit-action', context=True)
     _item_deadline = PageElement(css='.action-deadline', context=True)
 
+    apply_sort   = PageElement(name='sort')
+    _sort_method = PageElement(name='sort_method')
+    _sort_order  = PageElement(name='sort_order')
+
+    @property
+    def sort_method(self):
+        return Select(self._sort_method)
+
+    @property
+    def sort_order(self):
+        return Select(self._sort_order)
+
     def list_text(self, context):
         return [self._list_text(row).text for row in context]
 

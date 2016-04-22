@@ -570,3 +570,40 @@ class ActionPageTests(FunctionalTestCase):
         self.assertIn('Defeat the aliens',
             list_page.list_text(list_page.thelist))
         self.assertEqual(len(list_page.thelist), 2)
+
+    def test_can_order_action_items_by_name(self):
+        # Alice is a user with two items on her action list
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_action(self.server_host, 'alice', 'A item')
+            remote.create_action(self.server_host, 'alice', 'B item')
+        else:
+            projects.factories.ActionlistItemFactory(user=user, text='A item')
+            projects.factories.ActionlistItemFactory(user=user, text='B item')
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.action_link(project_page.sidebar).click()
+
+        # On the page she sees a selection box that allows her to change
+        # the order of the items
+        list_page = pages.projects.ProjectPage(self.browser)
+        self.assertIn('Text', [o.text for o in list_page.sort_method.options])
+
+        # When she selects alphabetical and clicks 'GO' she sees the page
+        # reload and that the items are sorted
+        list_page.sort_method.select_by_value('name')
+        list_page.apply_sort.click()
+        self.assertEqual(list_page.list_text(list_page.thelist),
+            ['A item', 'B item'])
+
+        # When she selects the descending option and clicks 'GO' the order
+        # of the list is reversed
+        list_page.sort_method.select_by_value('name')
+        list_page.sort_order.select_by_value('desc')
+        list_page.apply_sort.click()
+        self.assertEqual(list_page.list_text(list_page.thelist),
+            ['B item', 'A item'])
+
+        # She can also revert back to unordered by selecting the top option
+        list_page.sort_method.select_by_index(0)
+        list_page.apply_sort.click()
+        self.assertEqual(len(list_page.error_lists), 0)
