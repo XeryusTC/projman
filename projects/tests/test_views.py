@@ -453,6 +453,14 @@ class ProjectViewTests(ViewTestMixin, TestCase):
         self.assertEqual(['item 1', 'ITEM 2', 'iTeM 3'],
             [a.text for a in response.context_data['actions']])
 
+    @mock.patch('projects.views.Lower')
+    def test_case_insensitivity_is_not_applied_for_non_character_fields(self,
+            mock_Lower):
+        mock_Lower.return_value = 'deadline'
+        response = self.get_request(alice, pk=self.project.pk,
+            session={'sort_method': 'deadline', 'sort_order': ''})
+        self.assertEqual(mock_Lower.call_count, 0)
+
 
 class CreateProjectViewTests(ViewTestMixin, TestCase):
     templates = ('base_with_sidebar.html', 'projects/base.html',

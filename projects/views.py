@@ -2,6 +2,7 @@
 from braces.views import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.db.models import CharField
 from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -158,11 +159,18 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
             'sort_order': self.request.session['sort_order']})
 
         # Sort the action list
-        if self.request.session['sort_method'] != '':
+        # Case sensitive fields need to be converted to insensitive
+        if self.request.session['sort_method'] == 'text':
             sort = Lower(self.request.session['sort_method'])
             if self.request.session['sort_order'] == '-':
                 sort = sort.desc()
             context['actions'] = self.object.action_list.order_by(sort)
+        # Other fields can just be sorted regularly
+        elif self.request.session['sort_method'] != '':
+            context['actions'] = self.object.action_list.order_by(
+                self.request.session['sort_order'] + \
+                self.request.session['sort_method'])
+        # When no ordering is applied just get all actions
         else:
             context['actions'] = self.object.action_list.all()
 
