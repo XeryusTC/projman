@@ -421,6 +421,25 @@ class ProjectViewTests(ViewTestMixin, TestCase):
         response = self.get_request(alice, session={'sort_method': '',
             'sort_order': '-'}, pk=self.project.pk)
 
+    def test_sets_sort_session_data_to_empty_when_not_present(self):
+        session = {}
+        response = self.get_request(alice, session=session,
+            pk=self.project.pk)
+        self.assertEqual(session['sort_method'], '')
+        self.assertEqual(session['sort_order'], '')
+
+    def test_select_input_shows_sort_method_that_is_currently_active(self):
+        response = self.get_request(alice, pk=self.project.pk,
+            session={'sort_method': 'text', 'sort_order': ''})
+        self.assertEqual('text',
+            response.context_data['sort_form'].initial['sort_method'])
+
+    def test_select_input_shows_sort_order_that_is_currently_active(self):
+        response = self.get_request(alice, pk=self.project.pk,
+            session={'sort_method': 'text', 'sort_order': '-'})
+        self.assertEqual('-',
+            response.context_data['sort_form'].initial['sort_order'])
+
 
 class CreateProjectViewTests(ViewTestMixin, TestCase):
     templates = ('base_with_sidebar.html', 'projects/base.html',

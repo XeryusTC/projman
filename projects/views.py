@@ -152,11 +152,12 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
         context = super(ProjectView, self).get_context_data(**kwargs)
         context['protected'] = (self.object.name == models.ACTION_PROJECT_NAME)
         context['sort_form'] = forms.ActionlistSortForm(
-            initial={'return_model': self.object.pk})
+            initial={'return_model': self.object.pk,
+            'sort_method': self.request.session['sort_method'],
+            'sort_order': self.request.session['sort_order']})
 
         # Sort the action list
-        if 'sort_method' in self.request.session.keys() and \
-                self.request.session['sort_method'] != '':
+        if self.request.session['sort_method'] != '':
             context['actions'] = self.object.action_list.order_by(
                 self.request.session['sort_order'] + \
                 self.request.session['sort_method'])
@@ -185,6 +186,11 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
         # Need to check against AnonymousUser to not break LoginRequiredMixin
         if project.user != request.user and request.user != AnonymousUser():
             raise Http404()
+
+        # Set default action sort session data
+        if 'sort_method' not in self.request.session:
+            self.request.session['sort_method'] = ''
+            self.request.session['sort_order'] = ''
         return super(ProjectView, self).dispatch(request, *args, **kwargs)
 
 
