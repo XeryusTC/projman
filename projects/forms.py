@@ -186,7 +186,8 @@ class EditActionForm(forms.ModelForm):
 
 
 class ActionlistSortForm(forms.Form):
-    sort_method = forms.ChoiceField([('name', _('Text'))])
+    sort_method = forms.ChoiceField([(None, _('--------')),
+        ('text', _('Text'))], required=False)
     sort_order  = forms.ChoiceField([('asc', _('Ascending')),
         ('desc', _('Descending'))])
     return_model = forms.ModelChoiceField(

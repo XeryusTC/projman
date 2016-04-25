@@ -669,7 +669,7 @@ class ActionlistSortViewTests(ViewTestMixin, TestCase):
 
     def test_redirects_to_original_project(self):
         response = self.post_request(alice, {'return_model': self.project.pk,
-            'sort_method': 'name', 'sort_order': 'asc'})
+            'sort_method': 'text', 'sort_order': 'asc'})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('projects:project',
             kwargs={'pk': self.project.pk}))
@@ -679,7 +679,7 @@ class ActionlistSortViewTests(ViewTestMixin, TestCase):
             mock_permission_denied):
         project = factories.ProjectFactory(user=bob)
         request = self.factory.post(self.url, {'return_model': project.pk,
-            'sort_method': 'name', 'sort_order': 'asc'})
+            'sort_method': 'text', 'sort_order': 'asc'})
         request.user = alice
         request.session = {}
 
@@ -689,7 +689,7 @@ class ActionlistSortViewTests(ViewTestMixin, TestCase):
     def test_POST_request_updates_user_session(self):
         project = factories.ProjectFactory(user=alice)
         request = self.factory.post(self.url,
-            data={'return_model': project.pk, 'sort_method': 'name',
+            data={'return_model': project.pk, 'sort_method': 'text',
             'sort_order': 'asc'})
         request.user = alice
         request.session = {}

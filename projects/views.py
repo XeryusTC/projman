@@ -234,7 +234,7 @@ class EditActionView(LoginRequiredMixin, UpdateView):
 
 class ActionlistSortView(LoginRequiredMixin, FormView):
     form_class = forms.ActionlistSortForm
-    template_name = 'dummy.html'
+    template_name = 'generic_form.html'
     http_method_names = ['post']
 
     def get_success_url(self):

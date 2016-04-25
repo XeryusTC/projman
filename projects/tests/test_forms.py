@@ -431,6 +431,6 @@ class ActionlistSortFormTests(TestCase):
 
     def test_has_method_and_order_field(self):
         project = factories.ProjectFactory(user=alice)
-        form = forms.ActionlistSortForm({'sort_method': 'name',
+        form = forms.ActionlistSortForm({'sort_method': 'text',
             'sort_order': 'asc', 'return_model': project.pk})
         self.assertTrue(form.is_valid())
