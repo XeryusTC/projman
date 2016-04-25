@@ -440,6 +440,19 @@ class ProjectViewTests(ViewTestMixin, TestCase):
         self.assertEqual('-',
             response.context_data['sort_form'].initial['sort_order'])
 
+    def test_sorting_is_case_insensitive(self):
+        factories.ActionlistItemFactory(text='item 1', user=alice,
+            project=self.project)
+        factories.ActionlistItemFactory(text='ITEM 2', user=alice,
+            project=self.project)
+        factories.ActionlistItemFactory(text='iTeM 3', user=alice,
+            project=self.project)
+
+        response = self.get_request(alice, pk=self.project.pk,
+            session={'sort_method': 'text', 'sort_order': ''})
+        self.assertEqual(['item 1', 'ITEM 2', 'iTeM 3'],
+            [a.text for a in response.context_data['actions']])
+
 
 class CreateProjectViewTests(ViewTestMixin, TestCase):
     templates = ('base_with_sidebar.html', 'projects/base.html',
