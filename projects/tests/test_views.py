@@ -353,7 +353,7 @@ class ProjectViewTests(ViewTestMixin, TestCase):
         nc = factories.ActionlistItemFactory.create_batch(2, user=alice,
             complete=False, project=self.project)
         co = factories.ActionlistItemFactory.create_batch(2, user=alice,
-            complete=False, project=self.project)
+            complete=True, project=self.project)
 
         response = self.get_request(alice, pk=self.project.pk)
 
