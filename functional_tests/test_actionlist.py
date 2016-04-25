@@ -607,3 +607,78 @@ class ActionPageTests(FunctionalTestCase):
         list_page.sort_method.select_by_index(0)
         list_page.apply_sort.click()
         self.assertEqual(len(list_page.error_lists), 0)
+
+    def test_can_order_action_items_by_complete_status(self):
+        # Alice is a user with two items on her action list
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        self.create_action('alice', 'Item 1')
+        self.create_action('alice', 'Item 2')
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.action_link(project_page.sidebar).click()
+
+        # On the page she first switches the complete status of one action
+        action_page = pages.projects.ProjectPage(self.browser)
+        for key, a in action_page.get_list_rows(action_page.thelist).items():
+            if a['text'].text == 'Item 1':
+                a['item'].click()
+                break
+
+        # When she sorts by complete status she sees the uncompleted on top
+        self.assertIn('Completed', [o.text for o in
+            action_page.sort_method.options])
+        action_page.sort_method.select_by_value('complete')
+        action_page.sort_order.select_by_value('')
+        action_page.apply_sort.click()
+        self.assertEqual(action_page.list_text(action_page.thelist),
+            ['Item 2', 'Item 1'])
+        # When she sorts descending she sees the completed on top
+        action_page.sort_method.select_by_value('complete')
+        action_page.sort_order.select_by_value('-')
+        action_page.apply_sort.click()
+        self.assertEqual(action_page.list_text(action_page.thelist),
+            ['Item 1', 'Item 2'])
+
+    def test_can_order_action_items_by_deadline(self):
+        # Alice is a user with items on her action list
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        self.create_action('alice', 'Item 1')
+        self.create_action('alice', 'Item 2')
+        self.create_action('alice', 'Item 3')
+        project_page = pages.projects.BaseProjectPage(self.browser)
+        project_page.action_link(project_page.sidebar).click()
+
+        # On the page she changes the deadline of the first item
+        action_page = pages.projects.ProjectPage(self.browser)
+        for k, a in action_page.get_list_rows(action_page.thelist).items():
+            if a['text'].text == 'Item 1':
+                a['edit'].click()
+                break
+        edit_page = pages.projects.EditActionPage(self.browser)
+        edit_page.deadline_date.send_keys('1970-01-01')
+        edit_page.deadline_time.send_keys('00:00:00\n')
+
+        # Next she edits the second action
+        action_page = pages.projects.ProjectPage(self.browser)
+        for k, a in action_page.get_list_rows(action_page.thelist).items():
+            if a['text'].text == 'Item 2':
+                a['edit'].click()
+                break
+        edit_page.deadline_date.send_keys('2000-01-01')
+        edit_page.deadline_time.send_keys('00:00:00\n')
+
+        # On the action list she can sort the items by deadline
+        self.assertIn('Deadline', [o.text for o in
+            action_page.sort_method.options])
+        action_page.sort_method.select_by_value('deadline')
+        action_page.sort_order.select_by_value('')
+        action_page.apply_sort.click()
+        self.assertEqual(action_page.list_text(action_page.thelist),
+            ['Item 3', 'Item 1', 'Item 2'])
+        # She can also reverse the sorting
+        self.assertIn('Deadline', [o.text for o in
+            action_page.sort_method.options])
+        action_page.sort_method.select_by_value('deadline')
+        action_page.sort_order.select_by_value('-')
+        action_page.apply_sort.click()
+        self.assertEqual(action_page.list_text(action_page.thelist),
+            ['Item 2', 'Item 1', 'Item 3'])
