@@ -672,13 +672,16 @@ class ActionPageTests(FunctionalTestCase):
         action_page.sort_method.select_by_value('deadline')
         action_page.sort_order.select_by_value('')
         action_page.apply_sort.click()
-        self.assertEqual(action_page.list_text(action_page.thelist),
-            ['Item 3', 'Item 1', 'Item 2'])
+        actions = action_page.list_text(action_page.thelist)
+        self.assertTrue(actions == ['Item 3', 'Item 1', 'Item 2'] or \
+            actions == ['Item 1', 'Item 2', 'Item 3'], actions)
+
         # She can also reverse the sorting
         self.assertIn('Deadline', [o.text for o in
             action_page.sort_method.options])
         action_page.sort_method.select_by_value('deadline')
         action_page.sort_order.select_by_value('-')
         action_page.apply_sort.click()
-        self.assertEqual(action_page.list_text(action_page.thelist),
-            ['Item 2', 'Item 1', 'Item 3'])
+        actions = action_page.list_text(action_page.thelist)
+        self.assertTrue(actions == ['Item 3', 'Item 2', 'Item 1'] or \
+            actions == ['Item 2', 'Item 1', 'Item 3'], actions)
