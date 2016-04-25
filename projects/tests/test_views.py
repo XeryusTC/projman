@@ -386,6 +386,41 @@ class ProjectViewTests(ViewTestMixin, TestCase):
         self.assertIsInstance(response.context_data['sort_form'],
             forms.ActionlistSortForm)
 
+    def test_includes_action_list_in_context(self):
+        actions = factories.ActionlistItemFactory.create_batch(3, user=alice,
+            project=self.project)
+        response = self.get_request(alice, session={}, pk=self.project.pk)
+        self.assertSequenceEqual(actions, response.context_data['actions'])
+
+    def test_sorts_ascending__by_text_when_required(self):
+        factories.ActionlistItemFactory(text='Item A', user=alice,
+            project=self.project)
+        factories.ActionlistItemFactory(text='Item B', user=alice,
+            project=self.project)
+
+        response = self.get_request(alice, session={'sort_method': 'text',
+            'sort_order': ''}, pk=self.project.pk)
+
+        self.assertSequenceEqual(['Item A', 'Item B'],
+            [a.text for a in response.context_data['actions']])
+
+    def test_sorts_descending_by_text_when_required(self):
+        factories.ActionlistItemFactory(text='Item A', user=alice,
+            project=self.project)
+        factories.ActionlistItemFactory(text='Item B', user=alice,
+            project=self.project)
+
+        response = self.get_request(alice, session={'sort_method': 'text',
+            'sort_order': '-'}, pk=self.project.pk)
+
+        self.assertSequenceEqual(['Item B', 'Item A'],
+            [a.text for a in response.context_data['actions']])
+
+    def test_when_sorting_default_descending_no_errors_should_occur(self):
+        """There used to be a FieldError when no fiel was sorted descending"""
+        response = self.get_request(alice, session={'sort_method': '',
+            'sort_order': '-'}, pk=self.project.pk)
+
 
 class CreateProjectViewTests(ViewTestMixin, TestCase):
     templates = ('base_with_sidebar.html', 'projects/base.html',
@@ -669,7 +704,7 @@ class ActionlistSortViewTests(ViewTestMixin, TestCase):
 
     def test_redirects_to_original_project(self):
         response = self.post_request(alice, {'return_model': self.project.pk,
-            'sort_method': 'text', 'sort_order': 'asc'})
+            'sort_method': 'text', 'sort_order': ''})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('projects:project',
             kwargs={'pk': self.project.pk}))
@@ -679,7 +714,7 @@ class ActionlistSortViewTests(ViewTestMixin, TestCase):
             mock_permission_denied):
         project = factories.ProjectFactory(user=bob)
         request = self.factory.post(self.url, {'return_model': project.pk,
-            'sort_method': 'text', 'sort_order': 'asc'})
+            'sort_method': 'text', 'sort_order': ''})
         request.user = alice
         request.session = {}
 
@@ -690,7 +725,7 @@ class ActionlistSortViewTests(ViewTestMixin, TestCase):
         project = factories.ProjectFactory(user=alice)
         request = self.factory.post(self.url,
             data={'return_model': project.pk, 'sort_method': 'text',
-            'sort_order': 'asc'})
+            'sort_order': ''})
         request.user = alice
         request.session = {}
 

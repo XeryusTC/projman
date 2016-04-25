@@ -598,7 +598,7 @@ class ActionPageTests(FunctionalTestCase):
         # When she selects the descending option and clicks 'GO' the order
         # of the list is reversed
         list_page.sort_method.select_by_value('text')
-        list_page.sort_order.select_by_value('desc')
+        list_page.sort_order.select_by_value('-')
         list_page.apply_sort.click()
         self.assertEqual(list_page.list_text(list_page.thelist),
             ['B item', 'A item'])

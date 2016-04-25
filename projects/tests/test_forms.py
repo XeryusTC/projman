@@ -432,5 +432,10 @@ class ActionlistSortFormTests(TestCase):
     def test_has_method_and_order_field(self):
         project = factories.ProjectFactory(user=alice)
         form = forms.ActionlistSortForm({'sort_method': 'text',
-            'sort_order': 'asc', 'return_model': project.pk})
+            'sort_order': '-', 'return_model': project.pk})
         self.assertTrue(form.is_valid())
+
+    def test_order_field_accepts_empty_string(self):
+        project = factories.ProjectFactory(user=alice)
+        form = forms.ActionlistSortForm({'sort_method': 'text',
+            'sort_order': '', 'return_model': project.pk})

@@ -188,8 +188,8 @@ class EditActionForm(forms.ModelForm):
 class ActionlistSortForm(forms.Form):
     sort_method = forms.ChoiceField([(None, _('--------')),
         ('text', _('Text'))], required=False)
-    sort_order  = forms.ChoiceField([('asc', _('Ascending')),
-        ('desc', _('Descending'))])
+    sort_order  = forms.ChoiceField([('', _('Ascending')),
+        ('-', _('Descending'))], required=False)
     return_model = forms.ModelChoiceField(
         queryset=models.Project.objects.all(),
         widget=forms.HiddenInput())

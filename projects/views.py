@@ -153,6 +153,16 @@ class ProjectView(LoginRequiredMixin, FormMixin, DetailView):
         context['protected'] = (self.object.name == models.ACTION_PROJECT_NAME)
         context['sort_form'] = forms.ActionlistSortForm(
             initial={'return_model': self.object.pk})
+
+        # Sort the action list
+        if 'sort_method' in self.request.session.keys() and \
+                self.request.session['sort_method'] != '':
+            context['actions'] = self.object.action_list.order_by(
+                self.request.session['sort_order'] + \
+                self.request.session['sort_method'])
+        else:
+            context['actions'] = self.object.action_list.all()
+
         return context
 
     def post(self, request, *args, **kwargs):
