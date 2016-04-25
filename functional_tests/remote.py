@@ -6,12 +6,14 @@ import subprocess
 THIS_FOLDER = Path(__file__).parent
 
 def reset_database(host):
-    subprocess.check_call(['fab', 'reset_database', '--host={}'.format(host)],
+    subprocess.check_call(['fab', 'reset_database', '--host={}'.format(host),
+        '--hide=everything,status'],
         cwd=THIS_FOLDER)
 
 def create_user(host, user, email, password):
     subprocess.check_call(['fab', 'create_user:user={},password={},email={}' \
-        .format(user, password, email), '--host={}'.format(host)],
+        .format(user, password, email), '--host={}'.format(host),
+        '--hide=everything,status'],
         cwd=THIS_FOLDER)
 
 def get_sitename(host):
