@@ -390,7 +390,7 @@ class ProjectViewTests(ViewTestMixin, TestCase):
         actions = factories.ActionlistItemFactory.create_batch(3, user=alice,
             project=self.project)
         response = self.get_request(alice, session={}, pk=self.project.pk)
-        self.assertSequenceEqual(actions, response.context_data['actions'])
+        self.assertCountEqual(actions, response.context_data['actions'])
 
     def test_sorts_ascending__by_text_when_required(self):
         factories.ActionlistItemFactory(text='Item A', user=alice,
