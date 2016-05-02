@@ -82,6 +82,7 @@ def _deploy_settings_file(env):
 
     # Create the settings file locally
     sed = "sed -i'' s/{org}/'{new}'/g /tmp/{host}/envvars"
+    local('mkdir -p /tmp/{host}/'.format(host=env.host))
     local('cp deploy/envvars /tmp/{host}/envvars'.format(host=env.host))
     local(sed.format(host=env.host, org="SITENAME",   new=env.host))
     local(sed.format(host=env.host, org="db_name",    new=env.db_name))
