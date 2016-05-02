@@ -370,7 +370,8 @@ class ProjectsPageTests(FunctionalTestCase):
 
         # Alice creates an action for the project
         for i in range(3):
-            self.create_action('alice', 'Find #{}'.format(i+1), 'Make a top 3 list')
+            self.create_action('alice', 'Find #{}'.format(i+1),
+                'Make a top 3 list')
         page = pages.projects.BaseProjectPage(self.browser)
         page.project_link('Make a top 3 list').click()
         project_page = pages.projects.ProjectPage(self.browser)
@@ -791,3 +792,23 @@ class ProjectsPageTests(FunctionalTestCase):
             project_page.list_text(project_page.thelist))
         self.assertNotIn('Figure out where to go',
             project_page.list_text(project_page.thelist))
+
+    def test_projects_are_sorted_by_creation_order(self):
+        """Projects should be ordered by their pk"""
+        # Alice is a user who has several projects
+        user = self.create_and_login_user('alice', 'alice@test.org', 'alice')
+        if self.against_staging:
+            remote.create_project(self.server_host, 'alice', 'Project 1')
+            remote.create_project(self.server_host, 'alice', 'Project B')
+            remote.create_project(self.server_host, 'alice', 'Project 3')
+        else:
+            factories.ProjectFactory(user=user, name='Project 1')
+            factories.ProjectFactory(user=user, name='Project B')
+            factories.ProjectFactory(user=user, name='Project 3')
+
+        # She sees that the projects are ordered Actions, 1, B, 3 in the
+        # sidebar
+        self.browser.refresh()
+        page = pages.projects.BaseProjectPage(self.browser)
+        self.assertEqual(['Actions', 'Project 1', 'Project B', 'Project 3'],
+            [link.text for link in page._project_links(page.sidebar)])

@@ -69,6 +69,7 @@ class Project(models.Model):
         return self.name
 
     class Meta:
+        ordering = ['pk']
         unique_together = ('name', 'user')
 
 
