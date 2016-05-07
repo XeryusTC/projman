@@ -220,7 +220,6 @@ class HomePageTest(FunctionalTestCase):
         self.is_logged_in()
 
     def test_can_log_out_after_log_in(self):
-        import time
         # Alice is a returning user
         self.create_and_login_user('alice', 'alice@test.com', 'alice')
 

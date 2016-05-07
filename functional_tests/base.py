@@ -11,7 +11,7 @@ from unipath import Path
 
 from . import remote, pages
 
-DEFAULT_WAIT = 5
+DEFAULT_WAIT = 3
 SCREEN_DUMP_LOCATION = Path('screendumps/')
 User = get_user_model()
 

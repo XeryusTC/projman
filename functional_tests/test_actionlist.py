@@ -552,8 +552,6 @@ class ActionPageTests(FunctionalTestCase):
         edit_page = pages.projects.EditActionPage(self.browser)
         self.assertEqual(edit_page.text_box.get_attribute('value'),
             'Defeat the aliens')
-        import time
-        time.sleep(5)
         edit_page.text_box.clear()
         edit_page.text_box.send_keys('Save the planet\n')
 
